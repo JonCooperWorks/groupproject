@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+  %section
+    // TODO fill in javascript to change bar progress.
+    .progress.progress-striped.active
+      .bar(style="width: 10%")
+    %div
+      %form(action="", method="POST")
+        .row
+          .formgroup.span10
+              %label.control-label(for="1")
+                The lecturer arrived on time for classes
+              %label.radio 1
+                %input(type="radio", name="1", value="1") 
+              %label.radio 2  
+                %input(type="radio", name="1", value="2") 
+              %label.radio 3  
+                %input(type="radio", name="1", value="3") 
+              %label.radio 4 
+                %input(type="radio", name="1", value="4") 
+              %label.radio 5
+                %input(type="radio", name="1", value="5")  
+        .row
+          .formgroup.span10
+            %label.control-label(for="26")
+              What did you like best about this course?
+            %input.form-control(type="text", class="form-control", id="27")
+
+        .row
+          .form-group.span10
+            %button(type="submit", class="btn btn-default") Submit
+{% endblock content %}

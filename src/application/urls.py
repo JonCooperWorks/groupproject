@@ -41,6 +41,19 @@ app.add_url_rule('/examples/<int:example_id>/edit', 'edit_example',
 app.add_url_rule('/examples/<int:example_id>/delete',
                  view_func=views.delete_example, methods=['POST'])
 
+# Login Page
+app.add_url_rule('/login', 'login', view_func=views.login)
+
+# Survey Page
+app.add_url_rule('/survey', 'survey', view_func=views.survey)
+
+# Analysis Page
+app.add_url_rule('/analysis', 'analysis', view_func=views.analysis)
+
+# Test route page allows me to style while work is done on the backend
+app.add_url_rule('/surveytest', 'surveytest', view_func=views.surveytest)
+app.add_url_rule('/logintest', 'logintest', view_func=views.logintest)
+app.add_url_rule('/analysistest', 'analysistest', view_func=views.analysistest)
 
 # Error handlers
 # Handle 404 errors
