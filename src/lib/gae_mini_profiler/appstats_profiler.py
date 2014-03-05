@@ -13,8 +13,11 @@ import cleanup
 import unformatter
 import util
 
+
 class Profile(object):
+
     """Profiler that wraps appstats for programmatic access and reporting."""
+
     def __init__(self):
         # Configure AppStats output, keeping a high level of request
         # content so we can detect dupe RPCs more accurately
@@ -50,10 +53,13 @@ class Profile(object):
 
             total_time += trace.duration_milliseconds()
 
-            # Don't accumulate total RPC time for traces that overlap asynchronously
+            # Don't accumulate total RPC time for traces that overlap
+            # asynchronously
             if trace.start_offset_milliseconds() < end_offset_last:
-                total_time -= (end_offset_last - trace.start_offset_milliseconds())
-            end_offset_last = trace.start_offset_milliseconds() + trace.duration_milliseconds()
+                total_time -= (end_offset_last -
+                               trace.start_offset_milliseconds())
+            end_offset_last = trace.start_offset_milliseconds(
+            ) + trace.duration_milliseconds()
 
             service_prefix = trace.service_call_name()
 
@@ -68,14 +74,15 @@ class Profile(object):
                 }
 
             service_totals_dict[service_prefix]["total_call_count"] += 1
-            service_totals_dict[service_prefix]["total_time"] += trace.duration_milliseconds()
+            service_totals_dict[service_prefix][
+                "total_time"] += trace.duration_milliseconds()
 
             stack_frames_desc = []
             for frame in trace.call_stack_list():
                 stack_frames_desc.append("%s:%s %s" %
-                        (util.short_rpc_file_fmt(frame.class_or_file_name()),
-                            frame.line_number(),
-                            frame.function_name()))
+                                         (util.short_rpc_file_fmt(frame.class_or_file_name()),
+                                          frame.line_number(),
+                                          frame.function_name()))
 
             request = trace.request_data_summary()
             response = trace.response_data_summary()
@@ -91,13 +98,14 @@ class Profile(object):
                 request_object = unformatter.unformat(request)
                 response_object = unformatter.unformat(response)
 
-                request_short, response_short, miss = cleanup.cleanup(request_object, response_object)
+                request_short, response_short, miss = cleanup.cleanup(
+                    request_object, response_object)
 
                 request_pretty = pformat(request_object)
                 response_pretty = pformat(response_object)
             except Exception, e:
                 logging.warning("Prettifying RPC calls failed.\n%s\nRequest: %s\nResponse: %s",
-                    e, request, response, exc_info=True)
+                                e, request, response, exc_info=True)
 
             service_totals_dict[service_prefix]["total_misses"] += miss
 
@@ -121,20 +129,21 @@ class Profile(object):
                 "total_misses": service_totals_dict[service_prefix]["total_misses"],
                 "total_time": util.milliseconds_fmt(service_totals_dict[service_prefix]["total_time"]),
             })
-        service_totals = sorted(service_totals, reverse=True, key=lambda service_total: float(service_total["total_time"]))
+        service_totals = sorted(
+            service_totals, reverse=True, key=lambda service_total: float(service_total["total_time"]))
 
-        return  {
-                    "total_call_count": total_call_count,
-                    "total_time": util.milliseconds_fmt(total_time),
-                    "calls": calls,
-                    "service_totals": service_totals,
-                    "likely_dupes": likely_dupes,
-                    "appstats_key": appstats_key,
-                }
+        return {
+            "total_call_count": total_call_count,
+            "total_time": util.milliseconds_fmt(total_time),
+            "calls": calls,
+            "service_totals": service_totals,
+            "likely_dupes": likely_dupes,
+            "appstats_key": appstats_key,
+        }
 
     def wrap(self, app):
         """Wrap and return a WSGI application with appstats recording enabled.
-        
+
         Args:
             app: existing WSGI application to be wrapped
         Returns:
@@ -142,9 +151,11 @@ class Profile(object):
                 enabled.
         """
         def wrapped_appstats_app(environ, start_response):
-            # Use this wrapper to grab the app stats recorder for RequestStats.save()
+            # Use this wrapper to grab the app stats recorder for
+            # RequestStats.save()
             if recording.recorder_proxy.has_recorder_for_current_request():
-                self.recorder = recording.recorder_proxy.get_for_current_request()
+                self.recorder = recording.recorder_proxy.get_for_current_request(
+                )
             return app(environ, start_response)
 
         return recording.appstats_wsgi_middleware(wrapped_appstats_app)

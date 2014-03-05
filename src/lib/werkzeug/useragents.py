@@ -15,6 +15,7 @@ import re
 
 
 class UserAgentParser(object):
+
     """A simple user agent parser.  Used by the `UserAgent`."""
 
     platforms = (
@@ -88,6 +89,7 @@ class UserAgentParser(object):
 
 
 class UserAgent(object):
+
     """Represents a user agent.  Pass it a WSGI environment or a user agent
     string and you can inspect some of the details from the user agent
     string via the attributes.  The following attributes exist:

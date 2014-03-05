@@ -1,5 +1,6 @@
 import os
 
+
 def messages_path():
     """
     Determine the path to the 'messages' directory as best possible.
@@ -30,15 +31,18 @@ def get_translations(languages=None):
     if hasattr(translations, 'ugettext'):
         return DefaultTranslations(translations)
     else:
-        # Python 3 has no ugettext/ungettext, so just return the translations object.
+        # Python 3 has no ugettext/ungettext, so just return the translations
+        # object.
         return translations
 
 
 class DefaultTranslations(object):
+
     """
     A WTForms translations object to wrap translations objects which use
     ugettext/ungettext.
     """
+
     def __init__(self, translations):
         self.translations = translations
 

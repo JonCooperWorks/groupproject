@@ -4,7 +4,9 @@ from wtforms import DecimalField as _DecimalField
 from wtforms import DateField as _DateField
 from wtforms.widgets import Input
 
+
 class DateInput(Input):
+
     """
     Creates `<input type=date>` widget
     """
@@ -12,20 +14,23 @@ class DateInput(Input):
 
 
 class NumberInput(Input):
+
     """
     Creates `<input type=number>` widget
     """
-    input_type="number"
+    input_type = "number"
 
 
 class RangeInput(Input):
+
     """
     Creates `<input type=range>` widget
     """
-    input_type="range"
+    input_type = "range"
 
 
 class URLInput(Input):
+
     """
     Creates `<input type=url>` widget
     """
@@ -33,6 +38,7 @@ class URLInput(Input):
 
 
 class EmailInput(Input):
+
     """
     Creates `<input type=email>` widget
     """
@@ -41,13 +47,16 @@ class EmailInput(Input):
 
 
 class SearchInput(Input):
+
     """
     Creates `<input type=search>` widget
     """
 
     input_type = "search"
 
+
 class TelInput(Input):
+
     """
     Creates `<input type=tel>` widget
     """
@@ -56,6 +65,7 @@ class TelInput(Input):
 
 
 class SearchField(TextField):
+
     """
     **TextField** using **SearchInput** by default
     """
@@ -63,29 +73,34 @@ class SearchField(TextField):
 
 
 class DateField(_DateField):
+
     """
     **DateField** using **DateInput** by default
     """
- 
+
     widget = DateInput()
 
 
 class URLField(TextField):
+
     """
     **TextField** using **URLInput** by default
     """
- 
+
     widget = URLInput()
-    
+
 
 class EmailField(TextField):
+
     """
     **TextField** using **EmailInput** by default
     """
- 
+
     widget = EmailInput()
 
+
 class TelField(TextField):
+
     """
     **TextField** using **TelInput** by default
     """
@@ -94,6 +109,7 @@ class TelField(TextField):
 
 
 class IntegerField(_IntegerField):
+
     """
     **IntegerField** using **NumberInput** by default
     """
@@ -102,6 +118,7 @@ class IntegerField(_IntegerField):
 
 
 class DecimalField(_DecimalField):
+
     """
     **DecimalField** using **NumberInput** by default
     """
@@ -110,6 +127,7 @@ class DecimalField(_DecimalField):
 
 
 class IntegerRangeField(_IntegerField):
+
     """
     **IntegerField** using **RangeInput** by default
     """
@@ -118,6 +136,7 @@ class IntegerRangeField(_IntegerField):
 
 
 class DecimalRangeField(_DecimalField):
+
     """
     **DecimalField** using **RangeInput** by default
     """

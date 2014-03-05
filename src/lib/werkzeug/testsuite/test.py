@@ -80,7 +80,8 @@ def external_subdomain_redirect_demo_app(environ, start_response):
 def multi_value_post_app(environ, start_response):
     req = Request(environ)
     assert req.form['field'] == 'val1', req.form['field']
-    assert req.form.getlist('field') == ['val1', 'val2'], req.form.getlist('field')
+    assert req.form.getlist(
+        'field') == ['val1', 'val2'], req.form.getlist('field')
     response = Response('ok')
     return response(environ, start_response)
 
@@ -240,13 +241,17 @@ class TestTestCase(WerkzeugTestCase):
             assert env[key] == value
         assert env['wsgi.input'].read(0) == ''
 
-        assert create_environ('/foo', 'http://example.com/')['SCRIPT_NAME'] == ''
+        assert create_environ(
+            '/foo', 'http://example.com/')['SCRIPT_NAME'] == ''
 
     def test_file_closing(self):
         closed = []
+
         class SpecialInput(object):
+
             def read(self):
                 return ''
+
             def close(self):
                 closed.append(self)
 
@@ -260,17 +265,21 @@ class TestTestCase(WerkzeugTestCase):
     def test_follow_redirect(self):
         env = create_environ('/', base_url='http://localhost')
         c = Client(redirect_with_get_app)
-        appiter, code, headers = c.open(environ_overrides=env, follow_redirects=True)
+        appiter, code, headers = c.open(
+            environ_overrides=env, follow_redirects=True)
         assert code == '200 OK'
-        assert ''.join(appiter) == 'current url: http://localhost/some/redirect/'
+        assert ''.join(
+            appiter) == 'current url: http://localhost/some/redirect/'
 
-        # Test that the :cls:`Client` is aware of user defined response wrappers
+        # Test that the :cls:`Client` is aware of user defined response
+        # wrappers
         c = Client(redirect_with_get_app, response_wrapper=BaseResponse)
         resp = c.get('/', follow_redirects=True)
         assert resp.status_code == 200
         assert resp.data == 'current url: http://localhost/some/redirect/'
 
-        # test with URL other than '/' to make sure redirected URL's are correct
+        # test with URL other than '/' to make sure redirected URL's are
+        # correct
         c = Client(redirect_with_get_app, response_wrapper=BaseResponse)
         resp = c.get('/first/request', follow_redirects=True)
         assert resp.status_code == 200
@@ -280,22 +289,24 @@ class TestTestCase(WerkzeugTestCase):
         env = create_environ('/', base_url='http://localhost')
         c = Client(external_redirect_demo_app)
         self.assert_raises(RuntimeError, lambda:
-            c.get(environ_overrides=env, follow_redirects=True))
+                           c.get(environ_overrides=env, follow_redirects=True))
 
     def test_follow_external_redirect_on_same_subdomain(self):
         env = create_environ('/', base_url='http://example.com')
-        c = Client(external_subdomain_redirect_demo_app, allow_subdomain_redirects=True)
+        c = Client(
+            external_subdomain_redirect_demo_app, allow_subdomain_redirects=True)
         c.get(environ_overrides=env, follow_redirects=True)
 
         # check that this does not work for real external domains
         env = create_environ('/', base_url='http://localhost')
         self.assert_raises(RuntimeError, lambda:
-            c.get(environ_overrides=env, follow_redirects=True))
+                           c.get(environ_overrides=env, follow_redirects=True))
 
-        # check that subdomain redirects fail if no `allow_subdomain_redirects` is applied
+        # check that subdomain redirects fail if no `allow_subdomain_redirects`
+        # is applied
         c = Client(external_subdomain_redirect_demo_app)
         self.assert_raises(RuntimeError, lambda:
-            c.get(environ_overrides=env, follow_redirects=True))
+                           c.get(environ_overrides=env, follow_redirects=True))
 
     def test_follow_redirect_loop(self):
         c = Client(redirect_loop_app, response_wrapper=BaseResponse)
@@ -322,13 +333,13 @@ class TestTestCase(WerkzeugTestCase):
     def test_multi_value_submit(self):
         c = Client(multi_value_post_app, response_wrapper=BaseResponse)
         data = {
-            'field': ['val1','val2']
+            'field': ['val1', 'val2']
         }
         resp = c.post('/', data=data)
         assert resp.status_code == 200
         c = Client(multi_value_post_app, response_wrapper=BaseResponse)
         data = MultiDict({
-            'field': ['val1','val2']
+            'field': ['val1', 'val2']
         })
         resp = c.post('/', data=data)
         assert resp.status_code == 200

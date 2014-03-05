@@ -86,6 +86,7 @@ def safe_ref(target, on_delete=None):
 
 
 class BoundMethodWeakref(object):
+
     """'Safe' and reusable weak references to instance methods.
 
     BoundMethodWeakref objects provide a mechanism for referencing a
@@ -176,8 +177,8 @@ class BoundMethodWeakref(object):
                         traceback.print_exc()
                     except AttributeError:
                         e = sys.exc_info()[1]
-                        print ('Exception during saferef %s '
-                               'cleanup function %s: %s' % (self, function, e))
+                        print('Exception during saferef %s '
+                              'cleanup function %s: %s' % (self, function, e))
         self.deletion_methods = [on_delete]
         self.key = self.calculate_key(target)
         im_self = get_self(target)
@@ -202,7 +203,7 @@ class BoundMethodWeakref(object):
             self.__class__.__name__,
             self.self_name,
             self.func_name,
-            )
+        )
 
     __repr__ = __str__
 

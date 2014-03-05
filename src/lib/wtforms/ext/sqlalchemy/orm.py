@@ -16,6 +16,7 @@ __all__ = (
     'model_fields', 'model_form',
 )
 
+
 def converts(*args):
     def _inner(func):
         func._converter_for = frozenset(args)
@@ -24,6 +25,7 @@ def converts(*args):
 
 
 class ModelConverterBase(object):
+
     def __init__(self, converters, use_mro=True):
         self.use_mro = use_mro
 
@@ -43,7 +45,7 @@ class ModelConverterBase(object):
             return
         elif not hasattr(prop, 'direction') and len(prop.columns) != 1:
             raise TypeError('Do not know how to convert multiple-column '
-                + 'properties currently')
+                            + 'properties currently')
 
         kwargs = {
             'validators': [],
@@ -69,7 +71,8 @@ class ModelConverterBase(object):
 
                 if callable_default is not None:
                     # ColumnDefault(val).arg can be also a plain value
-                    default = callable_default(None) if callable(callable_default) else callable_default
+                    default = callable_default(None) if callable(
+                        callable_default) else callable_default
 
             kwargs['default'] = default
 
@@ -80,7 +83,7 @@ class ModelConverterBase(object):
 
             if db_session and column.unique:
                 kwargs['validators'].append(Unique(lambda: db_session, model,
-                    column))
+                                                   column))
 
             if self.use_mro:
                 types = inspect.getmro(type(column.type))
@@ -89,7 +92,7 @@ class ModelConverterBase(object):
 
             for col_type in types:
                 type_string = '%s.%s' % (col_type.__module__,
-                    col_type.__name__)
+                                         col_type.__name__)
                 if type_string.startswith('sqlalchemy'):
                     type_string = type_string[11:]
 
@@ -123,17 +126,19 @@ class ModelConverterBase(object):
             kwargs.update(field_args)
 
         return converter(model=model, mapper=mapper, prop=prop, column=column,
-            field_args=kwargs)
+                         field_args=kwargs)
 
 
 class ModelConverter(ModelConverterBase):
+
     def __init__(self, extra_converters=None):
         super(ModelConverter, self).__init__(extra_converters)
 
     @classmethod
     def _string_common(cls, column, field_args, **extra):
         if column.type.length:
-            field_args['validators'].append(validators.Length(max=column.type.length))
+            field_args['validators'].append(
+                validators.Length(max=column.type.length))
 
     @converts('String', 'Unicode')
     def conv_String(self, field_args, **extra):
@@ -178,7 +183,8 @@ class ModelConverter(ModelConverterBase):
 
     @converts('databases.mysql.MSYear')
     def conv_MSYear(self, field_args, **extra):
-        field_args['validators'].append(validators.NumberRange(min=1901, max=2155))
+        field_args['validators'].append(
+            validators.NumberRange(min=1901, max=2155))
         return f.TextField(**field_args)
 
     @converts('databases.postgres.PGInet', 'dialects.postgresql.base.INET')
@@ -209,7 +215,7 @@ class ModelConverter(ModelConverterBase):
 
 
 def model_fields(model, db_session=None, only=None, exclude=None,
-    field_args=None, converter=None):
+                 field_args=None, converter=None):
     """
     Generate a dictionary of fields for a given SQLAlchemy model.
 
@@ -231,7 +237,7 @@ def model_fields(model, db_session=None, only=None, exclude=None,
     field_dict = {}
     for name, prop in properties:
         field = converter.convert(model, mapper, prop,
-            field_args.get(name), db_session)
+                                  field_args.get(name), db_session)
         if field is not None:
             field_dict[name] = field
 
@@ -239,8 +245,8 @@ def model_fields(model, db_session=None, only=None, exclude=None,
 
 
 def model_form(model, db_session=None, base_class=Form, only=None,
-    exclude=None, field_args=None, converter=None, exclude_pk=True,
-    exclude_fk=True, type_name=None):
+               exclude=None, field_args=None, converter=None, exclude_pk=True,
+               exclude_fk=True, type_name=None):
     """
     Create a wtforms Form for a given SQLAlchemy model class::
 
@@ -274,7 +280,9 @@ def model_form(model, db_session=None, base_class=Form, only=None,
         An optional string to set returned type name.
     """
     class ModelForm(base_class):
+
         """Sets object as form attribute."""
+
         def __init__(self, *args, **kwargs):
             if 'obj' in kwargs:
                 self._obj = kwargs['obj']
@@ -293,5 +301,5 @@ def model_form(model, db_session=None, base_class=Form, only=None,
                 exclude.append(pair[0].key)
     type_name = type_name or str(model.__name__ + 'Form')
     field_dict = model_fields(model, db_session, only, exclude, field_args,
-        converter)
+                              converter)
     return type(type_name, (ModelForm, ), field_dict)

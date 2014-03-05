@@ -17,7 +17,7 @@ except:
 
         def __init__(self, default_factory=None, *a, **kw):
             if (default_factory is not None and
-                not hasattr(default_factory, '__call__')):
+                    not hasattr(default_factory, '__call__')):
                 raise TypeError('first argument must be callable')
             dict.__init__(self, *a, **kw)
             self.default_factory = default_factory
@@ -67,6 +67,7 @@ except ImportError:
         oops.__name__ = fn.__name__
         return oops
 
+
 class _symbol(object):
 
     def __init__(self, name):
@@ -82,6 +83,7 @@ _symbol.__name__ = 'symbol'
 
 
 class symbol(object):
+
     """A constant symbol.
 
     >>> symbol('foo') is symbol('foo')
@@ -115,6 +117,7 @@ WeakTypes = (ref, BoundMethodWeakref)
 
 
 class annotatable_weakref(ref):
+
     """A weakref.ref that supports custom instance attributes."""
 
 

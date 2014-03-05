@@ -12,13 +12,15 @@ from flask_debugtoolbar.utils import format_fname
 
 _ = lambda x: x
 
+
 class ThreadTrackingHandler(logging.Handler):
+
     def __init__(self):
         if threading is None:
             raise NotImplementedError("threading module is not available, \
                 the logging panel cannot be used without it")
         logging.Handler.__init__(self)
-        self.records = {} # a dictionary that maps threads to log records
+        self.records = {}  # a dictionary that maps threads to log records
 
     def emit(self, record):
         self.get_records().append(record)
@@ -46,18 +48,18 @@ _init_lock = threading.Lock()
 
 
 def _init_once():
-  # Initialize the logging handler once, but after werkzeug has set up its
-  # default logger.  Otherwise, if this sets up the logging first, werkzeug
-  # will not create a default logger, so the development server's output will
-  # not get printed.
-  global handler
-  if handler is not None:
-    return
-  with _init_lock:
+    # Initialize the logging handler once, but after werkzeug has set up its
+    # default logger.  Otherwise, if this sets up the logging first, werkzeug
+    # will not create a default logger, so the development server's output will
+    # not get printed.
+    global handler
     if handler is not None:
-      return
-    handler = ThreadTrackingHandler()
-    logging.root.addHandler(handler)
+        return
+    with _init_lock:
+        if handler is not None:
+            return
+        handler = ThreadTrackingHandler()
+        logging.root.addHandler(handler)
 
 
 class LoggingPanel(DebugPanel):
@@ -102,5 +104,3 @@ class LoggingPanel(DebugPanel):
         context.update({'records': records})
 
         return self.render('panels/logger.html', context)
-
-

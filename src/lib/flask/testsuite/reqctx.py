@@ -23,6 +23,7 @@ class RequestContextTestCase(FlaskTestCase):
     def test_teardown_on_pop(self):
         buffer = []
         app = flask.Flask(__name__)
+
         @app.teardown_request
         def end_of_request(exception):
             buffer.append(exception)
@@ -48,10 +49,12 @@ class RequestContextTestCase(FlaskTestCase):
             return None
 
         with app.test_request_context('/'):
-            self.assert_equal(flask.url_for('index', _external=True), 'http://localhost.localdomain:5000/')
+            self.assert_equal(
+                flask.url_for('index', _external=True), 'http://localhost.localdomain:5000/')
 
         with app.test_request_context('/'):
-            self.assert_equal(flask.url_for('sub', _external=True), 'http://foo.localhost.localdomain:5000/')
+            self.assert_equal(
+                flask.url_for('sub', _external=True), 'http://foo.localhost.localdomain:5000/')
 
         try:
             with app.test_request_context('/', environ_overrides={'HTTP_HOST': 'localhost'}):
@@ -59,8 +62,8 @@ class RequestContextTestCase(FlaskTestCase):
         except Exception as e:
             self.assert_true(isinstance(e, ValueError))
             self.assert_equal(str(e), "the server name provided " +
-                    "('localhost.localdomain:5000') does not match the " + \
-                    "server name from the WSGI environment ('localhost')")
+                              "('localhost.localdomain:5000') does not match the " +
+                              "server name from the WSGI environment ('localhost')")
 
         try:
             app.config.update(SERVER_NAME='localhost')
@@ -82,9 +85,11 @@ class RequestContextTestCase(FlaskTestCase):
 
     def test_context_binding(self):
         app = flask.Flask(__name__)
+
         @app.route('/')
         def index():
             return 'Hello %s!' % flask.request.args['name']
+
         @app.route('/meh')
         def meh():
             return flask.request.url
@@ -109,6 +114,7 @@ class RequestContextTestCase(FlaskTestCase):
 
     def test_manual_context_binding(self):
         app = flask.Flask(__name__)
+
         @app.route('/')
         def index():
             return 'Hello %s!' % flask.request.args['name']
@@ -131,6 +137,7 @@ class RequestContextTestCase(FlaskTestCase):
         @app.route('/')
         def index():
             reqctx = flask._request_ctx_stack.top.copy()
+
             def g():
                 self.assert_false(flask.request)
                 self.assert_false(flask.current_app)
@@ -157,6 +164,7 @@ class RequestContextTestCase(FlaskTestCase):
         @app.route('/')
         def index():
             reqctx = flask._request_ctx_stack.top.copy()
+
             @flask.copy_current_request_context
             def g():
                 self.assert_true(flask.request)

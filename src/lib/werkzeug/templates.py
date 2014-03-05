@@ -41,7 +41,7 @@ namestart_chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_'
 undefined = type('UndefinedType', (object,), {
     '__iter__': lambda x: iter(()),
     '__repr__': lambda x: 'Undefined',
-    '__str__':  lambda x: ''
+    '__str__': lambda x: ''
 })()
 runtime_vars = frozenset(['Undefined', '__to_unicode', '__context',
                           '__write', '__write_many'])
@@ -322,6 +322,7 @@ class TemplateCodeGenerator(ModuleCodeGenerator):
 
 
 class Template(object):
+
     """Represents a simple text based template.  It's a good idea to load such
     templates from files on the file system to get better debug output.
     """

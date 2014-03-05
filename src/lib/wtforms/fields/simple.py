@@ -9,11 +9,14 @@ __all__ = (
 
 
 class TextField(StringField):
+
     """
     Legacy alias for StringField
     """
 
+
 class TextAreaField(TextField):
+
     """
     This field represents an HTML ``<textarea>`` and can be used to take
     multi-line input.
@@ -22,6 +25,7 @@ class TextAreaField(TextField):
 
 
 class PasswordField(TextField):
+
     """
     Represents an ``<input type="password">``.
     """
@@ -29,6 +33,7 @@ class PasswordField(TextField):
 
 
 class FileField(TextField):
+
     """
     Can render a file-upload field.  Will take any passed filename value, if
     any is sent by the browser in the post params.  This field will NOT
@@ -39,6 +44,7 @@ class FileField(TextField):
 
 
 class HiddenField(TextField):
+
     """
     Represents an ``<input type="hidden">``.
     """
@@ -46,9 +52,9 @@ class HiddenField(TextField):
 
 
 class SubmitField(BooleanField):
+
     """
     Represents an ``<input type="submit">``.  This allows checking if a given
     submit button has been pressed.
     """
     widget = widgets.SubmitInput()
-

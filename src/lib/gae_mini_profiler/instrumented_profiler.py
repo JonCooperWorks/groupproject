@@ -22,8 +22,11 @@ import StringIO
 
 import util
 
+
 class Profile(object):
+
     """Profiler that wraps cProfile for programmatic access and reporting."""
+
     def __init__(self):
         self.c_profile = cProfile.Profile()
 
@@ -42,14 +45,17 @@ class Profile(object):
 
         width, list_func_names = stats.get_print_list([80])
         for func_name in list_func_names:
-            primitive_call_count, total_call_count, total_time, cumulative_time, callers = stats.stats[func_name]
+            primitive_call_count, total_call_count, total_time, cumulative_time, callers = stats.stats[
+                func_name]
 
             func_desc = pstats.func_std_string(func_name)
 
-            callers_names = map(lambda func_name: pstats.func_std_string(func_name), callers.keys())
+            callers_names = map(
+                lambda func_name: pstats.func_std_string(func_name), callers.keys())
             callers_desc = map(
-                    lambda name: {"func_desc": name, "func_desc_short": util.short_method_fmt(name)},
-                    callers_names)
+                lambda name: {
+                    "func_desc": name, "func_desc_short": util.short_method_fmt(name)},
+                callers_names)
 
             results["calls"].append({
                 "primitive_call_count": primitive_call_count,

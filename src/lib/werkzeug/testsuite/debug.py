@@ -15,7 +15,7 @@ import re
 from werkzeug.testsuite import WerkzeugTestCase
 
 from werkzeug.debug.repr import debug_repr, DebugReprGenerator, \
-     dump, helper
+    dump, helper
 from werkzeug.debug.console import HTMLStringO
 
 
@@ -59,9 +59,11 @@ class DebugReprTestCase(WerkzeugTestCase):
 
     def test_custom_repr(self):
         class Foo(object):
+
             def __repr__(self):
                 return '<Foo 42>'
-        assert debug_repr(Foo()) == '<span class="object">&lt;Foo 42&gt;</span>'
+        assert debug_repr(
+            Foo()) == '<span class="object">&lt;Foo 42&gt;</span>'
 
     def test_list_subclass_repr(self):
         class MyList(list):
@@ -89,8 +91,9 @@ class DebugReprTestCase(WerkzeugTestCase):
 
     def test_broken_repr(self):
         class Foo(object):
+
             def __repr__(self):
-                1/0
+                1 / 0
 
         assert debug_repr(Foo()) == \
             u'<span class="brokenrepr">&lt;broken repr (ZeroDivisionError: ' \
@@ -103,12 +106,14 @@ class DebugHelpersTestCase(WerkzeugTestCase):
         class Foo(object):
             x = 42
             y = 23
+
             def __init__(self):
                 self.z = 15
 
         drg = DebugReprGenerator()
         out = drg.dump_object(Foo())
-        assert re.search('Details for werkzeug.testsuite.debug.Foo object at', out)
+        assert re.search(
+            'Details for werkzeug.testsuite.debug.Foo object at', out)
         assert re.search('<th>x.*<span class="number">42</span>(?s)', out)
         assert re.search('<th>y.*<span class="number">23</span>(?s)', out)
         assert re.search('<th>z.*<span class="number">15</span>(?s)', out)

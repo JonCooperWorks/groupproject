@@ -31,6 +31,7 @@ class JSONTestCase(FlaskTestCase):
 
     def test_json_bad_requests(self):
         app = flask.Flask(__name__)
+
         @app.route('/json', methods=['POST'])
         def return_json():
             return flask.jsonify(foo=text_type(flask.request.get_json()))
@@ -41,6 +42,7 @@ class JSONTestCase(FlaskTestCase):
     def test_json_body_encoding(self):
         app = flask.Flask(__name__)
         app.testing = True
+
         @app.route('/')
         def index():
             return flask.request.get_json()
@@ -53,9 +55,11 @@ class JSONTestCase(FlaskTestCase):
     def test_jsonify(self):
         d = dict(a=23, b=42, c=[1, 2, 3])
         app = flask.Flask(__name__)
+
         @app.route('/kw')
         def return_kwargs():
             return flask.jsonify(**d)
+
         @app.route('/dict')
         def return_dict():
             return flask.jsonify(d)
@@ -80,13 +84,14 @@ class JSONTestCase(FlaskTestCase):
 
     def test_json_attr(self):
         app = flask.Flask(__name__)
+
         @app.route('/add', methods=['POST'])
         def add():
             json = flask.request.get_json()
             return text_type(json['a'] + json['b'])
         c = app.test_client()
         rv = c.post('/add', data=flask.json.dumps({'a': 1, 'b': 2}),
-                            content_type='application/json')
+                    content_type='application/json')
         self.assert_equal(rv.data, b'3')
 
     def test_template_escaping(self):
@@ -107,17 +112,23 @@ class JSONTestCase(FlaskTestCase):
 
     def test_json_customization(self):
         class X(object):
+
             def __init__(self, val):
                 self.val = val
+
         class MyEncoder(flask.json.JSONEncoder):
+
             def default(self, o):
                 if isinstance(o, X):
                     return '<%d>' % o.val
                 return flask.json.JSONEncoder.default(self, o)
+
         class MyDecoder(flask.json.JSONDecoder):
+
             def __init__(self, *args, **kwargs):
                 kwargs.setdefault('object_hook', self.object_hook)
                 flask.json.JSONDecoder.__init__(self, *args, **kwargs)
+
             def object_hook(self, obj):
                 if len(obj) == 1 and '_foo' in obj:
                     return X(obj['_foo'])
@@ -126,6 +137,7 @@ class JSONTestCase(FlaskTestCase):
         app.testing = True
         app.json_encoder = MyEncoder
         app.json_decoder = MyDecoder
+
         @app.route('/', methods=['POST'])
         def index():
             return flask.json.dumps(flask.request.get_json()['x'])
@@ -166,7 +178,8 @@ class JSONTestCase(FlaskTestCase):
 
         c = app.test_client()
         rv = c.get('/')
-        lines = [x.strip() for x in rv.data.strip().decode('utf-8').splitlines()]
+        lines = [x.strip()
+                 for x in rv.data.strip().decode('utf-8').splitlines()]
         self.assert_equal(lines, [
             '{',
             '"values": {',
@@ -216,7 +229,7 @@ class SendfileTestCase(FlaskTestCase):
             self.assert_true(rv.direct_passthrough)
             self.assert_in('x-sendfile', rv.headers)
             self.assert_equal(rv.headers['x-sendfile'],
-                os.path.join(app.root_path, 'static/index.html'))
+                              os.path.join(app.root_path, 'static/index.html'))
             self.assert_equal(rv.mimetype, 'text/html')
             rv.close()
 
@@ -242,7 +255,7 @@ class SendfileTestCase(FlaskTestCase):
                 self.assert_equal(rv.mimetype, 'text/html')
                 self.assert_in('x-sendfile', rv.headers)
                 self.assert_equal(rv.headers['x-sendfile'],
-                    os.path.join(app.root_path, 'static/index.html'))
+                                  os.path.join(app.root_path, 'static/index.html'))
                 rv.close()
             # mimetypes + etag
             self.assert_equal(len(captured), 2)
@@ -284,7 +297,8 @@ class SendfileTestCase(FlaskTestCase):
             with app.test_request_context():
                 f = open(os.path.join(app.root_path, 'static/index.html'))
                 rv = flask.send_file(f, as_attachment=True)
-                value, options = parse_options_header(rv.headers['Content-Disposition'])
+                value, options = parse_options_header(
+                    rv.headers['Content-Disposition'])
                 self.assert_equal(value, 'attachment')
                 rv.close()
             # mimetypes + etag
@@ -293,7 +307,8 @@ class SendfileTestCase(FlaskTestCase):
         with app.test_request_context():
             self.assert_equal(options['filename'], 'index.html')
             rv = flask.send_file('static/index.html', as_attachment=True)
-            value, options = parse_options_header(rv.headers['Content-Disposition'])
+            value, options = parse_options_header(
+                rv.headers['Content-Disposition'])
             self.assert_equal(value, 'attachment')
             self.assert_equal(options['filename'], 'index.html')
             rv.close()
@@ -303,7 +318,8 @@ class SendfileTestCase(FlaskTestCase):
                                  attachment_filename='index.txt',
                                  add_etags=False)
             self.assert_equal(rv.mimetype, 'text/plain')
-            value, options = parse_options_header(rv.headers['Content-Disposition'])
+            value, options = parse_options_header(
+                rv.headers['Content-Disposition'])
             self.assert_equal(value, 'attachment')
             self.assert_equal(options['filename'], 'index.txt')
             rv.close()
@@ -334,7 +350,9 @@ class SendfileTestCase(FlaskTestCase):
             cc = parse_cache_control_header(rv.headers['Cache-Control'])
             self.assert_equal(cc.max_age, 3600)
             rv.close()
+
         class StaticFileApp(flask.Flask):
+
             def get_send_file_max_age(self, filename):
                 return 10
         app = StaticFileApp(__name__)
@@ -380,7 +398,8 @@ class LoggingTestCase(FlaskTestCase):
                 c.get('/')
                 out = err.getvalue()
                 self.assert_in('WARNING in helpers [', out)
-                self.assert_in(os.path.basename(__file__.rsplit('.', 1)[0] + '.py'), out)
+                self.assert_in(
+                    os.path.basename(__file__.rsplit('.', 1)[0] + '.py'), out)
                 self.assert_in('the standard library is dead', out)
                 self.assert_in('this is a debug statement', out)
 
@@ -421,18 +440,22 @@ class LoggingTestCase(FlaskTestCase):
 
     def test_processor_exceptions(self):
         app = flask.Flask(__name__)
+
         @app.before_request
         def before_request():
             if trigger == 'before':
                 1 // 0
+
         @app.after_request
         def after_request(response):
             if trigger == 'after':
                 1 // 0
             return response
+
         @app.route('/')
         def index():
             return 'Foo'
+
         @app.errorhandler(500)
         def internal_server_error(e):
             return 'Hello Server Error', 500
@@ -443,6 +466,7 @@ class LoggingTestCase(FlaskTestCase):
 
     def test_url_for_with_anchor(self):
         app = flask.Flask(__name__)
+
         @app.route('/')
         def index():
             return '42'
@@ -452,6 +476,7 @@ class LoggingTestCase(FlaskTestCase):
 
     def test_url_for_with_scheme(self):
         app = flask.Flask(__name__)
+
         @app.route('/')
         def index():
             return '42'
@@ -463,6 +488,7 @@ class LoggingTestCase(FlaskTestCase):
 
     def test_url_for_with_scheme_not_external(self):
         app = flask.Flask(__name__)
+
         @app.route('/')
         def index():
             return '42'
@@ -475,11 +501,14 @@ class LoggingTestCase(FlaskTestCase):
     def test_url_with_method(self):
         from flask.views import MethodView
         app = flask.Flask(__name__)
+
         class MyView(MethodView):
+
             def get(self, id=None):
                 if id is None:
                     return 'List'
                 return 'Get %d' % id
+
             def post(self):
                 return 'Create'
         myview = MyView.as_view('myview')
@@ -500,6 +529,7 @@ class LoggingTestCase(FlaskTestCase):
 
 
 class NoImportsTestCase(FlaskTestCase):
+
     """Test Flasks are created without import.
 
     Avoiding ``__import__`` helps create Flask instances where there are errors
@@ -522,6 +552,7 @@ class StreamingTestCase(FlaskTestCase):
     def test_streaming_with_context(self):
         app = flask.Flask(__name__)
         app.testing = True
+
         @app.route('/')
         def index():
             def generate():
@@ -536,6 +567,7 @@ class StreamingTestCase(FlaskTestCase):
     def test_streaming_with_context_as_decorator(self):
         app = flask.Flask(__name__)
         app.testing = True
+
         @app.route('/')
         def index():
             @flask.stream_with_context
@@ -552,16 +584,22 @@ class StreamingTestCase(FlaskTestCase):
         app = flask.Flask(__name__)
         app.testing = True
         called = []
+
         class Wrapper(object):
+
             def __init__(self, gen):
                 self._gen = gen
+
             def __iter__(self):
                 return self
+
             def close(self):
                 called.append(42)
+
             def __next__(self):
                 return next(self._gen)
             next = __next__
+
         @app.route('/')
         def index():
             def generate():

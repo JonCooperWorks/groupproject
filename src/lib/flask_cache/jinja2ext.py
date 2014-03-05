@@ -33,17 +33,18 @@ from jinja2.ext import Extension
 
 JINJA_CACHE_ATTR_NAME = '_template_fragment_cache'
 
+
 class CacheExtension(Extension):
     tags = set(['cache'])
 
     def parse(self, parser):
         lineno = parser.stream.next().lineno
-        #cache key name is "template file path" + "line no"
+        # cache key name is "template file path" + "line no"
         default_cache_key_name = u"%s%s" % (parser.filename, lineno)
         default_cache_key_name.encode('utf-8')
 
         cache_key_names = [nodes.Const(default_cache_key_name)]
-        #parse timeout
+        # parse timeout
         if parser.stream.current.type != 'block_end':
             timeout = parser.parse_expression()
             while parser.stream.skip_if('comma'):
@@ -59,7 +60,7 @@ class CacheExtension(Extension):
         body = parser.parse_statements(['name:endcache'], drop_needle=True)
 
         return nodes.CallBlock(self.call_method('_cache', args),
-            [], [], body).set_lineno(lineno)
+                               [], [], body).set_lineno(lineno)
 
     def _cache(self, keys_list, timeout, caller):
         try:

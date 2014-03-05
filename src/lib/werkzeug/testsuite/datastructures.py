@@ -106,13 +106,15 @@ class MutableMultiDictBaseTestCase(WerkzeugTestCase):
 
         assert list(sorted(md.items())) == [('a', 1), ('b', 2), ('c', 3)]
         assert list(sorted(md.items(multi=True))) == \
-               [('a', 1), ('a', 2), ('a', 3), ('b', 2), ('c', 3)]
+            [('a', 1), ('a', 2), ('a', 3), ('b', 2), ('c', 3)]
         assert list(sorted(md.iteritems())) == [('a', 1), ('b', 2), ('c', 3)]
         assert list(sorted(md.iteritems(multi=True))) == \
-               [('a', 1), ('a', 2), ('a', 3), ('b', 2), ('c', 3)]
+            [('a', 1), ('a', 2), ('a', 3), ('b', 2), ('c', 3)]
 
-        assert list(sorted(md.lists())) == [('a', [1, 2, 3]), ('b', [2]), ('c', [3])]
-        assert list(sorted(md.iterlists())) == [('a', [1, 2, 3]), ('b', [2]), ('c', [3])]
+        assert list(sorted(md.lists())) == [
+            ('a', [1, 2, 3]), ('b', [2]), ('c', [3])]
+        assert list(sorted(md.iterlists())) == [
+            ('a', [1, 2, 3]), ('b', [2]), ('c', [3])]
 
         # copy method
         c = md.copy()
@@ -315,7 +317,8 @@ class MultiDictTestCase(MutableMultiDictBaseTestCase):
         md = self.storage_class(mapping)
         assert list(zip(md.keys(), md.listvalues())) == list(md.lists())
         assert list(zip(md, md.iterlistvalues())) == list(md.iterlists())
-        assert list(zip(md.iterkeys(), md.iterlistvalues())) == list(md.iterlists())
+        assert list(zip(md.iterkeys(), md.iterlistvalues())) == list(
+            md.iterlists())
 
 
 class OrderedMultiDictTestCase(MutableMultiDictBaseTestCase):
@@ -416,7 +419,8 @@ class CombinedMultiDictTestCase(WerkzeugTestCase):
         assert d.getlist('bar') == ['2', '3']
 
         assert sorted(d.items()) == [('bar', '2'), ('foo', '1')], d.items()
-        assert sorted(d.items(multi=True)) == [('bar', '2'), ('bar', '3'), ('foo', '1')]
+        assert sorted(d.items(multi=True)) == [
+            ('bar', '2'), ('bar', '3'), ('foo', '1')]
         assert 'missingkey' not in d
         assert 'foo' in d
 
@@ -500,7 +504,8 @@ class HeadersTestCase(WerkzeugTestCase):
 
         # list like operations
         assert headers[0] == ('Content-Type', 'text/plain')
-        assert headers[:1] == self.storage_class([('Content-Type', 'text/plain')])
+        assert headers[:1] == self.storage_class(
+            [('Content-Type', 'text/plain')])
         del headers[:2]
         del headers[-1]
         assert headers == self.storage_class([('X-Bar', '1')])

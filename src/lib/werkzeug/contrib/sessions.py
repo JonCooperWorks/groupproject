@@ -108,6 +108,7 @@ class ModificationTrackingDict(CallbackDict):
 
 
 class Session(ModificationTrackingDict):
+
     """Subclass of a dict that keeps track of direct object changes.  Changes
     in mutable structures are not tracked, for those you have to set
     `modified` to `True` by hand.
@@ -138,6 +139,7 @@ class Session(ModificationTrackingDict):
 
 
 class SessionStore(object):
+
     """Baseclass for all session stores.  The Werkzeug contrib module does not
     implement any useful stores besides the filesystem store, application
     developers are encouraged to create their own stores.
@@ -187,6 +189,7 @@ _fs_transaction_suffix = '.__wz_sess'
 
 
 class FilesystemSessionStore(SessionStore):
+
     """Simple example session store that saves sessions on the filesystem.
     This store works best on POSIX systems and Windows Vista / Windows
     Server 2008 and newer.
@@ -292,6 +295,7 @@ class FilesystemSessionStore(SessionStore):
 
 
 class SessionMiddleware(object):
+
     """A simple middleware that puts the session object of a store provided
     into the WSGI environ.  It automatically sets cookies and restores
     sessions.

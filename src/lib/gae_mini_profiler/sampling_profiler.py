@@ -30,7 +30,9 @@ from gae_mini_profiler import util
 
 _is_dev_server = os.environ["SERVER_SOFTWARE"].startswith("Devel")
 
+
 class InspectingThread(threading.Thread):
+
     """Thread that periodically triggers profiler inspections."""
     SAMPLES_PER_SECOND = 250
 
@@ -49,7 +51,7 @@ class InspectingThread(threading.Thread):
 
     def run(self):
         """Start periodic profiler inspections.
-        
+
         This will run, periodically inspecting and then sleeping, until
         manually stopped via stop()."""
         # Keep sampling until this thread is explicitly stopped.
@@ -68,13 +70,17 @@ class InspectingThread(threading.Thread):
 
 
 class ProfileSample(object):
+
     """Single stack trace sample gathered during a periodic inspection."""
+
     def __init__(self, stack):
         self.stack_trace = traceback.extract_stack(stack)
 
 
 class Profile(object):
+
     """Profiler that periodically inspects a request and logs stack traces."""
+
     def __init__(self):
         # All saved stack trace samples
         self.samples = []
@@ -93,7 +99,7 @@ class Profile(object):
         for sample in self.samples:
             for filename, line_num, function_name, src in sample.stack_trace:
                 aggregated_calls["%s\n\n%s:%s (%s)" %
-                        (src, filename, line_num, function_name)] += 1
+                                 (src, filename, line_num, function_name)] += 1
 
         # Turn aggregated call samples into dictionary of results
         calls = [{
@@ -102,17 +108,17 @@ class Profile(object):
             "count_samples": item[1],
             "per_samples": "%s%%" % util.decimal_fmt(
                 100.0 * item[1] / total_samples),
-            } for item in aggregated_calls.items()]
+        } for item in aggregated_calls.items()]
 
         # Sort call sample results by # of times calls appeared in a sample
         calls = sorted(calls, reverse=True,
-            key=lambda call: call["count_samples"])
+                       key=lambda call: call["count_samples"])
 
         return {
-                "calls": calls,
-                "total_samples": total_samples,
-                "is_dev_server": _is_dev_server,
-            }
+            "calls": calls,
+            "total_samples": total_samples,
+            "is_dev_server": _is_dev_server,
+        }
 
     def take_sample(self):
         # Look at stacks of all existing threads...
@@ -137,7 +143,7 @@ class Profile(object):
                 # global namespace (f_globals) and making sure it's currently
                 # in the gae_mini_profiler package.
                 should_sample = (stack.f_globals["__package__"] ==
-                        "gae_mini_profiler")
+                                 "gae_mini_profiler")
             else:
                 # In production, current_request_thread_id will be set properly
                 # by threading.current_thread().ident.

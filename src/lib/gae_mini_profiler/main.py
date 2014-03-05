@@ -9,6 +9,7 @@ application = webapp.WSGIApplication([
     ("/gae_mini_profiler/shared", profiler.SharedStatsHandler),
 ])
 
+
 def main():
     run_wsgi_app(application)
 

@@ -3,12 +3,15 @@ from flask import request, session, current_app
 from wtforms.fields import HiddenField
 from wtforms.ext.csrf.session import SessionSecureForm
 
+
 class _Auto():
+
     '''Placeholder for unspecified variables that should be set to defaults.
 
     Used when None is a valid option and should not be replaced by a default.
     '''
     pass
+
 
 class Form(SessionSecureForm):
 
@@ -33,6 +36,7 @@ class Form(SessionSecureForm):
       is suppressed. Default: check app.config for CSRF_ENABLED, else True
 
     """
+
     def __init__(self, formdata=_Auto, obj=None, prefix='', csrf_context=None,
                  secret_key=None, csrf_enabled=None, *args, **kwargs):
 
@@ -58,7 +62,8 @@ class Form(SessionSecureForm):
                 # It wasn't on the class, check the application config
                 secret_key = current_app.config.get("SECRET_KEY")
             if secret_key is None and session:
-                # It's not there either! Is there a session secret key if we can
+                # It's not there either! Is there a session secret key if we
+                # can
                 secret_key = session.secret_key
             if secret_key is None:
                 # It wasn't anywhere. This is an error.
@@ -68,7 +73,8 @@ class Form(SessionSecureForm):
         else:
             csrf_context = {}
             self.SECRET_KEY = ""
-        super(Form, self).__init__(formdata, obj, prefix, csrf_context=csrf_context, *args, **kwargs)
+        super(Form, self).__init__(
+            formdata, obj, prefix, csrf_context=csrf_context, *args, **kwargs)
 
     def generate_csrf_token(self, csrf_context=None):
         if not self.csrf_enabled:
@@ -110,11 +116,10 @@ class Form(SessionSecureForm):
         rv.append(u"</div>")
 
         return Markup(u"".join(rv))
-        
+
     def validate_on_submit(self):
         """
         Checks if form has been submitted and if so runs validate. This is 
         a shortcut, equivalent to ``form.is_submitted() and form.validate()``
         """
         return self.is_submitted() and self.validate()
-    

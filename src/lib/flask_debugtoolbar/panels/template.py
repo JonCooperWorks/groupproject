@@ -13,6 +13,7 @@ _ = lambda x: x
 
 
 class TemplateDebugPanel(DebugPanel):
+
     """
     Panel that displays the time a response took in milliseconds.
     """
@@ -82,7 +83,8 @@ def template_editor(key):
     require_enabled()
     # TODO set up special loader that caches templates it loads
     # and can override template contents
-    templates = [t['template'] for t in TemplateDebugPanel.get_cache_for_key(key)]
+    templates = [t['template']
+                 for t in TemplateDebugPanel.get_cache_for_key(key)]
     return g.debug_toolbar.render('panels/template_editor.html', {
         'static_path': url_for('_debug_toolbar.static', filename=''),
         'request': request,

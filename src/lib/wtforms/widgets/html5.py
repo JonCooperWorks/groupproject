@@ -12,6 +12,7 @@ __all__ = (
 
 
 class SearchInput(Input):
+
     """
     Renders an input with type "search".
     """
@@ -19,6 +20,7 @@ class SearchInput(Input):
 
 
 class TelInput(Input):
+
     """
     Renders an input with type "tel".
     """
@@ -26,6 +28,7 @@ class TelInput(Input):
 
 
 class URLInput(Input):
+
     """
     Renders an input with type "url".
     """
@@ -33,6 +36,7 @@ class URLInput(Input):
 
 
 class EmailInput(Input):
+
     """
     Renders an input with type "email".
     """
@@ -40,6 +44,7 @@ class EmailInput(Input):
 
 
 class DateTimeInput(Input):
+
     """
     Renders an input with type "datetime".
     """
@@ -47,6 +52,7 @@ class DateTimeInput(Input):
 
 
 class DateInput(Input):
+
     """
     Renders an input with type "date".
     """
@@ -54,6 +60,7 @@ class DateInput(Input):
 
 
 class MonthInput(Input):
+
     """
     Renders an input with type "month".
     """
@@ -61,6 +68,7 @@ class MonthInput(Input):
 
 
 class WeekInput(Input):
+
     """
     Renders an input with type "week".
     """
@@ -68,6 +76,7 @@ class WeekInput(Input):
 
 
 class TimeInput(Input):
+
     """
     Renders an input with type "time".
     """
@@ -75,6 +84,7 @@ class TimeInput(Input):
 
 
 class DateTimeLocalInput(Input):
+
     """
     Renders an input with type "datetime-local".
     """
@@ -82,6 +92,7 @@ class DateTimeLocalInput(Input):
 
 
 class NumberInput(Input):
+
     """
     Renders an input with type "number".
     """
@@ -89,6 +100,7 @@ class NumberInput(Input):
 
 
 class RangeInput(Input):
+
     """
     Renders an input with type "range".
     """
@@ -96,6 +108,7 @@ class RangeInput(Input):
 
 
 class ColorInput(Input):
+
     """
     Renders an input with type "color".
     """

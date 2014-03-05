@@ -25,20 +25,20 @@ def _consume_re(re, text):
 
 def _parse_string(text, quote_char):
     end = text.index(quote_char)
-    while text[end-1] == "\\":
-        end = text.index(quote_char, end+1)
-    return text[:end].decode('string_escape', 'ignore'), text[end+1:]
+    while text[end - 1] == "\\":
+        end = text.index(quote_char, end + 1)
+    return text[:end].decode('string_escape', 'ignore'), text[end + 1:]
 
 
 def _parse_list(text):
     result = []
     while True:
         m, text = _consume_re(_LIST_END, text)
-	if m:
-	    return result, text
-	element, text = _parse(text)
-	result.append(element)
-	_, text = _consume_re(_LIST_SEPARATOR, text)
+        if m:
+            return result, text
+        element, text = _parse(text)
+        result.append(element)
+        _, text = _consume_re(_LIST_SEPARATOR, text)
 
 
 def _parse_dict(text, name):
@@ -46,27 +46,27 @@ def _parse_dict(text, name):
     kwargs = {}
     while True:
         m, text = _consume_re(_DICT_END, text)
-	if m:
-	    if args and kwargs:
-	        obj = { 'args': args }
-		obj.update(kwargs)
-	    elif args:
-	        obj = args if len(args) > 1 else args[0]
-	    elif kwargs:
-	        obj = kwargs
-	    else:
-	        obj = None
-	    return {name: obj}, text
-	m, text = _consume_re(_DICT_SEPARATOR, text)
-	if m:
-	    continue
-	m, text = _consume_re(_DICT_FIELD, text)
-	if m:
-	    element, text = _parse(text)
-	    kwargs[ m.group(1).strip("_") ] = element
-	    continue
-	element, text = _parse(text)
-	args.append(element)
+        if m:
+            if args and kwargs:
+                obj = {'args': args}
+                obj.update(kwargs)
+            elif args:
+                obj = args if len(args) > 1 else args[0]
+            elif kwargs:
+                obj = kwargs
+            else:
+                obj = None
+            return {name: obj}, text
+        m, text = _consume_re(_DICT_SEPARATOR, text)
+        if m:
+            continue
+        m, text = _consume_re(_DICT_FIELD, text)
+        if m:
+            element, text = _parse(text)
+            kwargs[m.group(1).strip("_")] = element
+            continue
+        element, text = _parse(text)
+        args.append(element)
 
 
 def _parse(text):
@@ -75,8 +75,9 @@ def _parse(text):
         return _parse_string(text, m.group(1))
     m, text = _consume_re(_NUMBER, text)
     if m:
-        value = long(m.group(1)[:-1]) if m.group(1).endswith("L") else int(m.group(1))
-	return value, text
+        value = long(
+            m.group(1)[:-1]) if m.group(1).endswith("L") else int(m.group(1))
+        return value, text
     m, text = _consume_re(_BOOLEAN, text)
     if m:
         return m.group(1) == "True", text

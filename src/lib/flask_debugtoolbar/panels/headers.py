@@ -4,6 +4,7 @@ _ = lambda x: x
 
 
 class HeaderDebugPanel(DebugPanel):
+
     """
     A panel to display HTTP headers.
     """

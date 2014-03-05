@@ -13,6 +13,7 @@ from flask import Blueprint
 
 module = Blueprint('debugtoolbar', __name__)
 
+
 def replace_insensitive(string, target, replacement):
     """Similar to string.replace() but is case insensitive
     Code borrowed from: http://forums.devshed.com/python-programming-11/case-insensitive-string-replace-490921.html
@@ -21,7 +22,7 @@ def replace_insensitive(string, target, replacement):
     index = no_case.rfind(target.lower())
     if index >= 0:
         return string[:index] + replacement + string[index + len(target):]
-    else: # no results so return the original string
+    else:  # no results so return the original string
         return string
 
 
@@ -74,7 +75,7 @@ class DebugToolbarExtension(object):
         self.jinja_env.filters['printable'] = _printable
 
         app.add_url_rule('/_debug_toolbar/static/<path:filename>',
-            '_debug_toolbar.static', self.send_static_file)
+                         '_debug_toolbar.static', self.send_static_file)
 
         app.register_blueprint(module, url_prefix='/_debug_toolbar/views')
 
@@ -122,7 +123,8 @@ class DebugToolbarExtension(object):
 
         real_request = request._get_current_object()
 
-        self.debug_toolbars[real_request] = DebugToolbar(real_request, self.jinja_env)
+        self.debug_toolbars[real_request] = DebugToolbar(
+            real_request, self.jinja_env)
         for panel in self.debug_toolbars[real_request].panels:
             panel.process_request(real_request)
 
@@ -133,7 +135,8 @@ class DebugToolbarExtension(object):
         real_request = request._get_current_object()
         if real_request in self.debug_toolbars:
             for panel in self.debug_toolbars[real_request].panels:
-                new_view = panel.process_view(real_request, view_func, view_kwargs)
+                new_view = panel.process_view(
+                    real_request, view_func, view_kwargs)
                 if new_view:
                     view_func = new_view
         return view_func
@@ -162,13 +165,14 @@ class DebugToolbarExtension(object):
         # If the http response code is 200 then we process to add the
         # toolbar to the returned html response.
         if (response.status_code == 200
-            and response.headers['content-type'].startswith('text/html')):
+                and response.headers['content-type'].startswith('text/html')):
             for panel in self.debug_toolbars[real_request].panels:
                 panel.process_response(real_request, response)
 
             if response.is_sequence:
                 response_html = response.data.decode(response.charset)
-                toolbar_html = self.debug_toolbars[real_request].render_toolbar()
+                toolbar_html = self.debug_toolbars[
+                    real_request].render_toolbar()
 
                 content = replace_insensitive(
                     response_html, '</body>', toolbar_html + '</body>')

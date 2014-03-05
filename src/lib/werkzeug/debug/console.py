@@ -20,6 +20,7 @@ _local = Local()
 
 
 class HTMLStringO(object):
+
     """A StringO version that HTML escapes on write."""
 
     def __init__(self):
@@ -62,6 +63,7 @@ class HTMLStringO(object):
 
 
 class ThreadedStream(object):
+
     """Thread-local wrapper for sys.stdout for the interactive console."""
 
     def push():
@@ -134,6 +136,7 @@ class _ConsoleLoader(object):
 
 def _wrap_compiler(console):
     compile = console.compile
+
     def func(source, filename, symbol):
         code = compile(source, filename, symbol)
         console.loader.register(code, source)
@@ -191,6 +194,7 @@ class _InteractiveConsole(code.InteractiveInterpreter):
 
 
 class Console(object):
+
     """An interactive console."""
 
     def __init__(self, globals=None, locals=None):

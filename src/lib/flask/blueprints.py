@@ -15,6 +15,7 @@ from .helpers import _PackageBoundObject, _endpoint_from_view_func
 
 
 class BlueprintSetupState(object):
+
     """Temporary holder object for registering a blueprint with the
     application.  An instance of this class is created by the
     :meth:`~flask.Blueprint.make_setup_state` method and later passed
@@ -77,6 +78,7 @@ class BlueprintSetupState(object):
 
 
 class Blueprint(_PackageBoundObject):
+
     """Represents a blueprint.  A blueprint is an object that records
     functions that will be called with the
     :class:`~flask.blueprint.BlueprintSetupState` later to register functions
@@ -169,7 +171,7 @@ class Blueprint(_PackageBoundObject):
         if endpoint:
             assert '.' not in endpoint, "Blueprint endpoint's should not contain dot's"
         self.record(lambda s:
-            s.add_url_rule(rule, endpoint, view_func, **options))
+                    s.add_url_rule(rule, endpoint, view_func, **options))
 
     def endpoint(self, endpoint):
         """Like :meth:`Flask.endpoint` but for a blueprint.  This does not

@@ -26,7 +26,7 @@ cache = Cache(app)
 
 
 def home():
-    return redirect(url_for('list_examples'))
+    return render_template('test.haml')
 
 
 def say_hello(username):
@@ -51,7 +51,8 @@ def list_examples():
             flash(u'Example %s successfully saved.' % example_id, 'success')
             return redirect(url_for('list_examples'))
         except CapabilityDisabledError:
-            flash(u'App Engine Datastore is currently in read-only mode.', 'info')
+            flash(
+                u'App Engine Datastore is currently in read-only mode.', 'info')
             return redirect(url_for('list_examples'))
     return render_template('list_examples.html', examples=examples, form=form)
 
@@ -102,4 +103,3 @@ def warmup():
 
     """
     return ''
-

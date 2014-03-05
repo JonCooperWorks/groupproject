@@ -18,6 +18,7 @@ except ImportError:
 from flask.testsuite import FlaskTestCase
 from flask._compat import PY2
 
+
 class ExtImportHookTestCase(FlaskTestCase):
 
     def setup(self):
@@ -27,9 +28,9 @@ class ExtImportHookTestCase(FlaskTestCase):
         # import hook does not break on reloading.
         for entry, value in list(sys.modules.items()):
             if (entry.startswith('flask.ext.') or
-                entry.startswith('flask_') or
-                entry.startswith('flaskext.') or
-                entry == 'flaskext') and value is not None:
+                    entry.startswith('flask_') or
+                    entry.startswith('flaskext.') or
+                    entry == 'flaskext') and value is not None:
                 sys.modules.pop(entry, None)
         from flask import ext
         reload_module(ext)
@@ -95,7 +96,8 @@ class ExtImportHookTestCase(FlaskTestCase):
 
     def test_flaskext_old_package_import_submodule(self):
         from flask.ext.oldext_package import submodule
-        self.assert_equal(submodule.__name__, 'flaskext.oldext_package.submodule')
+        self.assert_equal(
+            submodule.__name__, 'flaskext.oldext_package.submodule')
         self.assert_equal(submodule.test_function(), 42)
 
     def test_flaskext_old_package_import_submodule_function(self):
@@ -125,7 +127,8 @@ class ExtImportHookTestCase(FlaskTestCase):
             next = tb.tb_next.tb_next
             if not PY2:
                 next = next.tb_next
-            self.assert_in('flask_broken/__init__.py', next.tb_frame.f_code.co_filename)
+            self.assert_in(
+                'flask_broken/__init__.py', next.tb_frame.f_code.co_filename)
 
 
 def suite():

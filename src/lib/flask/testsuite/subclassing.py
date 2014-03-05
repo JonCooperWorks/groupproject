@@ -20,6 +20,7 @@ class FlaskSubclassingTestCase(FlaskTestCase):
 
     def test_suppressed_exception_logging(self):
         class SuppressedFlask(flask.Flask):
+
             def log_exception(self, exc_info):
                 pass
 

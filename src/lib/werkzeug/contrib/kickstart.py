@@ -40,12 +40,13 @@ warn(DeprecationWarning('werkzeug.contrib.kickstart is deprecated and '
 
 
 class Request(RequestBase):
+
     """A handy subclass of the base request that adds a URL builder.
     It when supplied a session store, it is also able to handle sessions.
     """
 
     def __init__(self, environ, url_map,
-            session_store=None, cookie_name=None):
+                 session_store=None, cookie_name=None):
         # call the parent for initialization
         RequestBase.__init__(self, environ)
         # create an adapter
@@ -67,6 +68,7 @@ class Request(RequestBase):
 
 
 class Response(ResponseBase):
+
     """
     A subclass of base response which sets the default mimetype to text/html.
     It the `Request` that came in is using Werkzeug sessions, this class
@@ -91,6 +93,7 @@ class Response(ResponseBase):
 
 
 class Processor(object):
+
     """A request and response processor - it is what Django calls a
     middleware, but Werkzeug also includes straight-foward support for real
     WSGI middlewares, so another name was chosen.
@@ -121,6 +124,7 @@ class Processor(object):
 
 
 class Application(object):
+
     """A generic WSGI application which can be used to start with Werkzeug in
     an easy, straightforward way.
     """
@@ -141,7 +145,7 @@ class Application(object):
         # create a request - with or without session support
         if self.store is not None:
             request = Request(environ, self.url_map,
-                session_store=self.store, cookie_name='%s_sid' % self.name)
+                              session_store=self.store, cookie_name='%s_sid' % self.name)
         else:
             request = Request(environ, self.url_map)
 
@@ -183,7 +187,6 @@ class Application(object):
         # return the completely processed response
         return response(environ, start_response)
 
-
     def config_session(self, store, expiration='session'):
         """
         Configures the setting for cookies. You can also disable cookies by
@@ -196,6 +199,7 @@ class Application(object):
 
 
 class TemplateNotFound(IOError, LookupError):
+
     """
     A template was not found by the template loader.
     """
@@ -206,6 +210,7 @@ class TemplateNotFound(IOError, LookupError):
 
 
 class TemplateLoader(object):
+
     """
     A simple loader interface for the werkzeug minitmpl
     template language.
@@ -237,6 +242,7 @@ class TemplateLoader(object):
 
 
 class GenshiTemplateLoader(TemplateLoader):
+
     """A unified interface for loading Genshi templates. Actually a quite thin
     wrapper for Genshi's TemplateLoader.
 
@@ -246,6 +252,7 @@ class GenshiTemplateLoader(TemplateLoader):
     The default output type is 'html', but can be adjusted easily by changing
     the `output_type` attribute.
     """
+
     def __init__(self, search_path, encoding='utf-8', **kwargs):
         TemplateLoader.__init__(self, search_path, encoding)
         # import Genshi here, because we don't want a general Genshi
@@ -262,7 +269,7 @@ class GenshiTemplateLoader(TemplateLoader):
 
         # now, all arguments are clean, pass them on
         self.loader = GenshiLoader(search_path, default_encoding=encoding,
-                auto_reload=reload_template, **kwargs)
+                                   auto_reload=reload_template, **kwargs)
 
         # the default output is HTML but can be overridden easily
         self.output_type = 'html'

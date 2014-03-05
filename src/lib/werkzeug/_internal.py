@@ -175,7 +175,7 @@ def _parse_signature(func):
             kwargs = {}
 
         return new_args, kwargs, missing, extra, extra_positional, \
-               arguments, vararg_var, kwarg_var
+            arguments, vararg_var, kwarg_var
     _signature_cache[func] = parse
     return parse
 
@@ -281,6 +281,7 @@ class _ExtendedMorsel(Morsel):
 
 
 class _ExtendedCookie(SimpleCookie):
+
     """Form of the base cookie that doesn't raise a `CookieError` for
     malformed keys.  This has the advantage that broken cookies submitted
     by nonstandard browsers don't cause the cookie to be empty.
@@ -296,6 +297,7 @@ class _ExtendedCookie(SimpleCookie):
 
 
 class _DictAccessorProperty(object):
+
     """Baseclass for `environ_property` and `header_property`."""
     read_only = False
 
@@ -376,6 +378,7 @@ krEDuNoJCHNlZYhKpvw4mspVWxqo415n8cD62N9+EfHrAvqQnINStetek7RY2Urv8nxsnGaZfRr/
 nhXbJ6m/yl1LzYqscDZA9QHLNbdaSTTr+kFg3bC0iYbX/eQy0Bv3h4B50/SGYzKAXkCeOLI3bcAt
 mj2Z/FM1vQWgDynsRwNvrWnJHlespkrp8+vO1jNaibm+PhqXPPv30YwDZ6jApe3wUjFQobghvW9p
 7f2zLkGNv8b191cD/3vs9Q833z8t'''.decode('base64').decode('zlib').splitlines()])
+
     def easteregged(environ, start_response):
         def injecting_start_response(status, headers, exc_info=None):
             headers.append(('X-Powered-By', 'Werkzeug'))

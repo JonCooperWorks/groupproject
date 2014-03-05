@@ -21,6 +21,7 @@ _unset_value = object()
 
 
 class DummyTranslations(object):
+
     def gettext(self, string):
         return string
 
@@ -32,6 +33,7 @@ class DummyTranslations(object):
 
 
 class Field(object):
+
     """
     Field base class
     """
@@ -42,7 +44,7 @@ class Field(object):
     widget = None
     _formfield = True
     _translations = DummyTranslations()
-    do_not_call_in_templates = True # Allow Django 1.4 traversal
+    do_not_call_in_templates = True  # Allow Django 1.4 traversal
 
     def __new__(cls, *args, **kwargs):
         if '_form' in kwargs and '_name' in kwargs:
@@ -99,7 +101,8 @@ class Field(object):
         self.validators = validators or list(self.validators)
 
         self.id = id or self.name
-        self.label = Label(self.id, label if label is not None else self.gettext(_name.replace('_', ' ').title()))
+        self.label = Label(self.id, label if label is not None else self.gettext(
+            _name.replace('_', ' ').title()))
 
         if widget is not None:
             self.widget = widget
@@ -318,11 +321,13 @@ class UnboundField(object):
 
 
 class Flags(object):
+
     """
     Holds a set of boolean flags as attributes.
 
     Accessing a non-existing attribute returns False for its value.
     """
+
     def __getattr__(self, name):
         if name.startswith('_'):
             return super(Flags, self).__getattr__(name)
@@ -337,9 +342,11 @@ class Flags(object):
 
 
 class Label(object):
+
     """
     An HTML form label.
     """
+
     def __init__(self, field_id, text):
         self.field_id = field_id
         self.text = text
@@ -375,6 +382,7 @@ class SelectFieldBase(Field):
     This isn't a field, but an abstract base class for fields which want to
     provide this functionality.
     """
+
     def __init__(self, label=None, validators=None, option_widget=None, **kwargs):
         super(SelectFieldBase, self).__init__(label, validators, **kwargs)
 
@@ -426,7 +434,8 @@ class SelectField(SelectFieldBase):
             try:
                 self.data = self.coerce(valuelist[0])
             except ValueError:
-                raise ValueError(self.gettext('Invalid Choice: could not coerce'))
+                raise ValueError(
+                    self.gettext('Invalid Choice: could not coerce'))
 
     def pre_validate(self, form):
         for v, _ in self.choices:
@@ -437,6 +446,7 @@ class SelectField(SelectFieldBase):
 
 
 class SelectMultipleField(SelectField):
+
     """
     No different from a normal select field, except this one can take (and
     validate) multiple choices.  You'll need to specify the HTML `rows`
@@ -446,7 +456,8 @@ class SelectMultipleField(SelectField):
 
     def iter_choices(self):
         for value, label in self.choices:
-            selected = self.data is not None and self.coerce(value) in self.data
+            selected = self.data is not None and self.coerce(
+                value) in self.data
             yield (value, label, selected)
 
     def process_data(self, value):
@@ -459,17 +470,20 @@ class SelectMultipleField(SelectField):
         try:
             self.data = list(self.coerce(x) for x in valuelist)
         except ValueError:
-            raise ValueError(self.gettext('Invalid choice(s): one or more data inputs could not be coerced'))
+            raise ValueError(
+                self.gettext('Invalid choice(s): one or more data inputs could not be coerced'))
 
     def pre_validate(self, form):
         if self.data:
             values = list(c[0] for c in self.choices)
             for d in self.data:
                 if d not in values:
-                    raise ValueError(self.gettext("'%(value)s' is not a valid choice for this field") % dict(value=d))
+                    raise ValueError(
+                        self.gettext("'%(value)s' is not a valid choice for this field") % dict(value=d))
 
 
 class RadioField(SelectField):
+
     """
     Like a SelectField, except displays a list of radio buttons.
 
@@ -481,6 +495,7 @@ class RadioField(SelectField):
 
 
 class StringField(Field):
+
     """
     This field is the base for most of the more complicated fields, and
     represents an ``<input type="text">``.
@@ -498,6 +513,7 @@ class StringField(Field):
 
 
 class IntegerField(Field):
+
     """
     A text field, except all input is coerced to an integer.  Erroneous input
     is ignored and will not be accepted as a value.
@@ -525,6 +541,7 @@ class IntegerField(Field):
 
 
 class DecimalField(Field):
+
     """
     A text field which displays and coerces data of the `decimal.Decimal` type.
 
@@ -553,7 +570,8 @@ class DecimalField(Field):
                     if self.rounding is None:
                         quantized = self.data.quantize(exp)
                     else:
-                        quantized = self.data.quantize(exp, rounding=self.rounding)
+                        quantized = self.data.quantize(
+                            exp, rounding=self.rounding)
                     return text_type(quantized)
                 else:
                     # If for some reason, data is a float or int, then format
@@ -575,6 +593,7 @@ class DecimalField(Field):
 
 
 class FloatField(Field):
+
     """
     A text field, except all input is coerced to an float.  Erroneous input
     is ignored and will not be accepted as a value.
@@ -602,6 +621,7 @@ class FloatField(Field):
 
 
 class BooleanField(Field):
+
     """
     Represents an ``<input type="checkbox">``.
     """
@@ -627,6 +647,7 @@ class BooleanField(Field):
 
 
 class DateTimeField(Field):
+
     """
     A text field which stores a `datetime.datetime` matching a format.
     """
@@ -653,9 +674,11 @@ class DateTimeField(Field):
 
 
 class DateField(DateTimeField):
+
     """
     Same as DateTimeField, except stores a `datetime.date`.
     """
+
     def __init__(self, label=None, validators=None, format='%Y-%m-%d', **kwargs):
         super(DateField, self).__init__(label, validators, format, **kwargs)
 
@@ -663,13 +686,15 @@ class DateField(DateTimeField):
         if valuelist:
             date_str = ' '.join(valuelist)
             try:
-                self.data = datetime.datetime.strptime(date_str, self.format).date()
+                self.data = datetime.datetime.strptime(
+                    date_str, self.format).date()
             except ValueError:
                 self.data = None
                 raise ValueError(self.gettext('Not a valid date value'))
 
 
 class FormField(Field):
+
     """
     Encapsulate a form as a field in another form.
 
@@ -687,9 +712,11 @@ class FormField(Field):
         self.separator = separator
         self._obj = None
         if self.filters:
-            raise TypeError('FormField cannot take filters, as the encapsulated data is not mutable.')
+            raise TypeError(
+                'FormField cannot take filters, as the encapsulated data is not mutable.')
         if validators:
-            raise TypeError('FormField does not accept any validators. Instead, define them on the enclosed form.')
+            raise TypeError(
+                'FormField does not accept any validators. Instead, define them on the enclosed form.')
 
     def process(self, formdata, data=_unset_value):
         if data is _unset_value:
@@ -703,20 +730,24 @@ class FormField(Field):
 
         prefix = self.name + self.separator
         if isinstance(data, dict):
-            self.form = self.form_class(formdata=formdata, prefix=prefix, **data)
+            self.form = self.form_class(
+                formdata=formdata, prefix=prefix, **data)
         else:
-            self.form = self.form_class(formdata=formdata, obj=data, prefix=prefix)
+            self.form = self.form_class(
+                formdata=formdata, obj=data, prefix=prefix)
 
     def validate(self, form, extra_validators=tuple()):
         if extra_validators:
-            raise TypeError('FormField does not accept in-line validators, as it gets errors from the enclosed form.')
+            raise TypeError(
+                'FormField does not accept in-line validators, as it gets errors from the enclosed form.')
         return self.form.validate()
 
     def populate_obj(self, obj, name):
         candidate = getattr(obj, name, None)
         if candidate is None:
             if self._obj is None:
-                raise TypeError('populate_obj: cannot find a value to populate from the provided obj or input data/defaults')
+                raise TypeError(
+                    'populate_obj: cannot find a value to populate from the provided obj or input data/defaults')
             candidate = self._obj
             setattr(obj, name, candidate)
 
@@ -741,6 +772,7 @@ class FormField(Field):
 
 
 class FieldList(Field):
+
     """
     Encapsulate an ordered list of multiple instances of the same field type,
     keeping data as a list.
@@ -758,14 +790,17 @@ class FieldList(Field):
         accept no more than this many entries as input, even if more exist in
         formdata.
     """
-    widget=widgets.ListWidget()
+    widget = widgets.ListWidget()
 
     def __init__(self, unbound_field, label=None, validators=None, min_entries=0,
                  max_entries=None, default=tuple(), **kwargs):
-        super(FieldList, self).__init__(label, validators, default=default, **kwargs)
+        super(FieldList, self).__init__(
+            label, validators, default=default, **kwargs)
         if self.filters:
-            raise TypeError('FieldList does not accept any filters. Instead, define them on the enclosed field.')
-        assert isinstance(unbound_field, UnboundField), 'Field must be unbound, not a field class'
+            raise TypeError(
+                'FieldList does not accept any filters. Instead, define them on the enclosed field.')
+        assert isinstance(
+            unbound_field, UnboundField), 'Field must be unbound, not a field class'
         self.unbound_field = unbound_field
         self.min_entries = min_entries
         self.max_entries = max_entries
@@ -859,8 +894,9 @@ class FieldList(Field):
             'You cannot have more than max_entries entries in this FieldList'
         new_index = self.last_index = index or (self.last_index + 1)
         name = '%s-%d' % (self.short_name, new_index)
-        id   = '%s-%d' % (self.id, new_index)
-        field = self.unbound_field.bind(form=None, name=name, prefix=self._prefix, id=id)
+        id = '%s-%d' % (self.id, new_index)
+        field = self.unbound_field.bind(
+            form=None, name=name, prefix=self._prefix, id=id)
         field.process(formdata, data)
         self.entries.append(field)
         return field

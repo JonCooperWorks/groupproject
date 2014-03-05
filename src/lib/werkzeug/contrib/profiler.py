@@ -29,6 +29,7 @@ except ImportError:
 
 
 class MergeStream(object):
+
     """An object that redirects `write` calls to multiple streams.
     Use this to log to both `sys.stdout` and a file::
 
@@ -48,6 +49,7 @@ class MergeStream(object):
 
 
 class ProfilerMiddleware(object):
+
     """Simple profiler middleware.  Wraps a WSGI application and profiles
     a request.  This intentionally buffers the response so that timings are
     more exact.

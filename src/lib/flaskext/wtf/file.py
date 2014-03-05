@@ -2,7 +2,9 @@ from werkzeug import FileStorage
 from wtforms import FileField as _FileField
 from wtforms import ValidationError
 
+
 class FileField(_FileField):
+
     """
     Werkzeug-aware subclass of **wtforms.FileField**
 
@@ -28,6 +30,7 @@ class FileField(_FileField):
 
 
 class FileRequired(object):
+
     """
     Validates that field has a file.
 
@@ -37,7 +40,7 @@ class FileRequired(object):
     """
 
     def __init__(self, message=None):
-        self.message=message
+        self.message = message
 
     def __call__(self, form, field):
         if not field.has_file():
@@ -47,6 +50,7 @@ file_required = FileRequired
 
 
 class FileAllowed(object):
+
     """
     Validates that the uploaded file is allowed by the given
     Flask-Uploads UploadSet.
@@ -69,4 +73,3 @@ class FileAllowed(object):
             raise ValidationError, self.message
 
 file_allowed = FileAllowed
-    

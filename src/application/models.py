@@ -10,6 +10,7 @@ from google.appengine.ext import ndb
 
 
 class ExampleModel(ndb.Model):
+
     """Example Model"""
     example_name = ndb.StringProperty(required=True)
     example_description = ndb.TextProperty(required=True)

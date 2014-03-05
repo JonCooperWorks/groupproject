@@ -32,15 +32,19 @@ class ModuleTestCase(FlaskTestCase):
     def test_basic_module(self):
         app = flask.Flask(__name__)
         admin = flask.Module(__name__, 'admin', url_prefix='/admin')
+
         @admin.route('/')
         def admin_index():
             return 'admin index'
+
         @admin.route('/login')
         def admin_login():
             return 'admin login'
+
         @admin.route('/logout')
         def admin_logout():
             return 'admin logout'
+
         @app.route('/')
         def index():
             return 'the index'
@@ -55,6 +59,7 @@ class ModuleTestCase(FlaskTestCase):
     def test_default_endpoint_name(self):
         app = flask.Flask(__name__)
         mod = flask.Module(__name__, 'frontend')
+
         def index():
             return 'Awesome'
         mod.add_url_rule('/', view_func=index)
@@ -69,23 +74,29 @@ class ModuleTestCase(FlaskTestCase):
         catched = []
         app = flask.Flask(__name__)
         admin = flask.Module(__name__, 'admin', url_prefix='/admin')
+
         @admin.before_request
         def before_admin_request():
             catched.append('before-admin')
+
         @admin.after_request
         def after_admin_request(response):
             catched.append('after-admin')
             return response
+
         @admin.route('/')
         def admin_index():
             return 'the admin'
+
         @app.before_request
         def before_request():
             catched.append('before-app')
+
         @app.after_request
         def after_request(response):
             catched.append('after-app')
             return response
+
         @app.route('/')
         def index():
             return 'the index'
@@ -98,24 +109,29 @@ class ModuleTestCase(FlaskTestCase):
 
         self.assert_equal(c.get('/admin/').data, b'the admin')
         self.assert_equal(catched, ['before-app', 'before-admin',
-                           'after-admin', 'after-app'])
+                                    'after-admin', 'after-app'])
 
     @emits_module_deprecation_warning
     def test_context_processors(self):
         app = flask.Flask(__name__)
         admin = flask.Module(__name__, 'admin', url_prefix='/admin')
+
         @app.context_processor
         def inject_all_regular():
             return {'a': 1}
+
         @admin.context_processor
         def inject_admin():
             return {'b': 2}
+
         @admin.app_context_processor
         def inject_all_module():
             return {'c': 3}
+
         @app.route('/')
         def index():
             return flask.render_template_string('{{ a }}{{ b }}{{ c }}')
+
         @admin.route('/')
         def admin_index():
             return flask.render_template_string('{{ a }}{{ b }}{{ c }}')
@@ -128,6 +144,7 @@ class ModuleTestCase(FlaskTestCase):
     def test_late_binding(self):
         app = flask.Flask(__name__)
         admin = flask.Module(__name__, 'admin')
+
         @admin.route('/')
         def index():
             return '42'
@@ -138,15 +155,19 @@ class ModuleTestCase(FlaskTestCase):
     def test_error_handling(self):
         app = flask.Flask(__name__)
         admin = flask.Module(__name__, 'admin')
+
         @admin.app_errorhandler(404)
         def not_found(e):
             return 'not found', 404
+
         @admin.app_errorhandler(500)
         def internal_server_error(e):
             return 'internal server error', 500
+
         @admin.route('/')
         def index():
             flask.abort(404)
+
         @admin.route('/error')
         def error():
             1 // 0
@@ -190,7 +211,8 @@ class ModuleTestCase(FlaskTestCase):
                 self.assert_true(0, 'expected exception')
 
         with flask.Flask(__name__).test_request_context():
-            self.assert_equal(flask.render_template('nested/nested.txt'), 'I\'m nested')
+            self.assert_equal(
+                flask.render_template('nested/nested.txt'), 'I\'m nested')
 
     def test_safe_access(self):
         app = moduleapp
@@ -294,7 +316,8 @@ class BlueprintTestCase(FlaskTestCase):
 
         self.assert_equal(c.get('/frontend-no').data, b'frontend says no')
         self.assert_equal(c.get('/backend-no').data, b'backend says no')
-        self.assert_equal(c.get('/what-is-a-sideend').data, b'application itself says no')
+        self.assert_equal(
+            c.get('/what-is-a-sideend').data, b'application itself says no')
 
     def test_blueprint_url_definitions(self):
         bp = flask.Blueprint('test', __name__)
@@ -388,11 +411,14 @@ class BlueprintTestCase(FlaskTestCase):
                 self.assert_true(0, 'expected exception')
 
         with flask.Flask(__name__).test_request_context():
-            self.assert_equal(flask.render_template('nested/nested.txt'), 'I\'m nested')
+            self.assert_equal(
+                flask.render_template('nested/nested.txt'), 'I\'m nested')
 
     def test_default_static_cache_timeout(self):
         app = flask.Flask(__name__)
+
         class MyBlueprint(flask.Blueprint):
+
             def get_send_file_max_age(self, filename):
                 return 100
 
@@ -418,7 +444,7 @@ class BlueprintTestCase(FlaskTestCase):
         from blueprintapp import app
         templates = sorted(app.jinja_env.list_templates())
         self.assert_equal(templates, ['admin/index.html',
-                                     'frontend/index.html'])
+                                      'frontend/index.html'])
 
     def test_dotted_names(self):
         frontend = flask.Blueprint('myapp.frontend', __name__)
@@ -567,6 +593,7 @@ class BlueprintTestCase(FlaskTestCase):
 
     def test_template_filter(self):
         bp = flask.Blueprint('bp', __name__)
+
         @bp.app_template_filter()
         def my_reverse(s):
             return s[::-1]
@@ -578,6 +605,7 @@ class BlueprintTestCase(FlaskTestCase):
 
     def test_add_template_filter(self):
         bp = flask.Blueprint('bp', __name__)
+
         def my_reverse(s):
             return s[::-1]
         bp.add_app_template_filter(my_reverse)
@@ -589,6 +617,7 @@ class BlueprintTestCase(FlaskTestCase):
 
     def test_template_filter_with_name(self):
         bp = flask.Blueprint('bp', __name__)
+
         @bp.app_template_filter('strrev')
         def my_reverse(s):
             return s[::-1]
@@ -600,6 +629,7 @@ class BlueprintTestCase(FlaskTestCase):
 
     def test_add_template_filter_with_name(self):
         bp = flask.Blueprint('bp', __name__)
+
         def my_reverse(s):
             return s[::-1]
         bp.add_app_template_filter(my_reverse, 'strrev')
@@ -611,11 +641,13 @@ class BlueprintTestCase(FlaskTestCase):
 
     def test_template_filter_with_template(self):
         bp = flask.Blueprint('bp', __name__)
+
         @bp.app_template_filter()
         def super_reverse(s):
             return s[::-1]
         app = flask.Flask(__name__)
         app.register_blueprint(bp, url_prefix='/py')
+
         @app.route('/')
         def index():
             return flask.render_template('template_filter.html', value='abcd')
@@ -624,10 +656,12 @@ class BlueprintTestCase(FlaskTestCase):
 
     def test_template_filter_after_route_with_template(self):
         app = flask.Flask(__name__)
+
         @app.route('/')
         def index():
             return flask.render_template('template_filter.html', value='abcd')
         bp = flask.Blueprint('bp', __name__)
+
         @bp.app_template_filter()
         def super_reverse(s):
             return s[::-1]
@@ -637,11 +671,13 @@ class BlueprintTestCase(FlaskTestCase):
 
     def test_add_template_filter_with_template(self):
         bp = flask.Blueprint('bp', __name__)
+
         def super_reverse(s):
             return s[::-1]
         bp.add_app_template_filter(super_reverse)
         app = flask.Flask(__name__)
         app.register_blueprint(bp, url_prefix='/py')
+
         @app.route('/')
         def index():
             return flask.render_template('template_filter.html', value='abcd')
@@ -650,11 +686,13 @@ class BlueprintTestCase(FlaskTestCase):
 
     def test_template_filter_with_name_and_template(self):
         bp = flask.Blueprint('bp', __name__)
+
         @bp.app_template_filter('super_reverse')
         def my_reverse(s):
             return s[::-1]
         app = flask.Flask(__name__)
         app.register_blueprint(bp, url_prefix='/py')
+
         @app.route('/')
         def index():
             return flask.render_template('template_filter.html', value='abcd')
@@ -663,11 +701,13 @@ class BlueprintTestCase(FlaskTestCase):
 
     def test_add_template_filter_with_name_and_template(self):
         bp = flask.Blueprint('bp', __name__)
+
         def my_reverse(s):
             return s[::-1]
         bp.add_app_template_filter(my_reverse, 'super_reverse')
         app = flask.Flask(__name__)
         app.register_blueprint(bp, url_prefix='/py')
+
         @app.route('/')
         def index():
             return flask.render_template('template_filter.html', value='abcd')
@@ -676,6 +716,7 @@ class BlueprintTestCase(FlaskTestCase):
 
     def test_template_test(self):
         bp = flask.Blueprint('bp', __name__)
+
         @bp.app_template_test()
         def is_boolean(value):
             return isinstance(value, bool)
@@ -687,6 +728,7 @@ class BlueprintTestCase(FlaskTestCase):
 
     def test_add_template_test(self):
         bp = flask.Blueprint('bp', __name__)
+
         def is_boolean(value):
             return isinstance(value, bool)
         bp.add_app_template_test(is_boolean)
@@ -698,6 +740,7 @@ class BlueprintTestCase(FlaskTestCase):
 
     def test_template_test_with_name(self):
         bp = flask.Blueprint('bp', __name__)
+
         @bp.app_template_test('boolean')
         def is_boolean(value):
             return isinstance(value, bool)
@@ -709,6 +752,7 @@ class BlueprintTestCase(FlaskTestCase):
 
     def test_add_template_test_with_name(self):
         bp = flask.Blueprint('bp', __name__)
+
         def is_boolean(value):
             return isinstance(value, bool)
         bp.add_app_template_test(is_boolean, 'boolean')
@@ -720,11 +764,13 @@ class BlueprintTestCase(FlaskTestCase):
 
     def test_template_test_with_template(self):
         bp = flask.Blueprint('bp', __name__)
+
         @bp.app_template_test()
         def boolean(value):
             return isinstance(value, bool)
         app = flask.Flask(__name__)
         app.register_blueprint(bp, url_prefix='/py')
+
         @app.route('/')
         def index():
             return flask.render_template('template_test.html', value=False)
@@ -733,10 +779,12 @@ class BlueprintTestCase(FlaskTestCase):
 
     def test_template_test_after_route_with_template(self):
         app = flask.Flask(__name__)
+
         @app.route('/')
         def index():
             return flask.render_template('template_test.html', value=False)
         bp = flask.Blueprint('bp', __name__)
+
         @bp.app_template_test()
         def boolean(value):
             return isinstance(value, bool)
@@ -746,11 +794,13 @@ class BlueprintTestCase(FlaskTestCase):
 
     def test_add_template_test_with_template(self):
         bp = flask.Blueprint('bp', __name__)
+
         def boolean(value):
             return isinstance(value, bool)
         bp.add_app_template_test(boolean)
         app = flask.Flask(__name__)
         app.register_blueprint(bp, url_prefix='/py')
+
         @app.route('/')
         def index():
             return flask.render_template('template_test.html', value=False)
@@ -759,11 +809,13 @@ class BlueprintTestCase(FlaskTestCase):
 
     def test_template_test_with_name_and_template(self):
         bp = flask.Blueprint('bp', __name__)
+
         @bp.app_template_test('boolean')
         def is_boolean(value):
             return isinstance(value, bool)
         app = flask.Flask(__name__)
         app.register_blueprint(bp, url_prefix='/py')
+
         @app.route('/')
         def index():
             return flask.render_template('template_test.html', value=False)
@@ -772,16 +824,19 @@ class BlueprintTestCase(FlaskTestCase):
 
     def test_add_template_test_with_name_and_template(self):
         bp = flask.Blueprint('bp', __name__)
+
         def is_boolean(value):
             return isinstance(value, bool)
         bp.add_app_template_test(is_boolean, 'boolean')
         app = flask.Flask(__name__)
         app.register_blueprint(bp, url_prefix='/py')
+
         @app.route('/')
         def index():
             return flask.render_template('template_test.html', value=False)
         rv = app.test_client().get('/')
         self.assert_in(b'Success!', rv.data)
+
 
 def suite():
     suite = unittest.TestSuite()

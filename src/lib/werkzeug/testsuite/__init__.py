@@ -39,6 +39,7 @@ def find_all_tests(suite):
 
 
 class WerkzeugTestCase(unittest.TestCase):
+
     """Baseclass for all the tests that Werkzeug uses.  Use these
     methods for testing instead of the camelcased ones in the
     baseclass for consistency.
@@ -91,6 +92,7 @@ class _ExceptionCatcher(object):
 
 
 class BetterLoader(unittest.TestLoader):
+
     """A nicer loader that solves two problems.  First of all we are setting
     up tests from different sources and we're doing this programmatically
     which breaks the default loading logic so this is required anyways.

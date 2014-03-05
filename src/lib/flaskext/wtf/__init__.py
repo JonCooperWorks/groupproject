@@ -35,7 +35,7 @@ validators.Recaptcha = Recaptcha
 
 from flaskext.wtf.file import FileField
 from flaskext.wtf.file import FileAllowed, FileRequired, file_allowed, \
-        file_required
+    file_required
 
 fields.FileField = FileField
 
@@ -45,23 +45,24 @@ validators.FileAllowed = FileAllowed
 validators.FileRequired = FileRequired
 
 
-__all__  = ['Form', 'ValidationError',
-            'fields', 'validators', 'widgets', 'html5']
+__all__ = ['Form', 'ValidationError',
+           'fields', 'validators', 'widgets', 'html5']
 
 __all__ += validators.__all__
-__all__ += fields.__all__ if hasattr(fields, '__all__') else fields.core.__all__
-__all__ += widgets.__all__ if hasattr(widgets, '__all__') else widgets.core.__all__
+__all__ += fields.__all__ if hasattr(fields,
+                                     '__all__') else fields.core.__all__
+__all__ += widgets.__all__ if hasattr(widgets,
+                                      '__all__') else widgets.core.__all__
 __all__ += recaptcha.__all__
 
 if _is_sqlalchemy:
     from wtforms.ext.sqlalchemy.fields import QuerySelectField, \
         QuerySelectMultipleField
 
-    __all__ += ['QuerySelectField', 
+    __all__ += ['QuerySelectField',
                 'QuerySelectMultipleField']
 
-    for field in (QuerySelectField, 
+    for field in (QuerySelectField,
                   QuerySelectMultipleField):
 
         setattr(fields, field.__name__, field)
-

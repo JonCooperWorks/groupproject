@@ -5,6 +5,7 @@ from sqlalchemy.orm.exc import NoResultFound
 
 
 class Unique(object):
+
     """Checks field value unicity against specified table field.
 
     :param get_session:

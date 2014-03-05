@@ -50,6 +50,7 @@ def _wrap_writer_for_text(fp, encoding):
 
 
 class JSONEncoder(_json.JSONEncoder):
+
     """The default Flask JSON encoder.  This one extends the default simplejson
     encoder by also supporting ``datetime`` objects, ``UUID`` as well as
     ``Markup`` objects which are serialized as RFC 822 datetime strings (same
@@ -84,6 +85,7 @@ class JSONEncoder(_json.JSONEncoder):
 
 
 class JSONDecoder(_json.JSONDecoder):
+
     """The default JSON decoder.  This one does not change the behavior from
     the default simplejson encoder.  Consult the :mod:`json` documentation
     for more information.  This decoder is not only used for the load
@@ -217,11 +219,11 @@ def jsonify(*args, **kwargs):
     """
     indent = None
     if current_app.config['JSONIFY_PRETTYPRINT_REGULAR'] \
-        and not request.is_xhr:
+            and not request.is_xhr:
         indent = 2
     return current_app.response_class(dumps(dict(*args, **kwargs),
-        indent=indent),
-        mimetype='application/json')
+                                            indent=indent),
+                                      mimetype='application/json')
 
 
 def tojson_filter(obj, **kwargs):

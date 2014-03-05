@@ -16,11 +16,13 @@ from google.appengine.api import lib_config
 #           from google.appengine.api import users
 #           return users.is_current_user_admin()
 
+
 def _should_profile_production_default():
     """Default to disabling in production if this function isn't overridden.
 
     Can be overridden in appengine_config.py"""
     return False
+
 
 def _should_profile_development_default():
     """Default to enabling in development if this function isn't overridden.
@@ -31,6 +33,7 @@ def _should_profile_development_default():
 _config = lib_config.register("gae_mini_profiler", {
     "should_profile_production": _should_profile_production_default,
     "should_profile_development": _should_profile_development_default})
+
 
 def should_profile():
     """Returns true if the current request should be profiles."""

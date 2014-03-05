@@ -18,7 +18,7 @@ from blinker._utilities import (
     hashable_identity,
     reference,
     symbol,
-    )
+)
 
 
 ANY = symbol('ANY')
@@ -27,6 +27,7 @@ ANY_ID = 0
 
 
 class Signal(object):
+
     """A notification emitter."""
 
     #: An :obj:`ANY` convenience synonym, allows ``Signal.ANY``
@@ -314,6 +315,7 @@ Sent by a :class:`Signal` after a receiver connects.
 
 
 class NamedSignal(Signal):
+
     """A named generic notification emitter."""
 
     def __init__(self, name, doc=None):
@@ -328,6 +330,7 @@ class NamedSignal(Signal):
 
 
 class Namespace(WeakValueDictionary):
+
     """A mapping of signal names to signals."""
 
     def signal(self, name, doc=None):

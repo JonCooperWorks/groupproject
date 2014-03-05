@@ -66,15 +66,15 @@ all_by_module = {
                              'FileWrapper', 'make_line_iter', 'LimitedStream',
                              'responder', 'wrap_file', 'extract_path_info'],
     'werkzeug.datastructures': ['MultiDict', 'CombinedMultiDict', 'Headers',
-                             'EnvironHeaders', 'ImmutableList',
-                             'ImmutableDict', 'ImmutableMultiDict',
-                             'TypeConversionDict', 'ImmutableTypeConversionDict',
-                             'Accept', 'MIMEAccept', 'CharsetAccept',
-                             'LanguageAccept', 'RequestCacheControl',
-                             'ResponseCacheControl', 'ETags', 'HeaderSet',
-                             'WWWAuthenticate', 'Authorization',
-                             'FileMultiDict', 'CallbackDict', 'FileStorage',
-                             'OrderedMultiDict', 'ImmutableOrderedMultiDict'],
+                                'EnvironHeaders', 'ImmutableList',
+                                'ImmutableDict', 'ImmutableMultiDict',
+                                'TypeConversionDict', 'ImmutableTypeConversionDict',
+                                'Accept', 'MIMEAccept', 'CharsetAccept',
+                                'LanguageAccept', 'RequestCacheControl',
+                                'ResponseCacheControl', 'ETags', 'HeaderSet',
+                                'WWWAuthenticate', 'Authorization',
+                                'FileMultiDict', 'CallbackDict', 'FileStorage',
+                                'OrderedMultiDict', 'ImmutableOrderedMultiDict'],
     'werkzeug.useragents':  ['UserAgent'],
     'werkzeug.http':        ['parse_etags', 'parse_date', 'http_date',
                              'cookie_date', 'parse_cache_control_header',
@@ -112,6 +112,7 @@ for module, items in all_by_module.iteritems():
 
 
 class module(ModuleType):
+
     """Automatically import objects from the modules."""
 
     def __getattr__(self, name):

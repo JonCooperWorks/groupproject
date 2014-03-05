@@ -46,6 +46,7 @@ def format_iso8601(obj):
 
 
 class AtomFeed(object):
+
     """A helper class that creates Atom feeds.
 
     :param title: the title of the feed. Required.
@@ -169,8 +170,8 @@ class AtomFeed(object):
             yield u'  <link href="%s" rel="self" />\n' % \
                 escape(self.feed_url, True)
         for link in self.links:
-            yield u'  <link %s/>\n' % ''.join('%s="%s" ' % \
-                (k, escape(link[k], True)) for k in link)
+            yield u'  <link %s/>\n' % ''.join('%s="%s" ' %
+                                              (k, escape(link[k], True)) for k in link)
         for author in self.author:
             yield u'  <author>\n'
             yield u'    <name>%s</name>\n' % escape(author['name'])
@@ -223,6 +224,7 @@ class AtomFeed(object):
 
 
 class FeedEntry(object):
+
     """Represents a single entry in a feed.
 
     :param title: the title of the entry. Required.
@@ -322,8 +324,8 @@ class FeedEntry(object):
                 yield u'    <email>%s</email>\n' % escape(author['email'])
             yield u'  </author>\n'
         for link in self.links:
-            yield u'  <link %s/>\n' % ''.join('%s="%s" ' % \
-                (k, escape(link[k], True)) for k in link)
+            yield u'  <link %s/>\n' % ''.join('%s="%s" ' %
+                                              (k, escape(link[k], True)) for k in link)
         if self.summary:
             yield u'  ' + _make_text_block('summary', self.summary,
                                            self.summary_type)

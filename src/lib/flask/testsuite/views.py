@@ -15,6 +15,7 @@ import unittest
 from flask.testsuite import FlaskTestCase
 from werkzeug.http import parse_set_header
 
+
 class ViewTestCase(FlaskTestCase):
 
     def common_test(self, app):
@@ -23,7 +24,8 @@ class ViewTestCase(FlaskTestCase):
         self.assert_equal(c.get('/').data, b'GET')
         self.assert_equal(c.post('/').data, b'POST')
         self.assert_equal(c.put('/').status_code, 405)
-        meths = parse_set_header(c.open('/', method='OPTIONS').headers['Allow'])
+        meths = parse_set_header(
+            c.open('/', method='OPTIONS').headers['Allow'])
         self.assert_equal(sorted(meths), ['GET', 'HEAD', 'OPTIONS', 'POST'])
 
     def test_basic_view(self):
@@ -31,6 +33,7 @@ class ViewTestCase(FlaskTestCase):
 
         class Index(flask.views.View):
             methods = ['GET', 'POST']
+
             def dispatch_request(self):
                 return flask.request.method
 
@@ -41,8 +44,10 @@ class ViewTestCase(FlaskTestCase):
         app = flask.Flask(__name__)
 
         class Index(flask.views.MethodView):
+
             def get(self):
                 return 'GET'
+
             def post(self):
                 return 'POST'
 
@@ -54,14 +59,18 @@ class ViewTestCase(FlaskTestCase):
         app = flask.Flask(__name__)
 
         class Index(flask.views.MethodView):
+
             def get(self):
                 1 // 0
+
             def post(self):
                 1 // 0
 
         class Other(Index):
+
             def get(self):
                 return 'GET'
+
             def post(self):
                 return 'POST'
 
@@ -74,20 +83,25 @@ class ViewTestCase(FlaskTestCase):
         app = flask.Flask(__name__)
 
         class Index(flask.views.MethodView):
+
             def get(self):
                 return 'GET'
+
             def post(self):
                 return 'POST'
 
         class BetterIndex(Index):
+
             def delete(self):
                 return 'DELETE'
 
         app.add_url_rule('/', view_func=BetterIndex.as_view('index'))
         c = app.test_client()
 
-        meths = parse_set_header(c.open('/', method='OPTIONS').headers['Allow'])
-        self.assert_equal(sorted(meths), ['DELETE', 'GET', 'HEAD', 'OPTIONS', 'POST'])
+        meths = parse_set_header(
+            c.open('/', method='OPTIONS').headers['Allow'])
+        self.assert_equal(
+            sorted(meths), ['DELETE', 'GET', 'HEAD', 'OPTIONS', 'POST'])
 
     def test_view_decorators(self):
         app = flask.Flask(__name__)
@@ -101,6 +115,7 @@ class ViewTestCase(FlaskTestCase):
 
         class Index(flask.views.View):
             decorators = [add_x_parachute]
+
             def dispatch_request(self):
                 return 'Awesome'
 
@@ -114,6 +129,7 @@ class ViewTestCase(FlaskTestCase):
         app = flask.Flask(__name__)
 
         class Index(flask.views.MethodView):
+
             def get(self):
                 return flask.Response('Blub', headers={
                     'X-Method': flask.request.method
@@ -132,8 +148,10 @@ class ViewTestCase(FlaskTestCase):
         app = flask.Flask(__name__)
 
         class Index(flask.views.MethodView):
+
             def get(self):
                 return 'GET'
+
             def head(self):
                 return flask.Response('', headers={'X-Method': 'HEAD'})
 
@@ -151,6 +169,7 @@ class ViewTestCase(FlaskTestCase):
 
         class Index(flask.views.View):
             methods = ['GET', 'POST']
+
             def dispatch_request(self):
                 return flask.request.method
 

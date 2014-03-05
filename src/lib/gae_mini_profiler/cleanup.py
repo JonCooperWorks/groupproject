@@ -1,5 +1,6 @@
 import StringIO
 
+
 def cleanup(request, response):
     '''
     Convert request and response dicts to a human readable format where
@@ -31,6 +32,7 @@ def cleanup(request, response):
 
     return request_short, response_short, miss
 
+
 def memcache_get_response(response):
     """Pretty-format a memcache.get() response.
 
@@ -52,15 +54,18 @@ def memcache_get_response(response):
     for i, item in enumerate(items):
         if type(item) == dict:
             if 'MemcacheGetResponse_Item' in item:
-                # This key exists in dev and in the 'python' production runtime.
+                # This key exists in dev and in the 'python' production
+                # runtime.
                 item = item['MemcacheGetResponse_Item']['value']
             else:
-                # But it's a different key in the 'python27' production runtime.
+                # But it's a different key in the 'python27' production
+                # runtime.
                 item = item['Item']['value']
             item = truncate(repr(item))
             items[i] = item
     response_short = "\n".join(items)
     return response_short, 0
+
 
 def memcache_get(request):
     """Pretty-format a memcache.get() request.
@@ -85,6 +90,7 @@ def memcache_get(request):
         request_short += '(ns:%s)' % truncate(namespace)
     return request_short
 
+
 def memcache_set(request):
     """Pretty-format a memcache.set() request.
 
@@ -106,6 +112,7 @@ def memcache_set(request):
             key = i["Item"]["key"]
         keys.append(truncate(key))
     return "\n".join(keys)
+
 
 def datastore_query(query):
     kind = query.get('kind', 'UnknownKind')
@@ -130,6 +137,7 @@ def datastore_query(query):
     result = s.getvalue()
     s.close()
     return result
+
 
 def datastore_query_filter(query):
     _Operator_NAMES = {
@@ -168,30 +176,40 @@ def datastore_query_filter(query):
                     value = propval["stringvalue"]
                 elif 'referencevalue' in propval:
                     if 'PropertyValue_ReferenceValue' in propval['referencevalue']:
-                        # This key exists in dev and in the 'python' production runtime.
-                        ref = propval['referencevalue']['PropertyValue_ReferenceValue']
+                        # This key exists in dev and in the 'python' production
+                        # runtime.
+                        ref = propval['referencevalue'][
+                            'PropertyValue_ReferenceValue']
                     else:
-                        # But it's a different key in the 'python27' production runtime.
+                        # But it's a different key in the 'python27' production
+                        # runtime.
                         ref = propval['referencevalue']['ReferenceValue']
                     els = ref['pathelement']
                     paths = []
                     for el in els:
                         if 'PropertyValue_ReferenceValuePathElement' in el:
-                            # This key exists in dev and in the 'python' production runtime.
-                            path = el['PropertyValue_ReferenceValuePathElement']
+                            # This key exists in dev and in the 'python'
+                            # production runtime.
+                            path = el[
+                                'PropertyValue_ReferenceValuePathElement']
                         else:
-                            # But it's a different key in the 'python27' production runtime.
+                            # But it's a different key in the 'python27'
+                            # production runtime.
                             path = el['ReferenceValuePathElement']
-                        paths.append("%s(%s)" % (path['type'], id_or_name(path)))
+                        paths.append("%s(%s)" %
+                                     (path['type'], id_or_name(path)))
                     value = "->".join(paths)
                 elif 'booleanvalue' in propval:
                     value = propval["booleanvalue"]
                 elif 'uservalue' in propval:
                     if 'PropertyValue_UserValue' in propval['uservalue']:
-                        # This key exists in dev and in the 'python' production runtime.
-                        email = propval['uservalue']['PropertyValue_UserValue']['email']
+                        # This key exists in dev and in the 'python' production
+                        # runtime.
+                        email = propval['uservalue'][
+                            'PropertyValue_UserValue']['email']
                     else:
-                        # But it's a different key in the 'python27' production runtime.
+                        # But it's a different key in the 'python27' production
+                        # runtime.
                         email = propval['uservalue']['UserValue']['email']
                     value = 'User(%s)' % email
                 elif '...' in propval:
@@ -204,6 +222,7 @@ def datastore_query_filter(query):
                 value = ''
             filters_clean.append((name, op, value))
     return filters_clean
+
 
 def datastore_query_order(query):
     orders = query.get('order', [])
@@ -225,11 +244,13 @@ def datastore_query_order(query):
         orders_clean.append((prop, direction))
     return orders_clean
 
+
 def id_or_name(path):
     if 'name' in path:
         return path['name']
     else:
         return path['id']
+
 
 def datastore_get(request):
     keys = request["key"]
@@ -241,9 +262,10 @@ def datastore_get(request):
     elif keys:
         return cleanup_key(keys[0])
 
+
 def cleanup_key(key):
-    if 'Reference' not in key: 
-        #sometimes key is passed in as '...'
+    if 'Reference' not in key:
+        # sometimes key is passed in as '...'
         return key
     els = key['Reference']['path']['Path']['element']
     paths = []
@@ -254,9 +276,10 @@ def cleanup_key(key):
         else:
             # But it's a different key in the 'python27' production runtime.
             path = el['Element']
-        paths.append("%s(%s)" % (path['type'] if 'type' in path 
+        paths.append("%s(%s)" % (path['type'] if 'type' in path
                      else 'UnknownType', id_or_name(path)))
     return "->".join(paths)
+
 
 def datastore_put(request):
     entities = request["entity"]
@@ -264,6 +287,7 @@ def datastore_put(request):
     for entity in entities:
         keys.append(cleanup_key(entity["EntityProto"]["key"]))
     return "\n".join(keys)
+
 
 def truncate(value, limit=100):
     if len(value) > limit:

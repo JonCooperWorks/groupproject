@@ -249,6 +249,7 @@ def convert_RatingProperty(model, prop, kwargs):
 
 
 class ModelConverter(object):
+
     """
     Converts properties from a ``db.Model`` class to form fields.
 
@@ -337,7 +338,8 @@ class ModelConverter(object):
     }
 
     # Don't automatically add a required validator for these properties
-    NO_AUTO_REQUIRED = frozenset(['ListProperty', 'StringListProperty', 'BooleanProperty'])
+    NO_AUTO_REQUIRED = frozenset(
+        ['ListProperty', 'StringListProperty', 'BooleanProperty'])
 
     def __init__(self, converters=None):
         """
@@ -373,7 +375,8 @@ class ModelConverter(object):
             kwargs['validators'].append(validators.required())
 
         if prop.choices:
-            # Use choices in a select field if it was not provided in field_args
+            # Use choices in a select field if it was not provided in
+            # field_args
             if 'choices' not in kwargs:
                 kwargs['choices'] = [(v, v) for v in prop.choices]
             return f.SelectField(**kwargs)
@@ -410,7 +413,8 @@ def model_fields(model, only=None, exclude=None, field_args=None,
     # Get the field names we want to include or exclude, starting with the
     # full list of model properties.
     props = model.properties()
-    sorted_props = sorted(iteritems(props), key=lambda prop: prop[1].creation_counter)
+    sorted_props = sorted(
+        iteritems(props), key=lambda prop: prop[1].creation_counter)
     field_names = list(x[0] for x in sorted_props)
 
     if only:

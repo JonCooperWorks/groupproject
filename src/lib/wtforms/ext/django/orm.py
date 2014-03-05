@@ -14,6 +14,7 @@ __all__ = (
 
 
 class ModelConverterBase(object):
+
     def __init__(self, converters):
         self.converters = converters
 
@@ -31,7 +32,8 @@ class ModelConverterBase(object):
         if field.blank:
             kwargs['validators'].append(validators.Optional())
         if field.max_length is not None and field.max_length > 0:
-            kwargs['validators'].append(validators.Length(max=field.max_length))
+            kwargs['validators'].append(
+                validators.Length(max=field.max_length))
 
         ftype = type(field).__name__
         if field.choices:
@@ -51,7 +53,7 @@ class ModelConverter(ModelConverterBase):
         f.DecimalField: ['DecimalField', 'FloatField'],
         f.FileField: ['FileField', 'FilePathField', 'ImageField'],
         f.DateTimeField: ['DateTimeField'],
-        f.DateField : ['DateField'],
+        f.DateField: ['DateField'],
         f.BooleanField: ['BooleanField'],
         f.TextField: ['CharField', 'PhoneNumberField', 'SlugField'],
         f.TextAreaField: ['TextField', 'XMLField'],

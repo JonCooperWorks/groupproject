@@ -20,10 +20,10 @@ class CompatTestCase(WerkzeugTestCase):
 
     def test_old_imports(self):
         from werkzeug.utils import Headers, MultiDict, CombinedMultiDict, \
-             Headers, EnvironHeaders
+            Headers, EnvironHeaders
         from werkzeug.http import Accept, MIMEAccept, CharsetAccept, \
-             LanguageAccept, ETags, HeaderSet, WWWAuthenticate, \
-             Authorization
+            LanguageAccept, ETags, HeaderSet, WWWAuthenticate, \
+            Authorization
 
     def test_exposed_werkzeug_mod(self):
         import werkzeug
@@ -41,6 +41,7 @@ class CompatTestCase(WerkzeugTestCase):
                                     category=DeprecationWarning)
 
         class MyResponse(Response):
+
             def fix_headers(self, environ):
                 Response.fix_headers(self, environ)
                 self.headers['x-foo'] = "meh"

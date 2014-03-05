@@ -185,11 +185,12 @@ class MultiPartTestCase(WerkzeugTestCase):
 
     def test_ie7_unc_path(self):
         client = Client(form_data_consumer, Response)
-        data_file = join(dirname(__file__), 'multipart', 'ie7_full_path_request.txt')
+        data_file = join(
+            dirname(__file__), 'multipart', 'ie7_full_path_request.txt')
         data = get_contents(data_file)
         boundary = '---------------------------7da36d1b4a0164'
         response = client.post('/?object=cb_file_upload_multiple', data=data, content_type=
-                                   'multipart/form-data; boundary="%s"' % boundary, content_length=len(data))
+                               'multipart/form-data; boundary="%s"' % boundary, content_length=len(data))
         lines = response.data.split('\n', 3)
         self.assert_equal(lines[0],
                           repr(u'Sellersburg Town Council Meeting 02-22-2010doc.doc'))
@@ -220,14 +221,14 @@ class MultiPartTestCase(WerkzeugTestCase):
             '--foo--'
         )
         _, form, files = formparser.parse_form_data(create_environ(data=data,
-            method='POST', content_type='multipart/form-data; boundary=foo'))
+                                                                   method='POST', content_type='multipart/form-data; boundary=foo'))
         self.assert_(not files)
         self.assert_(not form)
 
         self.assert_raises(ValueError, formparser.parse_form_data,
-            create_environ(data=data, method='POST',
-                      content_type='multipart/form-data; boundary=foo'),
-                      silent=False)
+                           create_environ(data=data, method='POST',
+                                          content_type='multipart/form-data; boundary=foo'),
+                           silent=False)
 
     def test_file_no_content_type(self):
         data = (
@@ -301,17 +302,21 @@ class MultiPartTestCase(WerkzeugTestCase):
             parser = formparser.MultiPartParser(content_length)
             return parser.parse(stream, boundary, content_length)
         self.assert_raises(ValueError, parse_multipart, StringIO(''), '', 0)
-        self.assert_raises(ValueError, parse_multipart, StringIO(''), 'broken  ', 0)
+        self.assert_raises(
+            ValueError, parse_multipart, StringIO(''), 'broken  ', 0)
 
         data = '--foo\r\n\r\nHello World\r\n--foo--'
-        self.assert_raises(ValueError, parse_multipart, StringIO(data), 'foo', len(data))
+        self.assert_raises(
+            ValueError, parse_multipart, StringIO(data), 'foo', len(data))
 
         data = '--foo\r\nContent-Disposition: form-field; name=foo\r\n' \
                'Content-Transfer-Encoding: base64\r\n\r\nHello World\r\n--foo--'
-        self.assert_raises(ValueError, parse_multipart, StringIO(data), 'foo', len(data))
+        self.assert_raises(
+            ValueError, parse_multipart, StringIO(data), 'foo', len(data))
 
         data = '--foo\r\nContent-Disposition: form-field; name=foo\r\n\r\nHello World\r\n'
-        self.assert_raises(ValueError, parse_multipart, StringIO(data), 'foo', len(data))
+        self.assert_raises(
+            ValueError, parse_multipart, StringIO(data), 'foo', len(data))
 
         x = formparser.parse_multipart_headers(['foo: bar\r\n', ' x test\r\n'])
         self.assert_equal(x['foo'], 'bar\n x test')

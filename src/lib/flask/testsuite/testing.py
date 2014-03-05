@@ -22,6 +22,7 @@ class TestToolsTestCase(FlaskTestCase):
         app.testing = True
         app.config['SERVER_NAME'] = 'example.com:1234'
         app.config['APPLICATION_ROOT'] = '/foo'
+
         @app.route('/')
         def index():
             return flask.request.url
@@ -35,6 +36,7 @@ class TestToolsTestCase(FlaskTestCase):
     def test_environ_defaults(self):
         app = flask.Flask(__name__)
         app.testing = True
+
         @app.route('/')
         def index():
             return flask.request.url
@@ -106,7 +108,8 @@ class TestToolsTestCase(FlaskTestCase):
                 with c.session_transaction() as sess:
                     pass
             except RuntimeError as e:
-                self.assert_in('Session backend did not open a session', str(e))
+                self.assert_in(
+                    'Session backend did not open a session', str(e))
             else:
                 self.fail('Expected runtime error')
 
@@ -136,6 +139,7 @@ class TestToolsTestCase(FlaskTestCase):
 
     def test_test_client_context_binding(self):
         app = flask.Flask(__name__)
+
         @app.route('/')
         def index():
             flask.g.value = 42
@@ -177,6 +181,7 @@ class TestToolsTestCase(FlaskTestCase):
     def test_test_client_calls_teardown_handlers(self):
         app = flask.Flask(__name__)
         called = []
+
         @app.teardown_request
         def remember(error):
             called.append(error)
@@ -221,7 +226,6 @@ class SubdomainTestCase(FlaskTestCase):
 
         self.assert_equal(200, response.status_code)
         self.assert_equal(b'xxx', response.data)
-
 
     def test_nosubdomain(self):
         @self.app.route('/<company_id>')

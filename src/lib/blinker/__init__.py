@@ -14,7 +14,7 @@ __all__ = [
     'Signal',
     'receiver_connected',
     'signal',
-    ]
+]
 
 
 __version__ = '1.1'

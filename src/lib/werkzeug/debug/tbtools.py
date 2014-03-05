@@ -134,7 +134,7 @@ def render_console_html(secret):
         'console':          'true',
         'title':            'Console',
         'secret':           secret,
-        'traceback_id':     -1
+        'traceback_id': -1
     }
 
 
@@ -159,6 +159,7 @@ def get_current_traceback(ignore_system_exceptions=False,
 
 
 class Line(object):
+
     """Helper for the source renderer."""
     __slots__ = ('lineno', 'code', 'in_frame', 'current')
 
@@ -186,6 +187,7 @@ class Line(object):
 
 
 class Traceback(object):
+
     """Wraps a traceback."""
 
     def __init__(self, exc_type, exc_value, tb):
@@ -336,6 +338,7 @@ class Traceback(object):
 
 
 class Frame(object):
+
     """A single frame in a traceback."""
 
     def __init__(self, exc_type, exc_value, tb):

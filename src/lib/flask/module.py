@@ -20,6 +20,7 @@ def blueprint_is_module(bp):
 
 
 class Module(Blueprint):
+
     """Deprecated module support.  Until Flask 0.6 modules were a different
     name of the concept now available as blueprints in Flask.  They are
     essentially doing the same but have some bad semantics for templates and

@@ -129,7 +129,7 @@ _converter_args_re = re.compile(r'''
         \w+|
         [urUR]?(?P<stringval>"[^"]*?"|'[^']*')
     )\s*,
-''', re.VERBOSE|re.UNICODE)
+''', re.VERBOSE | re.UNICODE)
 
 
 _PYTHON_CONSTANTS = {
@@ -220,6 +220,7 @@ def get_converter(map, name, args):
 
 
 class RoutingException(Exception):
+
     """Special exceptions that require the application to redirect, notifying
     about missing urls, etc.
 
@@ -228,6 +229,7 @@ class RoutingException(Exception):
 
 
 class RequestRedirect(HTTPException, RoutingException):
+
     """Raise if the map requests a redirect. This is for example the case if
     `strict_slashes` are activated and an url that requires a trailing slash.
 
@@ -244,10 +246,12 @@ class RequestRedirect(HTTPException, RoutingException):
 
 
 class RequestSlash(RoutingException):
+
     """Internal exception."""
 
 
 class RequestAliasRedirect(RoutingException):
+
     """This rule is an alias and wants to redirect to the canonical URL."""
 
     def __init__(self, matched_values):
@@ -255,6 +259,7 @@ class RequestAliasRedirect(RoutingException):
 
 
 class BuildError(RoutingException, LookupError):
+
     """Raised if the build system cannot find a URL for an endpoint with the
     values provided.
     """
@@ -267,12 +272,14 @@ class BuildError(RoutingException, LookupError):
 
 
 class ValidationError(ValueError):
+
     """Validation error.  If a rule converter raises this exception the rule
     does not match the current URL and the next URL is tried.
     """
 
 
 class RuleFactory(object):
+
     """As soon as you have more complex URL setups it's a good idea to use rule
     factories to avoid repetitive tasks.  Some of them are builtin, others can
     be added by subclassing `RuleFactory` and overriding `get_rules`.
@@ -285,6 +292,7 @@ class RuleFactory(object):
 
 
 class Subdomain(RuleFactory):
+
     """All URLs provided by this factory have the subdomain set to a
     specific domain. For example if you want to use the subdomain for
     the current language this can be a good setup::
@@ -316,6 +324,7 @@ class Subdomain(RuleFactory):
 
 
 class Submount(RuleFactory):
+
     """Like `Subdomain` but prefixes the URL rule with a given string::
 
         url_map = Map([
@@ -342,6 +351,7 @@ class Submount(RuleFactory):
 
 
 class EndpointPrefix(RuleFactory):
+
     """Prefixes all endpoints (which must be strings for this factory) with
     another string. This can be useful for sub applications::
 
@@ -367,6 +377,7 @@ class EndpointPrefix(RuleFactory):
 
 
 class RuleTemplate(object):
+
     """Returns copies of the rules wrapped and expands string templates in
     the endpoint, rule, defaults or subdomain sections.
 
@@ -393,6 +404,7 @@ class RuleTemplate(object):
 
 
 class RuleTemplateFactory(RuleFactory):
+
     """A factory that fills in template variables into rules.  Used by
     `RuleTemplate` internally.
 
@@ -430,6 +442,7 @@ class RuleTemplateFactory(RuleFactory):
 
 
 class Rule(RuleFactory):
+
     """A Rule represents one URL pattern.  There are some options for `Rule`
     that change the way it behaves and are passed to the `Rule` constructor.
     Note that besides the rule-string all arguments *must* be keyword arguments
@@ -634,7 +647,8 @@ class Rule(RuleFactory):
                             self._weights.append((0, -len(part)))
                 else:
                     convobj = get_converter(self.map, converter, arguments)
-                    regex_parts.append('(?P<%s>%s)' % (variable, convobj.regex))
+                    regex_parts.append(
+                        '(?P<%s>%s)' % (variable, convobj.regex))
                     self._converters[variable] = convobj
                     self._trace.append((True, variable))
                     self._weights.append((1, convobj.weight))
@@ -651,8 +665,8 @@ class Rule(RuleFactory):
             return
         regex = r'^%s%s$' % (
             u''.join(regex_parts),
-            (not self.is_leaf or not self.strict_slashes) and \
-                '(?<!/)(?P<__suffix__>/?)' or ''
+            (not self.is_leaf or not self.strict_slashes) and
+            '(?<!/)(?P<__suffix__>/?)' or ''
         )
         self._regex = re.compile(regex, re.UNICODE)
 
@@ -737,8 +751,8 @@ class Rule(RuleFactory):
         :internal:
         """
         return not self.build_only and self.defaults and \
-               self.endpoint == rule.endpoint and self != rule and \
-               self.arguments == rule.arguments
+            self.endpoint == rule.endpoint and self != rule and \
+            self.arguments == rule.arguments
 
     def suitable_for(self, values, method=None):
         """Check if the dict of values has enough data for url generation.
@@ -790,11 +804,11 @@ class Rule(RuleFactory):
         :internal:
         """
         return self.alias and 1 or 0, -len(self.arguments), \
-               -len(self.defaults or ())
+            -len(self.defaults or ())
 
     def __eq__(self, other):
         return self.__class__ is other.__class__ and \
-               self._trace == other._trace
+            self._trace == other._trace
 
     def __ne__(self, other):
         return not self.__eq__(other)
@@ -819,13 +833,14 @@ class Rule(RuleFactory):
         return '<%s %r%s -> %s>' % (
             self.__class__.__name__,
             (u''.join(tmp).encode(charset)).lstrip('|'),
-            self.methods is not None and ' (%s)' % \
-                ', '.join(self.methods) or '',
+            self.methods is not None and ' (%s)' %
+            ', '.join(self.methods) or '',
             self.endpoint
         )
 
 
 class BaseConverter(object):
+
     """Base class for all converters."""
     regex = '[^/]+'
     weight = 100
@@ -841,6 +856,7 @@ class BaseConverter(object):
 
 
 class UnicodeConverter(BaseConverter):
+
     """This converter is the default converter and accepts any string but
     only one path segment.  Thus the string can not include a slash.
 
@@ -875,6 +891,7 @@ class UnicodeConverter(BaseConverter):
 
 
 class AnyConverter(BaseConverter):
+
     """Matches one of the items provided.  Items can either be Python
     identifiers or strings::
 
@@ -891,6 +908,7 @@ class AnyConverter(BaseConverter):
 
 
 class PathConverter(BaseConverter):
+
     """Like the default :class:`UnicodeConverter`, but it also matches
     slashes.  This is useful for wikis and similar applications::
 
@@ -904,6 +922,7 @@ class PathConverter(BaseConverter):
 
 
 class NumberConverter(BaseConverter):
+
     """Baseclass for `IntegerConverter` and `FloatConverter`.
 
     :internal:
@@ -933,6 +952,7 @@ class NumberConverter(BaseConverter):
 
 
 class IntegerConverter(NumberConverter):
+
     """This converter only accepts integer values::
 
         Rule('/page/<int:page>')
@@ -952,6 +972,7 @@ class IntegerConverter(NumberConverter):
 
 
 class FloatConverter(NumberConverter):
+
     """This converter only accepts floating point values::
 
         Rule('/probability/<float:probability>')
@@ -981,6 +1002,7 @@ DEFAULT_CONVERTERS = {
 
 
 class Map(object):
+
     """The map class stores all the URL rules and some configuration
     parameters.  Some of the configuration values are only stored on the
     `Map` instance since those affect all rules, others are just defaults
@@ -1212,6 +1234,7 @@ class Map(object):
 
 
 class MapAdapter(object):
+
     """Returned by :meth:`Map.bind` or :meth:`Map.bind_to_environ` and does
     the URL matching and building based on runtime information.
     """
@@ -1514,7 +1537,7 @@ class MapAdapter(object):
         if query_args:
             url += '?' + self.encode_query_args(query_args)
         assert url != path, 'detected invalid alias setting.  No canonical ' \
-               'URL found'
+            'URL found'
         return url
 
     def _partial_build(self, endpoint, values, method, append_unknown):
@@ -1611,8 +1634,8 @@ class MapAdapter(object):
 
         # shortcut this.
         if not force_external and (
-            (self.map.host_matching and host == self.server_name) or
-            (not self.map.host_matching and domain_part == self.subdomain)):
+                (self.map.host_matching and host == self.server_name) or
+                (not self.map.host_matching and domain_part == self.subdomain)):
             return str(urljoin(self.script_name, './' + path.lstrip('/')))
         return str('%s://%s%s/%s' % (
             self.url_scheme,

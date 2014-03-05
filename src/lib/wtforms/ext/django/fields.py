@@ -17,6 +17,7 @@ __all__ = (
 
 
 class QuerySetSelectField(SelectFieldBase):
+
     """
     Given a QuerySet either at initialization or inside a view, will display a
     select drop-down field of choices. The `data` property actually will
@@ -42,7 +43,7 @@ class QuerySetSelectField(SelectFieldBase):
         self.blank_text = blank_text
         self._set_data(None)
         if queryset is not None:
-            self.queryset = queryset.all() # Make sure the queryset is fresh
+            self.queryset = queryset.all()  # Make sure the queryset is fresh
 
         if get_label is None:
             self.get_label = lambda x: x
@@ -90,9 +91,12 @@ class QuerySetSelectField(SelectFieldBase):
 
 
 class ModelSelectField(QuerySetSelectField):
+
     """
     Like a QuerySetSelectField, except takes a model class instead of a
     queryset and lists everything in it.
     """
+
     def __init__(self, label=None, validators=None, model=None, **kwargs):
-        super(ModelSelectField, self).__init__(label, validators, queryset=model._default_manager.all(), **kwargs)
+        super(ModelSelectField, self).__init__(
+            label, validators, queryset=model._default_manager.all(), **kwargs)

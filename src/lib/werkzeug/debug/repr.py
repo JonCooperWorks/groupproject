@@ -18,7 +18,7 @@ import re
 from traceback import format_exception_only
 try:
     from collections import deque
-except ImportError: # pragma: no cover
+except ImportError:  # pragma: no cover
     deque = None
 from werkzeug.utils import escape
 
@@ -61,6 +61,7 @@ def dump(obj=missing):
 
 
 class _Helper(object):
+
     """Displays an HTML version of the normal help, for the interactive
     debugger only because it requires a patched sys.stdout.
     """
@@ -79,7 +80,7 @@ class _Helper(object):
         if len(paragraphs) > 1:
             title = paragraphs[0]
             text = '\n\n'.join(paragraphs[1:])
-        else: # pragma: no cover
+        else:  # pragma: no cover
             title = 'Help'
             text = paragraphs[0]
         sys.stdout._write(HELP_HTML % {'title': title, 'text': text})
@@ -207,7 +208,7 @@ class DebugReprGenerator(object):
     def fallback_repr(self):
         try:
             info = ''.join(format_exception_only(*sys.exc_info()[:2]))
-        except Exception: # pragma: no cover
+        except Exception:  # pragma: no cover
             info = '?'
         return u'<span class="brokenrepr">&lt;broken repr (%s)&gt;' \
                u'</span>' % escape(info.decode('utf-8', 'ignore').strip())

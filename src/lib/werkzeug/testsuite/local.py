@@ -23,6 +23,7 @@ class LocalTestCase(WerkzeugTestCase):
         l = local.Local()
         l.foo = 0
         values = []
+
         def value_setter(idx):
             time.sleep(0.01 * idx)
             l.foo = idx

@@ -4,7 +4,9 @@ from flask_debugtoolbar.panels import DebugPanel
 
 _ = lambda x: x
 
+
 class RequestVarsDebugPanel(DebugPanel):
+
     """
     A panel to display request variables (POST/GET, session, cookies).
     """
@@ -44,4 +46,3 @@ class RequestVarsDebugPanel(DebugPanel):
         })
 
         return self.render('panels/request_vars.html', context)
-

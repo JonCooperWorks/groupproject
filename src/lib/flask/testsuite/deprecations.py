@@ -15,6 +15,7 @@ from flask.testsuite import FlaskTestCase, catch_warnings
 
 
 class DeprecationsTestCase(FlaskTestCase):
+
     """not used currently"""
 
 

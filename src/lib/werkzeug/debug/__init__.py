@@ -22,6 +22,7 @@ from werkzeug.debug.repr import debug_repr
 
 
 class _ConsoleFrame(object):
+
     """Helper class so that we can reuse the frame console code for the
     standalone console.
     """
@@ -32,6 +33,7 @@ class _ConsoleFrame(object):
 
 
 class DebuggedApplication(object):
+
     """Enables debugging support for a given application::
 
         from werkzeug.debug import DebuggedApplication
@@ -117,7 +119,7 @@ class DebuggedApplication(object):
                 yield traceback.render_full(evalex=self.evalex,
                                             lodgeit_url=self.lodgeit_url,
                                             secret=self.secret) \
-                               .encode('utf-8', 'replace')
+                    .encode('utf-8', 'replace')
 
             traceback.log(environ['wsgi.errors'])
 
@@ -172,14 +174,14 @@ class DebuggedApplication(object):
             if cmd == 'resource' and arg:
                 response = self.get_resource(request, arg)
             elif cmd == 'paste' and traceback is not None and \
-                 secret == self.secret:
+                    secret == self.secret:
                 response = self.paste_traceback(request, traceback)
             elif cmd == 'source' and frame and self.secret == secret:
                 response = self.get_source(request, frame)
             elif self.evalex and cmd is not None and frame is not None and \
-                 self.secret == secret:
+                    self.secret == secret:
                 response = self.execute_command(request, cmd, frame)
         elif self.evalex and self.console_path is not None and \
-           request.path == self.console_path:
+                request.path == self.console_path:
             response = self.display_console(request)
         return response(environ, start_response)

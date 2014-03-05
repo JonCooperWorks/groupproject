@@ -234,7 +234,7 @@ def extract_path_info(environ_or_baseurl, path_or_url, charset='utf-8',
             if scheme not in (u'http', u'https'):
                 return None
     else:
-        if not (base_scheme in (u'http', u'https') and \
+        if not (base_scheme in (u'http', u'https') and
                 base_scheme == cur_scheme):
             return None
 
@@ -251,6 +251,7 @@ def extract_path_info(environ_or_baseurl, path_or_url, charset='utf-8',
 
 
 class SharedDataMiddleware(object):
+
     """A WSGI middleware that provides static content for development
     environments or simple server setups. Usage is quite simple::
 
@@ -347,11 +348,12 @@ class SharedDataMiddleware(object):
 
     def get_package_loader(self, package, package_path):
         from pkg_resources import DefaultProvider, ResourceManager, \
-             get_provider
+            get_provider
         loadtime = datetime.utcnow()
         provider = get_provider(package)
         manager = ResourceManager()
         filesystem_bound = isinstance(provider, DefaultProvider)
+
         def loader(path):
             if path is None:
                 return None, None
@@ -440,6 +442,7 @@ class SharedDataMiddleware(object):
 
 
 class DispatcherMiddleware(object):
+
     """Allows one to mount middlewares or applications in a WSGI application.
     This is useful if you want to combine multiple WSGI applications::
 
@@ -472,6 +475,7 @@ class DispatcherMiddleware(object):
 
 
 class ClosingIterator(object):
+
     """The WSGI specification requires that all middlewares and gateways
     respect the `close` callback of an iterator.  Because it is useful to add
     another close action to a returned iterator and adding a custom iterator
@@ -537,6 +541,7 @@ def wrap_file(environ, file, buffer_size=8192):
 
 
 class FileWrapper(object):
+
     """This class can be used to convert a :class:`file`-like object into
     an iterable.  It yields `buffer_size` blocks until the file is fully
     read.
@@ -604,6 +609,7 @@ def make_line_iter(stream, limit=None, buffer_size=10 * 1024):
     :param buffer_size: The optional buffer size.
     """
     stream = make_limited_stream(stream, limit)
+
     def _iter_basic_lines():
         _read = stream.read
         buffer = []
@@ -689,6 +695,7 @@ def make_chunk_iter(stream, separator, limit=None, buffer_size=10 * 1024):
 
 
 class LimitedStream(object):
+
     """Wraps a stream so that it doesn't read more than n bytes.  If the
     stream is exhausted and the caller tries to get more bytes from it
     :func:`on_exhausted` is called which by default returns an empty
@@ -741,9 +748,9 @@ class LimitedStream(object):
         if not silent:
             from warnings import warn
             warn(DeprecationWarning('non-silent usage of the '
-            'LimitedStream is deprecated.  If you want to '
-            'continue to use the stream in non-silent usage '
-            'override on_exhausted.'), stacklevel=2)
+                                    'LimitedStream is deprecated.  If you want to '
+                                    'continue to use the stream in non-silent usage '
+                                    'override on_exhausted.'), stacklevel=2)
 
     def __iter__(self):
         return self

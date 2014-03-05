@@ -115,6 +115,7 @@ def get_IntegerField(kwargs):
 
 
 class ModelConverterBase(object):
+
     def __init__(self, converters=None):
         """
         Constructs the converter, setting the converter callables.
@@ -144,13 +145,14 @@ class ModelConverterBase(object):
 
         prop_type_name = type(prop).__name__
 
-        #check for generic property
+        # check for generic property
         if(prop_type_name == "GenericProperty"):
-            #try to get type from field args
+            # try to get type from field args
             generic_type = field_args.get("type")
             if generic_type:
                 prop_type_name = field_args.get("type")
-            #if no type is found, the generic property uses string set in convert_GenericProperty
+            # if no type is found, the generic property uses string set in
+            # convert_GenericProperty
 
         kwargs = {
             'label': prop._code_name.replace('_', ' ').title(),
@@ -182,6 +184,7 @@ class ModelConverterBase(object):
 
 
 class ModelConverter(ModelConverterBase):
+
     """
     Converts properties from a ``ndb.Model`` class to form fields.
 
@@ -233,7 +236,8 @@ class ModelConverter(ModelConverterBase):
 
     """
     # Don't automatically add a required validator for these properties
-    NO_AUTO_REQUIRED = frozenset(['ListProperty', 'StringListProperty', 'BooleanProperty'])
+    NO_AUTO_REQUIRED = frozenset(
+        ['ListProperty', 'StringListProperty', 'BooleanProperty'])
 
     def convert_StringProperty(self, model, prop, kwargs):
         """Returns a form field for a ``ndb.StringProperty``."""
@@ -329,7 +333,6 @@ class ModelConverter(ModelConverterBase):
         return KeyPropertyField(**kwargs)
 
 
-
 def model_fields(model, only=None, exclude=None, field_args=None,
                  converter=None):
     """
@@ -357,7 +360,8 @@ def model_fields(model, only=None, exclude=None, field_args=None,
     # Get the field names we want to include or exclude, starting with the
     # full list of model properties.
     props = model._properties
-    field_names = list(x[0] for x in sorted(props.items(), key=lambda x: x[1]._creation_counter))
+    field_names = list(
+        x[0] for x in sorted(props.items(), key=lambda x: x[1]._creation_counter))
 
     if only:
         field_names = list(f for f in only if f in field_names)

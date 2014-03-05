@@ -1,6 +1,7 @@
 from werkzeug.contrib.cache import (BaseCache, NullCache, SimpleCache, MemcachedCache,
                                     GAEMemcachedCache, FileSystemCache)
 
+
 class SASLMemcachedCache(MemcachedCache):
 
     def __init__(self, servers=None, default_timeout=300, key_prefix=None,
@@ -22,14 +23,17 @@ class SASLMemcachedCache(MemcachedCache):
 def null(app, config, args, kwargs):
     return NullCache()
 
+
 def simple(app, config, args, kwargs):
     kwargs.update(dict(threshold=config['CACHE_THRESHOLD']))
     return SimpleCache(*args, **kwargs)
+
 
 def memcached(app, config, args, kwargs):
     args.append(config['CACHE_MEMCACHED_SERVERS'])
     kwargs.update(dict(key_prefix=config['CACHE_KEY_PREFIX']))
     return MemcachedCache(*args, **kwargs)
+
 
 def saslmemcached(app, config, args, kwargs):
     args.append(config['CACHE_MEMCACHED_SERVERS'])
@@ -38,9 +42,11 @@ def saslmemcached(app, config, args, kwargs):
                        key_prefix=config['CACHE_KEY_PREFIX']))
     return SASLMemcachedCache(*args, **kwargs)
 
+
 def gaememcached(app, config, args, kwargs):
     kwargs.update(dict(key_prefix=config['CACHE_KEY_PREFIX']))
     return GAEMemcachedCache(*args, **kwargs)
+
 
 def filesystem(app, config, args, kwargs):
     args.append(config['CACHE_DIR'])

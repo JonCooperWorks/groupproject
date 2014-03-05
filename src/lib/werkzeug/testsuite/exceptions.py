@@ -39,7 +39,8 @@ class ExceptionsTestCase(WerkzeugTestCase):
         self.assert_raises(exceptions.Unauthorized, abort, 401)
         self.assert_raises(exceptions.Forbidden, abort, 403)
         self.assert_raises(exceptions.NotFound, abort, 404)
-        self.assert_raises(exceptions.MethodNotAllowed, abort, 405, ['GET', 'HEAD'])
+        self.assert_raises(
+            exceptions.MethodNotAllowed, abort, 405, ['GET', 'HEAD'])
         self.assert_raises(exceptions.NotAcceptable, abort, 406)
         self.assert_raises(exceptions.RequestTimeout, abort, 408)
         self.assert_raises(exceptions.Gone, abort, 410)

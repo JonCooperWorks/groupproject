@@ -68,10 +68,12 @@ class InternalTestCase(WerkzeugTestCase):
         environ = create_environ()
         response.response = 'What the...?'
         self.assert_raises(Warning, lambda: list(response.iter_encoded()))
-        self.assert_raises(Warning, lambda: list(response.get_app_iter(environ)))
+        self.assert_raises(
+            Warning, lambda: list(response.get_app_iter(environ)))
         response.direct_passthrough = True
         self.assert_raises(Warning, lambda: list(response.iter_encoded()))
-        self.assert_raises(Warning, lambda: list(response.get_app_iter(environ)))
+        self.assert_raises(
+            Warning, lambda: list(response.get_app_iter(environ)))
         resetwarnings()
 
 

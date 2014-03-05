@@ -24,6 +24,7 @@ from types import NoneType
 from werkzeug import import_string
 from flask import request, current_app
 
+
 def function_namespace(f, args=None):
     """
     Attempts to returns unique namespace for function
@@ -46,7 +47,9 @@ def function_namespace(f, args=None):
 #: Cache Object
 ################
 
+
 class Cache(object):
+
     """
     This class is used to control the cache objects.
     """
@@ -62,7 +65,8 @@ class Cache(object):
     def init_app(self, app, config=None):
         "This is used to initialize cache with your app object"
         if not isinstance(config, (NoneType, dict)):
-            raise ValueError("`config` must be an instance of dict or NoneType")
+            raise ValueError(
+                "`config` must be an instance of dict or NoneType")
 
         if config is None:
             config = self.config
@@ -104,7 +108,7 @@ class Cache(object):
             cache_obj = import_string(import_me)
 
         cache_args = config['CACHE_ARGS'][:]
-        cache_options = dict(default_timeout= \
+        cache_options = dict(default_timeout=
                              config['CACHE_DEFAULT_TIMEOUT'])
 
         if config['CACHE_OPTIONS']:
@@ -113,7 +117,7 @@ class Cache(object):
         if not hasattr(app, 'extensions'):
             app.extensions = {}
         app.extensions['cache'] = cache_obj(
-                app, config, cache_args, cache_options)
+            app, config, cache_args, cache_options)
 
     @property
     def cache(self):
@@ -307,8 +311,8 @@ class Cache(object):
             elif arg_num < len(args):
                 arg = args[arg_num]
                 arg_num += 1
-            elif abs(i-args_len) <= len(argspec.defaults):
-                arg = argspec.defaults[i-args_len]
+            elif abs(i - args_len) <= len(argspec.defaults):
+                arg = argspec.defaults[i - args_len]
                 arg_num += 1
             else:
                 arg = None
@@ -400,7 +404,8 @@ class Cache(object):
                 if callable(unless) and unless() is True:
                     return f(*args, **kwargs)
 
-                cache_key = decorated_function.make_cache_key(f, *args, **kwargs)
+                cache_key = decorated_function.make_cache_key(
+                    f, *args, **kwargs)
 
                 rv = self.get(cache_key)
                 if rv is None:
@@ -411,8 +416,10 @@ class Cache(object):
 
             decorated_function.uncached = f
             decorated_function.cache_timeout = timeout
-            decorated_function.make_cache_key = self.memoize_make_cache_key(make_name)
-            decorated_function.delete_memoized = lambda: self.delete_memoized(f)
+            decorated_function.make_cache_key = self.memoize_make_cache_key(
+                make_name)
+            decorated_function.delete_memoized = lambda: self.delete_memoized(
+                f)
 
             return decorated_function
         return memoize
@@ -486,8 +493,8 @@ class Cache(object):
         """
         if not callable(f):
             raise exceptions.DeprecationWarning("Deleting messages by relative name is no longer"
-                          " reliable, please switch to a function reference"
-                          " or use the full function import name")
+                                                " reliable, please switch to a function reference"
+                                                " or use the full function import name")
 
         _fname = function_namespace(f, args)
 

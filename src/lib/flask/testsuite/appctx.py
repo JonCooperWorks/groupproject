@@ -54,6 +54,7 @@ class AppContextTestCase(FlaskTestCase):
     def test_app_tearing_down(self):
         cleanup_stuff = []
         app = flask.Flask(__name__)
+
         @app.teardown_appcontext
         def cleanup(exception):
             cleanup_stuff.append(exception)
@@ -65,6 +66,7 @@ class AppContextTestCase(FlaskTestCase):
 
     def test_custom_app_ctx_globals_class(self):
         class CustomRequestGlobals(object):
+
             def __init__(self):
                 self.spam = 'eggs'
         app = flask.Flask(__name__)
@@ -76,19 +78,22 @@ class AppContextTestCase(FlaskTestCase):
     def test_context_refcounts(self):
         called = []
         app = flask.Flask(__name__)
+
         @app.teardown_request
         def teardown_req(error=None):
             called.append('request')
+
         @app.teardown_appcontext
         def teardown_app(error=None):
             called.append('app')
+
         @app.route('/')
         def index():
             with flask._app_ctx_stack.top:
                 with flask._request_ctx_stack.top:
                     pass
             self.assert_true(flask._request_ctx_stack.top.request.environ
-                ['werkzeug.request'] is not None)
+                             ['werkzeug.request'] is not None)
             return u''
         c = app.test_client()
         c.get('/')

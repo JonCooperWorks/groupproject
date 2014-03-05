@@ -1,18 +1,20 @@
 try:
     import resource
 except ImportError:
-    pass # Will fail on Win32 systems
+    pass  # Will fail on Win32 systems
 import time
 from flask_debugtoolbar.panels import DebugPanel
 
 _ = lambda x: x
 
+
 class TimerDebugPanel(DebugPanel):
+
     """
     Panel that displays the time a response took in milliseconds.
     """
     name = 'Timer'
-    try: # if resource module not available, don't show content panel
+    try:  # if resource module not available, don't show content panel
         resource
     except NameError:
         has_content = False
@@ -79,10 +81,11 @@ class TimerDebugPanel(DebugPanel):
             (_('System CPU time'), '%0.3f msec' % stime),
             (_('Total CPU time'), '%0.3f msec' % (utime + stime)),
             (_('Elapsed time'), '%0.3f msec' % self.total_time),
-            (_('Context switches'), '%d voluntary, %d involuntary' % (vcsw, ivcsw)),
-#            ('Memory use', '%d max RSS, %d shared, %d unshared' % (rss, srss, urss + usrss)),
-#            ('Page faults', '%d no i/o, %d requiring i/o' % (minflt, majflt)),
-#            ('Disk operations', '%d in, %d out, %d swapout' % (blkin, blkout, swap)),
+            (_('Context switches'), '%d voluntary, %d involuntary' %
+             (vcsw, ivcsw)),
+            #            ('Memory use', '%d max RSS, %d shared, %d unshared' % (rss, srss, urss + usrss)),
+            #            ('Page faults', '%d no i/o, %d requiring i/o' % (minflt, majflt)),
+            #            ('Disk operations', '%d in, %d out, %d swapout' % (blkin, blkout, swap)),
         )
 
         context = self.context.copy()
@@ -91,4 +94,3 @@ class TimerDebugPanel(DebugPanel):
         })
 
         return self.render('panels/timer.html', context)
-

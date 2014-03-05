@@ -51,7 +51,9 @@ class GeneralUtilityTestCase(WerkzeugTestCase):
 
     def test_cached_property(self):
         foo = []
+
         class A(object):
+
             def prop(self):
                 foo.append(42)
                 return 42
@@ -64,7 +66,9 @@ class GeneralUtilityTestCase(WerkzeugTestCase):
         assert foo == [42]
 
         foo = []
+
         class A(object):
+
             def _prop(self):
                 foo.append(42)
                 return 42
@@ -85,14 +89,16 @@ class GeneralUtilityTestCase(WerkzeugTestCase):
             missing = utils.environ_property('missing', 'spam')
             read_only = utils.environ_property('number')
             number = utils.environ_property('number', load_func=int)
-            broken_number = utils.environ_property('broken_number', load_func=int)
+            broken_number = utils.environ_property(
+                'broken_number', load_func=int)
             date = utils.environ_property('date', None, parse_date, http_date,
-                                    read_only=False)
+                                          read_only=False)
             foo = utils.environ_property('foo')
 
         a = A()
         assert a.string == 'abc'
         assert a.missing == 'spam'
+
         def test_assign():
             a.read_only = 'something'
         self.assert_raises(AttributeError, test_assign)
@@ -104,6 +110,7 @@ class GeneralUtilityTestCase(WerkzeugTestCase):
 
     def test_escape(self):
         class Foo(str):
+
             def __html__(self):
                 return unicode(self)
         assert utils.escape(None) == ''
@@ -132,13 +139,18 @@ class GeneralUtilityTestCase(WerkzeugTestCase):
         self.assert_raises(StopIteration, app_iter.next)
 
         got_close = []
+
         class CloseIter(object):
+
             def __init__(self):
                 self.iterated = False
+
             def __iter__(self):
                 return self
+
             def close(self):
                 got_close.append(None)
+
             def next(self):
                 if self.iterated:
                     raise StopIteration()
@@ -169,8 +181,10 @@ class GeneralUtilityTestCase(WerkzeugTestCase):
         assert utils.import_string('XXXXXXXXXXXX', True) is None
         assert utils.import_string('cgi.XXXXXXXXXXXX', True) is None
         assert utils.import_string(u'cgi.escape') is cgi.escape
-        assert utils.import_string(u'werkzeug.debug.DebuggedApplication') is DebuggedApplication
-        self.assert_raises(ImportError, utils.import_string, 'XXXXXXXXXXXXXXXX')
+        assert utils.import_string(
+            u'werkzeug.debug.DebuggedApplication') is DebuggedApplication
+        self.assert_raises(
+            ImportError, utils.import_string, 'XXXXXXXXXXXXXXXX')
         self.assert_raises(ImportError, utils.import_string, 'cgi.XXXXXXXXXX')
 
     def test_find_modules(self):
@@ -212,18 +226,22 @@ class GeneralUtilityTestCase(WerkzeugTestCase):
         take_two_one_default = lambda a, b=0: None
 
         assert utils.validate_arguments(take_two, (1, 2,), {}) == ((1, 2), {})
-        assert utils.validate_arguments(take_two, (1,), {'b': 2}) == ((1, 2), {})
-        assert utils.validate_arguments(take_two_one_default, (1,), {}) == ((1, 0), {})
-        assert utils.validate_arguments(take_two_one_default, (1, 2), {}) == ((1, 2), {})
+        assert utils.validate_arguments(
+            take_two, (1,), {'b': 2}) == ((1, 2), {})
+        assert utils.validate_arguments(
+            take_two_one_default, (1,), {}) == ((1, 0), {})
+        assert utils.validate_arguments(
+            take_two_one_default, (1, 2), {}) == ((1, 2), {})
 
         self.assert_raises(utils.ArgumentValidationError,
-            utils.validate_arguments, take_two, (), {})
+                           utils.validate_arguments, take_two, (), {})
 
-        assert utils.validate_arguments(take_none, (1, 2,), {'c': 3}) == ((), {})
+        assert utils.validate_arguments(
+            take_none, (1, 2,), {'c': 3}) == ((), {})
         self.assert_raises(utils.ArgumentValidationError,
-               utils.validate_arguments, take_none, (1,), {}, drop_extra=False)
+                           utils.validate_arguments, take_none, (1,), {}, drop_extra=False)
         self.assert_raises(utils.ArgumentValidationError,
-               utils.validate_arguments, take_none, (), {'a': 1}, drop_extra=False)
+                           utils.validate_arguments, take_none, (), {'a': 1}, drop_extra=False)
 
     def test_header_set_duplication_bug(self):
         headers = Headers([

@@ -7,7 +7,9 @@ __all__ = (
 
 from wtforms.compat import with_metaclass, iteritems, itervalues
 
+
 class BaseForm(object):
+
     """
     Base Form Class.  Provides core behaviour like field construction,
     validation, and data and error proxying.
@@ -36,7 +38,8 @@ class BaseForm(object):
         translations = self._get_translations()
 
         for name, unbound_field in fields:
-            field = unbound_field.bind(form=self, name=name, prefix=prefix, translations=translations)
+            field = unbound_field.bind(
+                form=self, name=name, prefix=prefix, translations=translations)
             self._fields[name] = field
 
     def __iter__(self):
@@ -53,7 +56,8 @@ class BaseForm(object):
 
     def __setitem__(self, name, value):
         """ Bind a field to this form. """
-        self._fields[name] = value.bind(form=self, name=name, prefix=self._prefix)
+        self._fields[name] = value.bind(
+            form=self, name=name, prefix=self._prefix)
 
     def __delitem__(self, name):
         """ Remove a field from this form. """
@@ -99,7 +103,8 @@ class BaseForm(object):
             if hasattr(formdata, 'getall'):
                 formdata = WebobInputWrapper(formdata)
             else:
-                raise TypeError("formdata should be a multidict-type wrapper that supports the 'getlist' method")
+                raise TypeError(
+                    "formdata should be a multidict-type wrapper that supports the 'getlist' method")
 
         for name, field, in iteritems(self._fields):
             if obj is not None and hasattr(obj, name):
@@ -138,11 +143,13 @@ class BaseForm(object):
     @property
     def errors(self):
         if self._errors is None:
-            self._errors = dict((name, f.errors) for name, f in iteritems(self._fields) if f.errors)
+            self._errors = dict((name, f.errors)
+                                for name, f in iteritems(self._fields) if f.errors)
         return self._errors
 
 
 class FormMeta(type):
+
     """
     The metaclass for `Form` and any subclasses of `Form`.
 
@@ -196,6 +203,7 @@ class FormMeta(type):
 
 
 class Form(with_metaclass(FormMeta, BaseForm)):
+
     """
     Declarative Form base class. Extends BaseForm's core behaviour allowing
     fields to be defined on Form subclasses as class attributes.
@@ -239,7 +247,8 @@ class Form(with_metaclass(FormMeta, BaseForm)):
                 yield self._fields[name]
 
     def __setitem__(self, name, value):
-        raise TypeError('Fields may not be added to Form instances, only classes.')
+        raise TypeError(
+            'Fields may not be added to Form instances, only classes.')
 
     def __delitem__(self, name):
         del self._fields[name]
@@ -266,6 +275,7 @@ class Form(with_metaclass(FormMeta, BaseForm)):
 
 
 class WebobInputWrapper(object):
+
     """
     Wrap a webob MultiDict for use as passing as `formdata` to Field.
 
@@ -294,4 +304,3 @@ class WebobInputWrapper(object):
 
     def getlist(self, name):
         return self._wrapped.getall(name)
-

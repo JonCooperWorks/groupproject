@@ -18,12 +18,13 @@
 """
 from urllib import unquote
 from werkzeug.http import parse_options_header, parse_cache_control_header, \
-     parse_set_header
+    parse_set_header
 from werkzeug.useragents import UserAgent
 from werkzeug.datastructures import Headers, ResponseCacheControl
 
 
 class LighttpdCGIRootFix(object):
+
     """Wrap the application in this middleware if you are using lighttpd
     with FastCGI or CGI and the application is mounted on the URL root.
 
@@ -42,12 +43,13 @@ class LighttpdCGIRootFix(object):
         if 'SERVER_SOFTWARE' not in environ or \
            environ['SERVER_SOFTWARE'] < 'lighttpd/1.4.28':
             environ['PATH_INFO'] = environ.get('SCRIPT_NAME', '') + \
-                                   environ.get('PATH_INFO', '')
+                environ.get('PATH_INFO', '')
         environ['SCRIPT_NAME'] = ''
         return self.app(environ, start_response)
 
 
 class PathInfoFromRequestUriFix(object):
+
     """On windows environment variables are limited to the system charset
     which makes it impossible to store the `PATH_INFO` variable in the
     environment without loss of information on some systems.
@@ -79,6 +81,7 @@ class PathInfoFromRequestUriFix(object):
 
 
 class ProxyFix(object):
+
     """This middleware can be applied to add HTTP proxy support to an
     application that was not designed with HTTP proxies in mind.  It
     sets `REMOTE_ADDR`, `HTTP_HOST` from `X-Forwarded` headers.
@@ -126,6 +129,7 @@ class ProxyFix(object):
 
 
 class HeaderRewriterFix(object):
+
     """This middleware can remove response headers and add others.  This
     is for example useful to remove the `Date` header from responses if you
     are using a server that adds that header, no matter if it's present or
@@ -158,6 +162,7 @@ class HeaderRewriterFix(object):
 
 
 class InternetExplorerFix(object):
+
     """This middleware fixes a couple of bugs with Microsoft Internet
     Explorer.  Currently the following fixes are applied:
 

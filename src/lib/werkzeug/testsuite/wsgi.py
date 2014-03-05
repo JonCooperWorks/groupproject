@@ -44,11 +44,13 @@ class WSGIUtilsTestCase(WerkzeugTestCase):
             assert status == '200 OK'
             assert ''.join(app_iter).strip() == 'FOUND'
 
-        app_iter, status, headers = run_wsgi_app(app, create_environ('/pkg/debugger.js'))
+        app_iter, status, headers = run_wsgi_app(
+            app, create_environ('/pkg/debugger.js'))
         contents = ''.join(app_iter)
         assert '$(function() {' in contents
 
-        app_iter, status, headers = run_wsgi_app(app, create_environ('/missing'))
+        app_iter, status, headers = run_wsgi_app(
+            app, create_environ('/missing'))
         assert status == '404 NOT FOUND'
         assert ''.join(app_iter).strip() == 'NOT FOUND'
 
@@ -94,6 +96,7 @@ class WSGIUtilsTestCase(WerkzeugTestCase):
 
     def test_limited_stream(self):
         class RaisingLimitedStream(wsgi.LimitedStream):
+
             def on_exhausted(self):
                 raise BadRequest('input stream exhausted')
 
@@ -202,25 +205,31 @@ class WSGIUtilsTestCase(WerkzeugTestCase):
     def test_multi_part_line_breaks(self):
         data = 'abcdef\r\nghijkl\r\nmnopqrstuvwxyz\r\nABCDEFGHIJK'
         test_stream = StringIO(data)
-        lines = list(wsgi.make_line_iter(test_stream, limit=len(data), buffer_size=16))
-        assert lines == ['abcdef\r\n', 'ghijkl\r\n', 'mnopqrstuvwxyz\r\n', 'ABCDEFGHIJK']
+        lines = list(
+            wsgi.make_line_iter(test_stream, limit=len(data), buffer_size=16))
+        assert lines == [
+            'abcdef\r\n', 'ghijkl\r\n', 'mnopqrstuvwxyz\r\n', 'ABCDEFGHIJK']
 
         data = 'abc\r\nThis line is broken by the buffer length.\r\nFoo bar baz'
         test_stream = StringIO(data)
-        lines = list(wsgi.make_line_iter(test_stream, limit=len(data), buffer_size=24))
-        assert lines == ['abc\r\n', 'This line is broken by the buffer length.\r\n', 'Foo bar baz']
+        lines = list(
+            wsgi.make_line_iter(test_stream, limit=len(data), buffer_size=24))
+        assert lines == [
+            'abc\r\n', 'This line is broken by the buffer length.\r\n', 'Foo bar baz']
 
     def test_multi_part_line_breaks_problematic(self):
         data = 'abc\rdef\r\nghi'
         for x in xrange(1, 10):
             test_stream = StringIO(data)
-            lines = list(wsgi.make_line_iter(test_stream, limit=len(data), buffer_size=4))
+            lines = list(
+                wsgi.make_line_iter(test_stream, limit=len(data), buffer_size=4))
             assert lines == ['abc\r', 'def\r\n', 'ghi']
 
     def test_lines_longer_buffer_size(self):
         data = '1234567890\n1234567890\n'
         for bufsize in xrange(1, 15):
-            lines = list(wsgi.make_line_iter(StringIO(data), limit=len(data), buffer_size=4))
+            lines = list(
+                wsgi.make_line_iter(StringIO(data), limit=len(data), buffer_size=4))
             self.assert_equal(lines, ['1234567890\n', '1234567890\n'])
 
 

@@ -146,7 +146,7 @@ def iter_sys_path():
     for item in sys.path:
         path = os.path.join(cwd, item or os.path.curdir)
         yield strip(os.path.normpath(path)), \
-              not os.path.isdir(path), path != item
+            not os.path.isdir(path), path != item
 
 
 def render_testapp(req):

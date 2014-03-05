@@ -25,7 +25,7 @@ from werkzeug.urls import url_encode, url_fix, iri_to_uri, _unquote
 from werkzeug.wsgi import get_host, get_current_url, ClosingIterator
 from werkzeug.utils import dump_cookie
 from werkzeug.datastructures import FileMultiDict, MultiDict, \
-     CombinedMultiDict, Headers, FileStorage
+    CombinedMultiDict, Headers, FileStorage
 
 
 def stream_encode_multipart(values, use_tempfile=True, threshold=1024 * 500,
@@ -113,6 +113,7 @@ def File(fd, filename=None, mimetype=None):
 
 
 class _TestCookieHeaders(object):
+
     """A headers adapter for cookielib
     """
 
@@ -129,6 +130,7 @@ class _TestCookieHeaders(object):
 
 
 class _TestCookieResponse(object):
+
     """Something that looks like a httplib.HTTPResponse, but is actually just an
     adapter for our test responses to make them available for cookielib.
     """
@@ -141,6 +143,7 @@ class _TestCookieResponse(object):
 
 
 class _TestCookieJar(CookieJar):
+
     """A cookielib.CookieJar modified to inject and read cookie headers from
     and to wsgi environments, and wsgi application responses.
     """
@@ -184,6 +187,7 @@ def _iter_data(data):
 
 
 class EnvironBuilder(object):
+
     """This class can be used to conveniently create a WSGI environment
     for testing purposes.  It can be used to quickly create WSGI environments
     or request objects from arbitrary data.
@@ -394,6 +398,7 @@ class EnvironBuilder(object):
 
     def form_property(name, storage, doc):
         key = '_' + name
+
         def getter(self):
             if self._input_stream is not None:
                 raise AttributeError('an input stream is defined')
@@ -402,6 +407,7 @@ class EnvironBuilder(object):
                 rv = storage()
                 setattr(self, key, rv)
             return rv
+
         def setter(self, value):
             self._input_stream = None
             setattr(self, key, value)
@@ -564,6 +570,7 @@ class EnvironBuilder(object):
 
 
 class ClientRedirectError(Exception):
+
     """
     If a redirect loop is detected when using follow_redirects=True with
     the :cls:`Client`, then this exception is raised.
@@ -571,6 +578,7 @@ class ClientRedirectError(Exception):
 
 
 class Client(object):
+
     """This class allows to send requests to a wrapped application.
 
     The response wrapper can be a class or factory function that takes
@@ -689,14 +697,17 @@ class Client(object):
 
             redirect = dict(rv[2])['Location']
 
-            scheme, netloc, script_root, qs, anchor = urlparse.urlsplit(redirect)
-            base_url = urlparse.urlunsplit((scheme, netloc, '', '', '')).rstrip('/') + '/'
+            scheme, netloc, script_root, qs, anchor = urlparse.urlsplit(
+                redirect)
+            base_url = urlparse.urlunsplit(
+                (scheme, netloc, '', '', '')).rstrip('/') + '/'
 
             cur_server_name = netloc.split(':', 1)[0].split('.')
             real_server_name = get_host(environ).split(':', 1)[0].split('.')
 
             if self.allow_subdomain_redirects:
-                allowed = cur_server_name[-len(real_server_name):] == real_server_name
+                allowed = cur_server_name[-
+                                          len(real_server_name):] == real_server_name
             else:
                 allowed = cur_server_name == real_server_name
 

@@ -9,6 +9,7 @@ from wtforms.compat import text_type, string_types
 
 
 class ReferencePropertyField(fields.SelectFieldBase):
+
     """
     A field for ``db.ReferenceProperty``. The list items are rendered in a
     select.
@@ -36,7 +37,8 @@ class ReferencePropertyField(fields.SelectFieldBase):
         super(ReferencePropertyField, self).__init__(label, validators,
                                                      **kwargs)
         if label_attr is not None:
-            warnings.warn('label_attr= will be removed in WTForms 1.1, use get_label= instead.', DeprecationWarning)
+            warnings.warn(
+                'label_attr= will be removed in WTForms 1.1, use get_label= instead.', DeprecationWarning)
             self.get_label = operator.attrgetter(label_attr)
         elif get_label is None:
             self.get_label = lambda x: x
@@ -92,6 +94,7 @@ class ReferencePropertyField(fields.SelectFieldBase):
 
 
 class KeyPropertyField(fields.SelectFieldBase):
+
     """
     A field for ``ndb.KeyProperty``. The list items are rendered in a select.
 
@@ -116,9 +119,10 @@ class KeyPropertyField(fields.SelectFieldBase):
                  label_attr=None, get_label=None, allow_blank=False,
                  blank_text=u'', **kwargs):
         super(KeyPropertyField, self).__init__(label, validators,
-                                                     **kwargs)
+                                               **kwargs)
         if label_attr is not None:
-            warnings.warn('label_attr= will be removed in WTForms 1.1, use get_label= instead.', DeprecationWarning)
+            warnings.warn(
+                'label_attr= will be removed in WTForms 1.1, use get_label= instead.', DeprecationWarning)
             self.get_label = operator.attrgetter(label_attr)
         elif get_label is None:
             self.get_label = lambda x: x
@@ -176,10 +180,12 @@ class KeyPropertyField(fields.SelectFieldBase):
 
 
 class StringListPropertyField(fields.TextAreaField):
+
     """
     A field for ``db.StringListProperty``. The list items are rendered in a
     textarea.
     """
+
     def _value(self):
         if self.raw_data:
             return self.raw_data[0]
@@ -195,10 +201,12 @@ class StringListPropertyField(fields.TextAreaField):
 
 
 class IntegerListPropertyField(fields.TextAreaField):
+
     """
     A field for ``db.StringListProperty``. The list items are rendered in a
     textarea.
     """
+
     def _value(self):
         if self.raw_data:
             return self.raw_data[0]
@@ -219,6 +227,7 @@ class GeoPtPropertyField(fields.TextField):
         if valuelist:
             try:
                 lat, lon = valuelist[0].split(',')
-                self.data = '%s,%s' % (decimal.Decimal(lat.strip()), decimal.Decimal(lon.strip()),)
+                self.data = '%s,%s' % (
+                    decimal.Decimal(lat.strip()), decimal.Decimal(lon.strip()),)
             except (decimal.InvalidOperation, ValueError):
                 raise ValueError('Not a valid coordinate location')

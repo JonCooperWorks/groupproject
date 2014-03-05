@@ -15,12 +15,14 @@ from application import app
 
 
 class DemoTestCase(unittest.TestCase):
+
     def setUp(self):
         # Flask apps testing. See: http://flask.pocoo.org/docs/testing/
         app.config['TESTING'] = True
         app.config['CSRF_ENABLED'] = False
         self.app = app.test_client()
-        # Setups app engine test bed. See: http://code.google.com/appengine/docs/python/tools/localunittesting.html#Introducing_the_Python_Testing_Utilities
+        # Setups app engine test bed. See:
+        # http://code.google.com/appengine/docs/python/tools/localunittesting.html#Introducing_the_Python_Testing_Utilities
         self.testbed = testbed.Testbed()
         self.testbed.activate()
         self.testbed.init_datastore_v3_stub()
@@ -37,7 +39,7 @@ class DemoTestCase(unittest.TestCase):
 
     def test_home_redirects(self):
         rv = self.app.get('/')
-        assert rv.status == '302 FOUND'    
+        assert rv.status == '302 FOUND'
 
     def test_says_hello(self):
         rv = self.app.get('/hello/world')
@@ -58,16 +60,16 @@ class DemoTestCase(unittest.TestCase):
         rv = self.app.get('/examples')
         assert 'No examples yet' not in rv.data
         assert 'An example' in rv.data
-    
+
     def test_admin_login(self):
-        #Anonymous
+        # Anonymous
         rv = self.app.get('/admin_only')
         assert rv.status == '302 FOUND'
-        #Normal user
+        # Normal user
         self.setCurrentUser(u'john@example.com', u'123')
         rv = self.app.get('/admin_only')
         assert rv.status == '302 FOUND'
-        #Admin
+        # Admin
         self.setCurrentUser(u'john@example.com', u'123', True)
         rv = self.app.get('/admin_only')
         assert rv.status == '200 OK'
@@ -77,6 +79,6 @@ class DemoTestCase(unittest.TestCase):
         assert rv.status == '404 NOT FOUND'
         assert '<h1>Not found</h1>' in rv.data
 
-    
+
 if __name__ == '__main__':
     unittest.main()

@@ -14,7 +14,7 @@ import unittest
 from werkzeug.testsuite import WerkzeugTestCase
 
 from werkzeug.security import check_password_hash, generate_password_hash, \
-     safe_join
+    safe_join
 
 
 class SecurityTestCase(WerkzeugTestCase):

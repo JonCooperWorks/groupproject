@@ -450,6 +450,7 @@ def url_fix(s, charset='utf-8'):
 
 
 class Href(object):
+
     """Implements a callable that constructs URLs with the given base. The
     function can be called with any number of positional and keyword
     arguments which than are used to assemble the URL.  Works with URLs

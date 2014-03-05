@@ -77,7 +77,8 @@ class RoutingTestCase(WerkzeugTestCase):
     def test_environ_defaults(self):
         environ = create_environ("/foo")
         self.assert_equal(environ["PATH_INFO"], '/foo')
-        m = r.Map([r.Rule("/foo", endpoint="foo"), r.Rule("/bar", endpoint="bar")])
+        m = r.Map(
+            [r.Rule("/foo", endpoint="foo"), r.Rule("/bar", endpoint="bar")])
         a = m.bind_to_environ(environ)
         self.assert_equal(a.match("/foo"), ('foo', {}))
         self.assert_equal(a.match(), ('foo', {}))
@@ -98,20 +99,28 @@ class RoutingTestCase(WerkzeugTestCase):
 
         assert adapter.build('index', {}) == 'http://example.org/'
         assert adapter.build('foo', {}) == 'http://example.org/foo'
-        assert adapter.build('bar', {'baz': 'blub'}) == 'http://example.org/bar/blub'
-        assert adapter.build('bari', {'bazi': 50}) == 'http://example.org/bar/50'
-        assert adapter.build('barf', {'bazf': 0.815}) == 'http://example.org/bar/0.815'
-        assert adapter.build('barp', {'bazp': 'la/di'}) == 'http://example.org/bar/la/di'
+        assert adapter.build(
+            'bar', {'baz': 'blub'}) == 'http://example.org/bar/blub'
+        assert adapter.build(
+            'bari', {'bazi': 50}) == 'http://example.org/bar/50'
+        assert adapter.build(
+            'barf', {'bazf': 0.815}) == 'http://example.org/bar/0.815'
+        assert adapter.build(
+            'barp', {'bazp': 'la/di'}) == 'http://example.org/bar/la/di'
         assert adapter.build('blah', {}) == '/hehe'
         self.assert_raises(r.BuildError, lambda: adapter.build('urks'))
 
         adapter = map.bind('example.org', '/test', subdomain='blah')
         assert adapter.build('index', {}) == 'http://example.org/test/'
         assert adapter.build('foo', {}) == 'http://example.org/test/foo'
-        assert adapter.build('bar', {'baz': 'blub'}) == 'http://example.org/test/bar/blub'
-        assert adapter.build('bari', {'bazi': 50}) == 'http://example.org/test/bar/50'
-        assert adapter.build('barf', {'bazf': 0.815}) == 'http://example.org/test/bar/0.815'
-        assert adapter.build('barp', {'bazp': 'la/di'}) == 'http://example.org/test/bar/la/di'
+        assert adapter.build(
+            'bar', {'baz': 'blub'}) == 'http://example.org/test/bar/blub'
+        assert adapter.build(
+            'bari', {'bazi': 50}) == 'http://example.org/test/bar/50'
+        assert adapter.build(
+            'barf', {'bazf': 0.815}) == 'http://example.org/test/bar/0.815'
+        assert adapter.build(
+            'barp', {'bazp': 'la/di'}) == 'http://example.org/test/bar/la/di'
         assert adapter.build('blah', {}) == '/test/hehe'
 
     def test_defaults(self):
@@ -142,7 +151,8 @@ class RoutingTestCase(WerkzeugTestCase):
 
         assert adapter.build('foo', {}) == '/foo'
         assert adapter.build('bar', {'bar': 'blub'}) == '/blub'
-        assert adapter.build('bar', {'bar': 'blub', 'blub': 'bar'}) == '/blub/bar'
+        assert adapter.build(
+            'bar', {'bar': 'blub', 'blub': 'bar'}) == '/blub/bar'
 
     def test_path(self):
         map = r.Map([
@@ -152,7 +162,8 @@ class RoutingTestCase(WerkzeugTestCase):
             r.Rule('/<path:name>', endpoint='page'),
             r.Rule('/<path:name>/edit', endpoint='editpage'),
             r.Rule('/<path:name>/silly/<path:name2>', endpoint='sillypage'),
-            r.Rule('/<path:name>/silly/<path:name2>/edit', endpoint='editsillypage'),
+            r.Rule('/<path:name>/silly/<path:name2>/edit',
+                   endpoint='editsillypage'),
             r.Rule('/Talk:<path:name>', endpoint='talk'),
             r.Rule('/User:<username>', endpoint='user'),
             r.Rule('/User:<username>/<path:name>', endpoint='userpage'),
@@ -160,20 +171,25 @@ class RoutingTestCase(WerkzeugTestCase):
         ])
         adapter = map.bind('example.org', '/')
 
-        assert adapter.match('/') == ('page', {'name':'FrontPage'})
-        self.assert_raises(r.RequestRedirect, lambda: adapter.match('/FrontPage'))
+        assert adapter.match('/') == ('page', {'name': 'FrontPage'})
+        self.assert_raises(
+            r.RequestRedirect, lambda: adapter.match('/FrontPage'))
         assert adapter.match('/Special') == ('special', {})
-        assert adapter.match('/2007') == ('year', {'year':2007})
-        assert adapter.match('/Some/Page') == ('page', {'name':'Some/Page'})
-        assert adapter.match('/Some/Page/edit') == ('editpage', {'name':'Some/Page'})
-        assert adapter.match('/Foo/silly/bar') == ('sillypage', {'name':'Foo', 'name2':'bar'})
-        assert adapter.match('/Foo/silly/bar/edit') == ('editsillypage', {'name':'Foo', 'name2':'bar'})
-        assert adapter.match('/Talk:Foo/Bar') == ('talk', {'name':'Foo/Bar'})
-        assert adapter.match('/User:thomas') == ('user', {'username':'thomas'})
+        assert adapter.match('/2007') == ('year', {'year': 2007})
+        assert adapter.match('/Some/Page') == ('page', {'name': 'Some/Page'})
+        assert adapter.match(
+            '/Some/Page/edit') == ('editpage', {'name': 'Some/Page'})
+        assert adapter.match(
+            '/Foo/silly/bar') == ('sillypage', {'name': 'Foo', 'name2': 'bar'})
+        assert adapter.match(
+            '/Foo/silly/bar/edit') == ('editsillypage', {'name': 'Foo', 'name2': 'bar'})
+        assert adapter.match('/Talk:Foo/Bar') == ('talk', {'name': 'Foo/Bar'})
+        assert adapter.match(
+            '/User:thomas') == ('user', {'username': 'thomas'})
         assert adapter.match('/User:thomas/projects/werkzeug') == \
-            ('userpage', {'username':'thomas', 'name':'projects/werkzeug'})
+            ('userpage', {'username': 'thomas', 'name': 'projects/werkzeug'})
         assert adapter.match('/Files/downloads/werkzeug/0.2.zip') == \
-            ('files', {'file':'downloads/werkzeug/0.2.zip'})
+            ('files', {'file': 'downloads/werkzeug/0.2.zip'})
 
     def test_dispatch(self):
         env = create_environ('/')
@@ -184,6 +200,7 @@ class RoutingTestCase(WerkzeugTestCase):
         adapter = map.bind_to_environ(env)
 
         raise_this = None
+
         def view_func(endpoint, values):
             if raise_this is not None:
                 raise raise_this
@@ -210,7 +227,8 @@ class RoutingTestCase(WerkzeugTestCase):
         map = r.Map([r.Rule('/', endpoint='index', subdomain='wiki')])
         adapter = map.bind_to_environ(env, server_name='example.com')
         assert adapter.match('/') == ('index', {})
-        assert adapter.build('index', force_external=True) == 'http://wiki.example.com/'
+        assert adapter.build(
+            'index', force_external=True) == 'http://wiki.example.com/'
         assert adapter.build('index') == '/'
 
         env['HTTP_HOST'] = 'admin.example.com'
@@ -219,10 +237,10 @@ class RoutingTestCase(WerkzeugTestCase):
 
     def test_adapter_url_parameter_sorting(self):
         map = r.Map([r.Rule('/', endpoint='index')], sort_parameters=True,
-                     sort_key=lambda x: x[1])
+                    sort_key=lambda x: x[1])
         adapter = map.bind('localhost', '/')
         assert adapter.build('index', {'x': 20, 'y': 10, 'z': 30},
-            force_external=True) == 'http://localhost/?y=10&x=20&z=30'
+                             force_external=True) == 'http://localhost/?y=10&x=20&z=30'
 
     def test_request_direct_charset_bug(self):
         map = r.Map([r.Rule(u'/öäü/')])
@@ -281,7 +299,7 @@ class RoutingTestCase(WerkzeugTestCase):
 
     def test_rule_emptying(self):
         rule = r.Rule('/foo', {'meh': 'muh'}, 'x', ['POST'],
-                   False, 'x', True, None)
+                      False, 'x', True, None)
         rule2 = rule.empty()
         assert rule.__dict__ == rule2.__dict__
         rule.methods.add('GET')
@@ -292,27 +310,20 @@ class RoutingTestCase(WerkzeugTestCase):
 
     def test_rule_templates(self):
         testcase = r.RuleTemplate(
-            [ r.Submount('/test/$app',
-              [ r.Rule('/foo/', endpoint='handle_foo')
-              , r.Rule('/bar/', endpoint='handle_bar')
-              , r.Rule('/baz/', endpoint='handle_baz')
-              ]),
-              r.EndpointPrefix('${app}',
-              [ r.Rule('/${app}-blah', endpoint='bar')
-              , r.Rule('/${app}-meh', endpoint='baz')
-              ]),
-              r.Subdomain('$app',
-              [ r.Rule('/blah', endpoint='x_bar')
-              , r.Rule('/meh', endpoint='x_baz')
-              ])
-            ])
+            [r.Submount('/test/$app',
+                        [r.Rule('/foo/', endpoint='handle_foo'), r.Rule('/bar/', endpoint='handle_bar'), r.Rule('/baz/', endpoint='handle_baz')
+                         ]),
+             r.EndpointPrefix('${app}',
+                              [r.Rule('/${app}-blah', endpoint='bar'), r.Rule('/${app}-meh', endpoint='baz')
+                               ]),
+             r.Subdomain('$app',
+                         [r.Rule('/blah', endpoint='x_bar'), r.Rule('/meh', endpoint='x_baz')
+                          ])
+             ])
 
         url_map = r.Map(
-            [ testcase(app='test1')
-            , testcase(app='test2')
-            , testcase(app='test3')
-            , testcase(app='test4')
-            ])
+            [testcase(app='test1'), testcase(app='test2'), testcase(app='test3'), testcase(app='test4')
+             ])
 
         out = sorted([(x.rule, x.subdomain, x.endpoint)
                       for x in url_map.iter_rules()])
@@ -370,11 +381,13 @@ class RoutingTestCase(WerkzeugTestCase):
         assert a.match('/foo/') == ('nested', {})
         assert a.match('/foobar/') == ('nestedbar', {})
         assert a.match('/foo/1/2/3/') == ('nested_show', {'testing': '1/2/3'})
-        assert a.match('/foo/1/2/3/edit') == ('nested_edit', {'testing': '1/2/3'})
+        assert a.match(
+            '/foo/1/2/3/edit') == ('nested_edit', {'testing': '1/2/3'})
         assert a.match('/users/') == ('users', {'page': 1})
         assert a.match('/users/page/2') == ('users', {'page': 2})
         assert a.match('/foox') == ('foox', {})
-        assert a.match('/1/2/3') == ('barx_path_path', {'bar': '1', 'blub': '2/3'})
+        assert a.match(
+            '/1/2/3') == ('barx_path_path', {'bar': '1', 'blub': '2/3'})
 
         assert a.build('index') == '/'
         assert a.build('an_int', {'blub': 42}) == '/42'
@@ -382,11 +395,13 @@ class RoutingTestCase(WerkzeugTestCase):
         assert a.build('nested') == '/foo/'
         assert a.build('nestedbar') == '/foobar/'
         assert a.build('nested_show', {'testing': '1/2/3'}) == '/foo/1/2/3/'
-        assert a.build('nested_edit', {'testing': '1/2/3'}) == '/foo/1/2/3/edit'
+        assert a.build(
+            'nested_edit', {'testing': '1/2/3'}) == '/foo/1/2/3/edit'
         assert a.build('users', {'page': 1}) == '/users/'
         assert a.build('users', {'page': 2}) == '/users/page/2'
         assert a.build('foox') == '/foox'
-        assert a.build('barx_path_path', {'bar': '1', 'blub': '2/3'}) == '/1/2/3'
+        assert a.build(
+            'barx_path_path', {'bar': '1', 'blub': '2/3'}) == '/1/2/3'
 
     def test_default_converters(self):
         class MyMap(r.Map):
@@ -411,8 +426,8 @@ class RoutingTestCase(WerkzeugTestCase):
         adapter = map.bind('example.org', '/', subdomain='blah')
         assert adapter.build('barf', {'bazf': 0.815, 'bif' : 1.0}) == \
             'http://example.org/bar/0.815?bif=1.0'
-        assert adapter.build('barf', {'bazf': 0.815, 'bif' : 1.0},
-            append_unknown=False) == 'http://example.org/bar/0.815'
+        assert adapter.build('barf', {'bazf': 0.815, 'bif': 1.0},
+                             append_unknown=False) == 'http://example.org/bar/0.815'
 
     def test_method_fallback(self):
         map = r.Map([
@@ -486,7 +501,7 @@ class RoutingTestCase(WerkzeugTestCase):
         args, kwargs = r.parse_converter_args(u'test, a=1, b=3.0')
 
         assert args == ('test',)
-        assert kwargs == {'a': 1, 'b': 3.0 }
+        assert kwargs == {'a': 1, 'b': 3.0}
 
         args, kwargs = r.parse_converter_args('')
         assert not args and not kwargs
@@ -509,7 +524,8 @@ class RoutingTestCase(WerkzeugTestCase):
             r.Rule('/users/index.html', defaults={'page': 1}, alias=True,
                    endpoint='users'),
             r.Rule('/users/page/<int:page>', endpoint='users'),
-            r.Rule('/users/page-<int:page>.html', alias=True, endpoint='users'),
+            r.Rule(
+                '/users/page-<int:page>.html', alias=True, endpoint='users'),
         ])
         a = m.bind('example.com')
 
@@ -525,7 +541,8 @@ class RoutingTestCase(WerkzeugTestCase):
         ensure_redirect('/users/index.html', '/users/')
         ensure_redirect('/users/page-2.html', '/users/page/2')
         ensure_redirect('/users/page-1.html', '/users/')
-        ensure_redirect('/users/page-1.html', '/users/?foo=bar', {'foo': 'bar'})
+        ensure_redirect(
+            '/users/page-1.html', '/users/?foo=bar', {'foo': 'bar'})
 
         assert a.build('index') == '/'
         assert a.build('users', {'page': 1}) == '/users/'
@@ -534,10 +551,14 @@ class RoutingTestCase(WerkzeugTestCase):
     def test_double_defaults(self):
         for prefix in '', '/aaa':
             m = r.Map([
-                r.Rule(prefix + '/', defaults={'foo': 1, 'bar': False}, endpoint='x'),
-                r.Rule(prefix + '/<int:foo>', defaults={'bar': False}, endpoint='x'),
-                r.Rule(prefix + '/bar/', defaults={'foo': 1, 'bar': True}, endpoint='x'),
-                r.Rule(prefix + '/bar/<int:foo>', defaults={'bar': True}, endpoint='x')
+                r.Rule(
+                    prefix + '/', defaults={'foo': 1, 'bar': False}, endpoint='x'),
+                r.Rule(
+                    prefix + '/<int:foo>', defaults={'bar': False}, endpoint='x'),
+                r.Rule(
+                    prefix + '/bar/', defaults={'foo': 1, 'bar': True}, endpoint='x'),
+                r.Rule(
+                    prefix + '/bar/<int:foo>', defaults={'bar': True}, endpoint='x')
             ])
             a = m.bind('example.com')
 
@@ -557,7 +578,8 @@ class RoutingTestCase(WerkzeugTestCase):
         m = r.Map([
             r.Rule('/', endpoint='index', host='www.<domain>'),
             r.Rule('/', endpoint='files', host='files.<domain>'),
-            r.Rule('/foo/', defaults={'page': 1}, host='www.<domain>', endpoint='x'),
+            r.Rule('/foo/', defaults={'page': 1},
+                   host='www.<domain>', endpoint='x'),
             r.Rule('/<int:page>', host='files.<domain>', endpoint='x')
         ], host_matching=True)
 
@@ -624,7 +646,8 @@ class RoutingTestCase(WerkzeugTestCase):
         self.assert_equal(values, {})
 
         url = a.build('enter', {}, force_external=True)
-        self.assert_equal(url, 'http://xn--n3h.example.com/%D0%B2%D0%BE%D0%B9%D1%82%D0%B8/')
+        self.assert_equal(
+            url, 'http://xn--n3h.example.com/%D0%B2%D0%BE%D0%B9%D1%82%D0%B8/')
 
 
 def suite():

@@ -3,7 +3,9 @@ from flask_debugtoolbar.panels import DebugPanel
 
 _ = lambda x: x
 
+
 class VersionDebugPanel(DebugPanel):
+
     """
     Panel that displays the Flask version.
     """
@@ -24,5 +26,3 @@ class VersionDebugPanel(DebugPanel):
 
     def content(self):
         return None
-
-

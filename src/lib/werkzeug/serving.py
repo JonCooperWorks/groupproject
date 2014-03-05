@@ -52,6 +52,7 @@ from werkzeug.exceptions import InternalServerError
 
 
 class WSGIRequestHandler(BaseHTTPRequestHandler, object):
+
     """A request handler that implements WSGI dispatching."""
 
     @property
@@ -78,7 +79,7 @@ class WSGIRequestHandler(BaseHTTPRequestHandler, object):
             'wsgi.multiprocess':    self.server.multiprocess,
             'wsgi.run_once':        False,
             'werkzeug.server.shutdown':
-                                    shutdown_server,
+            shutdown_server,
             'SERVER_SOFTWARE':      self.server_version,
             'REQUEST_METHOD':       self.command,
             'SCRIPT_NAME':          '',
@@ -289,6 +290,7 @@ def is_ssl_error(error=None):
 
 
 class _SSLConnectionFix(object):
+
     """Wrapper around SSL connection to provide a working makefile()."""
 
     def __init__(self, con):
@@ -307,20 +309,21 @@ def select_ip_version(host, port):
     # and various operating systems.  Probably this code also is
     # not supposed to work, but I can't come up with any other
     # ways to implement this.
-    ##try:
-    ##    info = socket.getaddrinfo(host, port, socket.AF_UNSPEC,
+    # try:
+    # info = socket.getaddrinfo(host, port, socket.AF_UNSPEC,
     ##                              socket.SOCK_STREAM, 0,
-    ##                              socket.AI_PASSIVE)
-    ##    if info:
-    ##        return info[0][0]
-    ##except socket.gaierror:
-    ##    pass
+    # socket.AI_PASSIVE)
+    # if info:
+    # return info[0][0]
+    # except socket.gaierror:
+    # pass
     if ':' in host and hasattr(socket, 'AF_INET6'):
         return socket.AF_INET6
     return socket.AF_INET
 
 
 class BaseWSGIServer(HTTPServer, object):
+
     """Simple single-threaded, single-process WSGI server."""
     multithread = False
     multiprocess = False
@@ -373,11 +376,13 @@ class BaseWSGIServer(HTTPServer, object):
 
 
 class ThreadedWSGIServer(ThreadingMixIn, BaseWSGIServer):
+
     """A WSGI server that does threading."""
     multithread = True
 
 
 class ForkingWSGIServer(ForkingMixIn, BaseWSGIServer):
+
     """A WSGI server that does forking."""
     multiprocess = True
 

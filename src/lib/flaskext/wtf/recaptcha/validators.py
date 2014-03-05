@@ -10,15 +10,17 @@ RECAPTCHA_VERIFY_SERVER = 'http://api-verify.recaptcha.net/verify'
 
 __all__ = ["Recaptcha"]
 
+
 class Recaptcha(object):
+
     """Validates a ReCaptcha."""
     _error_codes = {
         'invalid-site-public-key': 'The public key for reCAPTCHA is invalid',
         'invalid-site-private-key': 'The private key for reCAPTCHA is invalid',
         'invalid-referrer': 'The public key for reCAPTCHA is not valid for '
-            'this domainin',
+        'this domainin',
         'verify-params-incorrect': 'The parameters passed to reCAPTCHA '
-            'verification are incorrect',
+        'verification are incorrect',
     }
 
     def __init__(self, message=u'Invalid word. Please try again.'):
@@ -38,7 +40,7 @@ class Recaptcha(object):
 
     def _validate_recaptcha(self, challenge, response, remote_addr):
         """Performs the actual validation."""
-    
+
         if current_app.testing:
             return True
 
@@ -53,7 +55,6 @@ class Recaptcha(object):
             'challenge':  challenge,
             'response':   response
         })
-
 
         response = urllib2.urlopen(RECAPTCHA_VERIFY_SERVER, data)
 

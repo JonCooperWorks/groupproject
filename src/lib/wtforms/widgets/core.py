@@ -24,22 +24,25 @@ def html_params(**kwargs):
     True
     """
     params = []
-    for k,v in sorted(iteritems(kwargs)):
+    for k, v in sorted(iteritems(kwargs)):
         if k in ('class_', 'class__', 'for_'):
             k = k[:-1]
         if v is True:
             params.append(k)
         else:
-            params.append('%s="%s"' % (text_type(k), escape(text_type(v), quote=True)))
+            params.append('%s="%s"' %
+                          (text_type(k), escape(text_type(v), quote=True)))
     return ' '.join(params)
 
 
 class HTMLString(text_type):
+
     def __html__(self):
         return self
 
 
 class ListWidget(object):
+
     """
     Renders a list of fields as a `ul` or `ol` list.
 
@@ -51,6 +54,7 @@ class ListWidget(object):
     otherwise afterwards. The latter is useful for iterating radios or
     checkboxes.
     """
+
     def __init__(self, html_tag='ul', prefix_label=True):
         assert html_tag in ('ol', 'ul')
         self.html_tag = html_tag
@@ -69,6 +73,7 @@ class ListWidget(object):
 
 
 class TableWidget(object):
+
     """
     Renders a list of fields as a set of table rows with th/td pairs.
 
@@ -79,6 +84,7 @@ class TableWidget(object):
     pushed into a subsequent table row to ensure XHTML validity. Hidden fields
     at the end of the field list will appear outside the table.
     """
+
     def __init__(self, with_table_tag=True):
         self.with_table_tag = with_table_tag
 
@@ -92,7 +98,8 @@ class TableWidget(object):
             if subfield.type == 'HiddenField':
                 hidden += text_type(subfield)
             else:
-                html.append('<tr><th>%s</th><td>%s%s</td></tr>' % (text_type(subfield.label), hidden, text_type(subfield)))
+                html.append('<tr><th>%s</th><td>%s%s</td></tr>' %
+                            (text_type(subfield.label), hidden, text_type(subfield)))
                 hidden = ''
         if self.with_table_tag:
             html.append('</table>')
@@ -102,6 +109,7 @@ class TableWidget(object):
 
 
 class Input(object):
+
     """
     Render a basic ``<input>`` field.
 
@@ -125,6 +133,7 @@ class Input(object):
 
 
 class TextInput(Input):
+
     """
     Render a single-line text input.
     """
@@ -132,6 +141,7 @@ class TextInput(Input):
 
 
 class PasswordInput(Input):
+
     """
     Render a password input.
 
@@ -144,13 +154,14 @@ class PasswordInput(Input):
     def __init__(self, hide_value=True):
         self.hide_value = hide_value
 
-    def __call__(self, field, **kwargs): 
+    def __call__(self, field, **kwargs):
         if self.hide_value:
             kwargs['value'] = ''
         return super(PasswordInput, self).__call__(field, **kwargs)
 
 
 class HiddenInput(Input):
+
     """
     Render a hidden input.
     """
@@ -158,6 +169,7 @@ class HiddenInput(Input):
 
 
 class CheckboxInput(Input):
+
     """
     Render a checkbox.
 
@@ -172,6 +184,7 @@ class CheckboxInput(Input):
 
 
 class RadioInput(Input):
+
     """
     Render a single radio button.
 
@@ -182,11 +195,12 @@ class RadioInput(Input):
 
     def __call__(self, field, **kwargs):
         if field.checked:
-            kwargs['checked'] = True 
+            kwargs['checked'] = True
         return super(RadioInput, self).__call__(field, **kwargs)
 
 
 class FileInput(object):
+
     """
     Renders a file input chooser field.
     """
@@ -200,6 +214,7 @@ class FileInput(object):
 
 
 class SubmitInput(Input):
+
     """
     Renders a submit button.
 
@@ -208,23 +223,26 @@ class SubmitInput(Input):
     """
     input_type = 'submit'
 
-    def __call__(self, field, **kwargs): 
+    def __call__(self, field, **kwargs):
         kwargs.setdefault('value', field.label.text)
         return super(SubmitInput, self).__call__(field, **kwargs)
 
 
 class TextArea(object):
+
     """
     Renders a multi-line text area.
 
     `rows` and `cols` ought to be passed as keyword args when rendering.
     """
-    def __call__(self, field, **kwargs): 
+
+    def __call__(self, field, **kwargs):
         kwargs.setdefault('id', field.id)
         return HTMLString('<textarea %s>%s</textarea>' % (html_params(name=field.name, **kwargs), escape(text_type(field._value()))))
 
 
 class Select(object):
+
     """
     Renders a select field.
 
@@ -235,6 +253,7 @@ class Select(object):
     call on rendering; this method must yield tuples of
     `(value, label, selected)`.
     """
+
     def __init__(self, multiple=False):
         self.multiple = multiple
 
@@ -257,12 +276,13 @@ class Select(object):
 
 
 class Option(object):
+
     """
     Renders the individual option from a select field.
 
     This is just a convenience for various custom rendering situations, and an
     option by itself does not constitute an entire field.
     """
+
     def __call__(self, field, **kwargs):
         return Select.render_option(field._value(), field.label.text, field.checked, **kwargs)
-

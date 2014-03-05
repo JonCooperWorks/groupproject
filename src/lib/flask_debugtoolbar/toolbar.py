@@ -3,7 +3,6 @@ import urllib
 from flask import url_for, current_app
 
 
-
 class DebugToolbar(object):
 
     # default config settings
@@ -40,12 +39,14 @@ class DebugToolbar(object):
 
         for panel_path in cls.config['DEBUG_TB_PANELS']:
             dot = panel_path.rindex('.')
-            panel_module, panel_classname = panel_path[:dot], panel_path[dot+1:]
+            panel_module, panel_classname = panel_path[
+                :dot], panel_path[dot + 1:]
 
             try:
                 mod = __import__(panel_module, {}, {}, [''])
             except ImportError, e:
-                app.logger.warning('Disabled %s due to ImportError: %s', panel_classname, e)
+                app.logger.warning(
+                    'Disabled %s due to ImportError: %s', panel_classname, e)
                 continue
             panel_class = getattr(mod, panel_classname)
             cls.panel_classes.append(panel_class)
@@ -72,5 +73,3 @@ class DebugToolbar(object):
 
         template = self.jinja_env.get_template('base.html')
         return template.render(**context)
-
-

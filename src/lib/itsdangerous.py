@@ -41,6 +41,7 @@ except ImportError:
 
 
 class _CompactJSON(object):
+
     """Wrapper around simplejson that strips whitespace.
     """
 
@@ -98,6 +99,7 @@ def constant_time_compare(val1, val2):
 
 
 class BadData(Exception):
+
     """Raised if bad data of any sort was encountered.  This is the
     base for all exceptions that itsdangerous is currently using.
 
@@ -114,11 +116,13 @@ class BadData(Exception):
 
     if PY2:
         __unicode__ = __str__
+
         def __str__(self):
             return self.__unicode__().encode('utf-8')
 
 
 class BadPayload(BadData):
+
     """This error is raised in situations when payload is loaded without
     checking the signature first and an exception happend as a result of
     that.  The original exception that caused that will be stored on the
@@ -135,6 +139,7 @@ class BadPayload(BadData):
 
 
 class BadSignature(BadData):
+
     """This error is raised if a signature does not match.  As of
     itsdangerous 0.14 there are helpful attributes on the exception
     instances.  You can also catch down the baseclass :exc:`BadData`.
@@ -151,6 +156,7 @@ class BadSignature(BadData):
 
 
 class BadTimeSignature(BadSignature):
+
     """Raised for time based signatures that fail.  This is a subclass
     of :class:`BadSignature` so you can catch those down as well.
     """
@@ -167,6 +173,7 @@ class BadTimeSignature(BadSignature):
 
 
 class SignatureExpired(BadTimeSignature):
+
     """Signature timestamp is older than required max_age.  This is a
     subclass of :exc:`BadTimeSignature` so you can use the baseclass for
     catching the error.
@@ -205,6 +212,7 @@ def bytes_to_int(bytestr):
 
 
 class SigningAlgorithm(object):
+
     """Subclasses of `SigningAlgorithm` have to implement `get_signature` to
     provide signature generation functionality.
     """
@@ -219,6 +227,7 @@ class SigningAlgorithm(object):
 
 
 class NoneAlgorithm(SigningAlgorithm):
+
     """This class provides a algorithm that does not perform any signing and
     returns an empty signature.
     """
@@ -228,6 +237,7 @@ class NoneAlgorithm(SigningAlgorithm):
 
 
 class HMACAlgorithm(SigningAlgorithm):
+
     """This class provides signature generation using HMACs."""
 
     #: The digest method to use with the MAC algorithm.  This defaults to sha1
@@ -245,6 +255,7 @@ class HMACAlgorithm(SigningAlgorithm):
 
 
 class Signer(object):
+
     """This class can sign bytes and unsign it and validate the signature
     provided.
 
@@ -306,7 +317,7 @@ class Signer(object):
             return self.digest_method(salt + self.secret_key).digest()
         elif self.key_derivation == 'django-concat':
             return self.digest_method(salt + b'signer' +
-                self.secret_key).digest()
+                                      self.secret_key).digest()
         elif self.key_derivation == 'hmac':
             mac = hmac.new(self.secret_key, digestmod=self.digest_method)
             mac.update(salt)
@@ -356,6 +367,7 @@ class Signer(object):
 
 
 class TimestampSigner(Signer):
+
     """Works like the regular :class:`Signer` but also records the time
     of the signing and can be used to expire signatures.  The unsign
     method can rause a :exc:`SignatureExpired` method if the unsigning
@@ -449,6 +461,7 @@ class TimestampSigner(Signer):
 
 
 class Serializer(object):
+
     """This class provides a serialization interface on top of the
     signer.  It provides a similar API to json/pickle and other modules but is
     slightly differently structured internally.  If you want to change the
@@ -511,8 +524,8 @@ class Serializer(object):
             return serializer.loads(payload)
         except Exception as e:
             raise BadPayload('Could not load the payload because an '
-                'exception ocurred on unserializing the data',
-                original_error=e)
+                             'exception ocurred on unserializing the data',
+                             original_error=e)
 
     def dump_payload(self, obj):
         """Dumps the encoded object.  The return value is always a
@@ -584,7 +597,7 @@ class Serializer(object):
                 return False, None
             try:
                 return False, self.load_payload(e.payload,
-                    **(load_payload_kwargs or {}))
+                                                **(load_payload_kwargs or {}))
             except BadPayload:
                 return False, None
 
@@ -597,6 +610,7 @@ class Serializer(object):
 
 
 class TimedSerializer(Serializer):
+
     """Uses the :class:`TimestampSigner` instead of the default
     :meth:`Signer`.
     """
@@ -625,6 +639,7 @@ class TimedSerializer(Serializer):
 
 
 class JSONWebSignatureSerializer(Serializer):
+
     """This serializer implements JSON Web Signature (JWS) support.  Only
     supports the JWS Compact Serialization.
     """
@@ -660,9 +675,9 @@ class JSONWebSignatureSerializer(Serializer):
             json_payload = base64_decode(base64d_payload)
         except Exception as e:
             raise BadPayload('Could not base64 decode the payload because of '
-                'an exception', original_error=e)
+                             'an exception', original_error=e)
         header = Serializer.load_payload(self, json_header,
-            serializer=json)
+                                         serializer=json)
         if not isinstance(header, dict):
             raise BadPayload('Header payload is not a JSON object')
         payload = Serializer.load_payload(self, json_payload)
@@ -688,7 +703,7 @@ class JSONWebSignatureSerializer(Serializer):
         if algorithm is None:
             algorithm = self.algorithm
         return self.signer(self.secret_key, salt=salt, sep='.',
-            key_derivation=key_derivation, algorithm=algorithm)
+                           key_derivation=key_derivation, algorithm=algorithm)
 
     def make_header(self, header_fields):
         header = header_fields.copy() if header_fields else {}
@@ -723,6 +738,7 @@ class JSONWebSignatureSerializer(Serializer):
 
 
 class TimedJSONWebSignatureSerializer(JSONWebSignatureSerializer):
+
     """Works like the regular :class:`JSONWebSignatureSerializer` but also
     records the time of the signing and can be used to expire signatures.
 
@@ -782,6 +798,7 @@ class TimedJSONWebSignatureSerializer(JSONWebSignatureSerializer):
 
 
 class URLSafeSerializerMixin(object):
+
     """Mixed in with a regular serializer it will attempt to zlib compress
     the string to make it shorter if necessary.  It will also base64 encode
     the string so that it can safely be placed in a URL.
@@ -796,13 +813,13 @@ class URLSafeSerializerMixin(object):
             json = base64_decode(payload)
         except Exception as e:
             raise BadPayload('Could not base64 decode the payload because of '
-                'an exception', original_error=e)
+                             'an exception', original_error=e)
         if decompress:
             try:
                 json = zlib.decompress(json)
             except Exception as e:
                 raise BadPayload('Could not zlib decompress the payload before '
-                    'decoding the payload', original_error=e)
+                                 'decoding the payload', original_error=e)
         return super(URLSafeSerializerMixin, self).load_payload(json)
 
     def dump_payload(self, obj):
@@ -819,6 +836,7 @@ class URLSafeSerializerMixin(object):
 
 
 class URLSafeSerializer(URLSafeSerializerMixin, Serializer):
+
     """Works like :class:`Serializer` but dumps and loads into a URL
     safe string consisting of the upper and lowercase character of the
     alphabet as well as ``'_'``, ``'-'`` and ``'.'``.
@@ -827,6 +845,7 @@ class URLSafeSerializer(URLSafeSerializerMixin, Serializer):
 
 
 class URLSafeTimedSerializer(URLSafeSerializerMixin, TimedSerializer):
+
     """Works like :class:`TimedSerializer` but dumps and loads into a URL
     safe string consisting of the upper and lowercase character of the
     alphabet as well as ``'_'``, ``'-'`` and ``'.'``.

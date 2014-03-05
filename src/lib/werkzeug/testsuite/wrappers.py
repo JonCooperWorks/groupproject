@@ -17,12 +17,13 @@ from werkzeug.testsuite import WerkzeugTestCase
 
 from werkzeug import wrappers
 from werkzeug.datastructures import MultiDict, ImmutableOrderedMultiDict, \
-     ImmutableList, ImmutableTypeConversionDict, CharsetAccept, \
-     CombinedMultiDict
+    ImmutableList, ImmutableTypeConversionDict, CharsetAccept, \
+    CombinedMultiDict
 from werkzeug.test import Client, create_environ, run_wsgi_app
 
 
 class RequestTestResponse(wrappers.BaseResponse):
+
     """Subclass of the normal response class we use to test response
     and base classes.  Has some methods to test if things in the
     response match.
@@ -88,7 +89,8 @@ class WrappersTestCase(WerkzeugTestCase):
                                content_type='application/x-www-form-urlencoded')
         assert response['args'] == MultiDict([('blub', 'blah')])
         assert response['args_as_list'] == [('blub', ['blah'])]
-        assert response['form'] == MultiDict([('foo', 'blub hehe'), ('blah', '42')])
+        assert response['form'] == MultiDict(
+            [('foo', 'blub hehe'), ('blah', '42')])
         assert response['data'] == ''
         # currently we do not guarantee that the values are ordered correctly
         # for post data.
@@ -100,13 +102,15 @@ class WrappersTestCase(WerkzeugTestCase):
                                 content_type='application/x-www-form-urlencoded')
         assert response['args'] == MultiDict([('blub', 'blah')])
         assert response['args_as_list'] == [('blub', ['blah'])]
-        assert response['form'] == MultiDict([('foo', 'blub hehe'), ('blah', '42')])
+        assert response['form'] == MultiDict(
+            [('foo', 'blub hehe'), ('blah', '42')])
         assert response['data'] == ''
         self.assert_environ(response['environ'], 'PATCH')
 
         # post requests with json data
         json = '{"foo": "bar", "blub": "blah"}'
-        response = client.post('/?a=b', data=json, content_type='application/json')
+        response = client.post(
+            '/?a=b', data=json, content_type='application/json')
         assert response['data'] == json
         assert response['args'] == MultiDict([('a', 'b')])
         assert response['form'] == MultiDict()
@@ -124,7 +128,8 @@ class WrappersTestCase(WerkzeugTestCase):
         assert req.access_route == ['192.168.1.3']
 
     def test_url_request_descriptors(self):
-        req = wrappers.Request.from_values('/bar?foo=baz', 'http://example.com/test')
+        req = wrappers.Request.from_values(
+            '/bar?foo=baz', 'http://example.com/test')
         assert req.path == u'/bar'
         assert req.script_root == u'/test'
         assert req.url == 'http://example.com/test/bar?foo=baz'
@@ -134,7 +139,8 @@ class WrappersTestCase(WerkzeugTestCase):
         assert req.host == 'example.com'
         assert req.scheme == 'http'
 
-        req = wrappers.Request.from_values('/bar?foo=baz', 'https://example.com/test')
+        req = wrappers.Request.from_values(
+            '/bar?foo=baz', 'https://example.com/test')
         assert req.scheme == 'https'
 
     def test_authorization_mixin(self):
@@ -170,16 +176,21 @@ class WrappersTestCase(WerkzeugTestCase):
         response.delete_cookie('foo')
         assert response.headers.to_list() == [
             ('Content-Type', 'text/plain; charset=utf-8'),
-            ('Set-Cookie', 'foo=; expires=Thu, 01-Jan-1970 00:00:00 GMT; Max-Age=0; Path=/')
+            ('Set-Cookie',
+             'foo=; expires=Thu, 01-Jan-1970 00:00:00 GMT; Max-Age=0; Path=/')
         ]
 
         # close call forwarding
         closed = []
+
         class Iterable(object):
+
             def next(self):
                 raise StopIteration()
+
             def __iter__(self):
                 return self
+
             def close(self):
                 closed.append(True)
         response = wrappers.BaseResponse(Iterable())
@@ -209,9 +220,11 @@ class WrappersTestCase(WerkzeugTestCase):
         def wsgi_application(environ, start_response):
             start_response('200 OK', [('Content-Type', 'text/html')])
             return ['Hello World!']
-        base_response = wrappers.BaseResponse('Hello World!', content_type='text/html')
+        base_response = wrappers.BaseResponse(
+            'Hello World!', content_type='text/html')
 
         class SpecialResponse(wrappers.Response):
+
             def foo(self):
                 return 42
 
@@ -227,7 +240,8 @@ class WrappersTestCase(WerkzeugTestCase):
             assert response.content_type == 'text/html'
 
         # without env, no arbitrary conversion
-        self.assert_raises(TypeError, SpecialResponse.force_type, wsgi_application)
+        self.assert_raises(
+            TypeError, SpecialResponse.force_type, wsgi_application)
 
     def test_accept_mixin(self):
         request = wrappers.Request({
@@ -245,8 +259,10 @@ class WrappersTestCase(WerkzeugTestCase):
         assert request.accept_charsets == CharsetAccept([
             ('ISO-8859-1', 1), ('utf-8', 0.7), ('*', 0.7)
         ])
-        assert request.accept_encodings == CharsetAccept([('gzip', 1), ('deflate', 1)])
-        assert request.accept_languages == CharsetAccept([('en-us', 1), ('en', 0.5)])
+        assert request.accept_encodings == CharsetAccept(
+            [('gzip', 1), ('deflate', 1)])
+        assert request.accept_languages == CharsetAccept(
+            [('en-us', 1), ('en', 0.5)])
 
         request = wrappers.Request({'HTTP_ACCEPT': ''})
         assert request.accept_mimetypes == CharsetAccept()
@@ -301,12 +317,14 @@ class WrappersTestCase(WerkzeugTestCase):
         response = wrappers.Response('Hello World')
         assert response.get_etag() == (None, None)
         response.add_etag()
-        assert response.get_etag() == ('b10a8db164e0754105b7a99be72e3fe5', False)
+        assert response.get_etag() == (
+            'b10a8db164e0754105b7a99be72e3fe5', False)
         assert not response.cache_control
         response.cache_control.must_revalidate = True
         response.cache_control.max_age = 60
         response.headers['Content-Length'] = len(response.data)
-        assert response.headers['Cache-Control'] == 'must-revalidate, max-age=60'
+        assert response.headers[
+            'Cache-Control'] == 'must-revalidate, max-age=60'
 
         assert 'date' not in response.headers
         env = create_environ()
@@ -340,12 +358,14 @@ class WrappersTestCase(WerkzeugTestCase):
     def test_etag_response_mixin_freezing(self):
         class WithFreeze(wrappers.ETagResponseMixin, wrappers.BaseResponse):
             pass
+
         class WithoutFreeze(wrappers.BaseResponse, wrappers.ETagResponseMixin):
             pass
 
         response = WithFreeze('Hello World')
         response.freeze()
-        assert response.get_etag() == (wrappers.generate_etag('Hello World'), False)
+        assert response.get_etag() == (
+            wrappers.generate_etag('Hello World'), False)
         response = WithoutFreeze('Hello World')
         response.freeze()
         assert response.get_etag() == (None, None)
@@ -409,16 +429,15 @@ class WrappersTestCase(WerkzeugTestCase):
         response.content_language.add('fr')
         assert response.headers['Content-Language'] == 'en-US, fr'
 
-
     def test_common_request_descriptors_mixin(self):
         request = wrappers.Request.from_values(content_type='text/html; charset=utf-8',
                                                content_length='23',
                                                headers={
-            'Referer':      'http://www.example.com/',
-            'Date':         'Sat, 28 Feb 2009 19:04:35 GMT',
-            'Max-Forwards': '10',
-            'Pragma':       'no-cache'
-        })
+                                                   'Referer':      'http://www.example.com/',
+                                                   'Date':         'Sat, 28 Feb 2009 19:04:35 GMT',
+                                                   'Max-Forwards': '10',
+                                                   'Pragma':       'no-cache'
+                                               })
 
         assert request.content_type == 'text/html; charset=utf-8'
         assert request.mimetype == 'text/html'
@@ -458,6 +477,7 @@ class WrappersTestCase(WerkzeugTestCase):
         assert not r.is_streamed
         r = wrappers.Response(["foo", "bar"])
         assert not r.is_streamed
+
         def gen():
             if 0:
                 yield None
@@ -496,7 +516,8 @@ class WrappersTestCase(WerkzeugTestCase):
         resp = wrappers.Response(u'Hello Wörld!')
 
         def get_content_length(resp):
-            headers = wrappers.Headers.linked(resp.get_wsgi_headers(req.environ))
+            headers = wrappers.Headers.linked(
+                resp.get_wsgi_headers(req.environ))
             return headers.get('content-length', type=int)
 
         def generate_items():
@@ -645,6 +666,7 @@ class WrappersTestCase(WerkzeugTestCase):
 
     def test_location_header_autocorrect(self):
         env = create_environ()
+
         class MyResponse(wrappers.Response):
             autocorrect_location_header = False
         resp = MyResponse('Hello World!')
@@ -653,7 +675,8 @@ class WrappersTestCase(WerkzeugTestCase):
 
         resp = wrappers.Response('Hello World!')
         resp.headers['Location'] = '/test'
-        self.assert_equal(resp.get_wsgi_headers(env)['Location'], 'http://localhost/test')
+        self.assert_equal(
+            resp.get_wsgi_headers(env)['Location'], 'http://localhost/test')
 
 
 def suite():

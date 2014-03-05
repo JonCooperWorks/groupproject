@@ -116,10 +116,12 @@ if _default_hash is None:
 
 
 class UnquoteError(Exception):
+
     """Internal exception used to signal failures on quoting."""
 
 
 class SecureCookie(ModificationTrackingDict):
+
     """Represents a secure cookie.  You can subclass this class and provide
     an alternative mac method.  The import thing is that the mac method
     is a function with a similar interface to the hashlib.  Required

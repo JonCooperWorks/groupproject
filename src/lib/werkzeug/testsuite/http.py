@@ -41,15 +41,16 @@ class HTTPUtilityTestCase(WerkzeugTestCase):
 
     def test_accept_matches(self):
         a = http.parse_accept_header('text/xml,application/xml,application/xhtml+xml,'
-                                    'text/html;q=0.9,text/plain;q=0.8,'
-                                    'image/png', datastructures.MIMEAccept)
+                                     'text/html;q=0.9,text/plain;q=0.8,'
+                                     'image/png', datastructures.MIMEAccept)
         self.assert_equal(a.best_match(['text/html', 'application/xhtml+xml']),
                           'application/xhtml+xml')
         self.assert_equal(a.best_match(['text/html']),  'text/html')
         self.assert_(a.best_match(['foo/bar']) is None)
         self.assert_equal(a.best_match(['foo/bar', 'bar/foo'],
                           default='foo/bar'),  'foo/bar')
-        self.assert_equal(a.best_match(['application/xml', 'text/xml']),  'application/xml')
+        self.assert_equal(
+            a.best_match(['application/xml', 'text/xml']),  'application/xml')
 
     def test_charset_accept(self):
         a = http.parse_accept_header('ISO-8859-1,utf-8;q=0.7,*;q=0.7',
@@ -106,7 +107,8 @@ class HTTPUtilityTestCase(WerkzeugTestCase):
         assert c.to_header() == 'no-cache'
 
     def test_authorization_header(self):
-        a = http.parse_authorization_header('Basic QWxhZGRpbjpvcGVuIHNlc2FtZQ==')
+        a = http.parse_authorization_header(
+            'Basic QWxhZGRpbjpvcGVuIHNlc2FtZQ==')
         assert a.type == 'basic'
         assert a.username == 'Aladdin'
         assert a.password == 'open sesame'
@@ -187,22 +189,29 @@ class HTTPUtilityTestCase(WerkzeugTestCase):
         assert 'blar' in es
         assert es.contains_raw('w/"baz"')
         assert es.contains_raw('"foo"')
-        assert sorted(es.to_header().split(', ')) == ['"bar"', '"blar"', '"foo"', 'w/"baz"']
+        assert sorted(es.to_header().split(', ')) == [
+            '"bar"', '"blar"', '"foo"', 'w/"baz"']
 
     def test_parse_date(self):
-        assert http.parse_date('Sun, 06 Nov 1994 08:49:37 GMT    ') == datetime(1994, 11, 6, 8, 49, 37)
-        assert http.parse_date('Sunday, 06-Nov-94 08:49:37 GMT') == datetime(1994, 11, 6, 8, 49, 37)
-        assert http.parse_date(' Sun Nov  6 08:49:37 1994') == datetime(1994, 11, 6, 8, 49, 37)
+        assert http.parse_date('Sun, 06 Nov 1994 08:49:37 GMT    ') == datetime(
+            1994, 11, 6, 8, 49, 37)
+        assert http.parse_date(
+            'Sunday, 06-Nov-94 08:49:37 GMT') == datetime(1994, 11, 6, 8, 49, 37)
+        assert http.parse_date(' Sun Nov  6 08:49:37 1994') == datetime(
+            1994, 11, 6, 8, 49, 37)
         assert http.parse_date('foo') is None
 
     def test_parse_date_overflows(self):
-        assert http.parse_date(' Sun 02 Feb 1343 08:49:37 GMT') == datetime(1343, 2, 2, 8, 49, 37)
-        assert http.parse_date('Thu, 01 Jan 1970 00:00:00 GMT') == datetime(1970, 1, 1, 0, 0)
+        assert http.parse_date(' Sun 02 Feb 1343 08:49:37 GMT') == datetime(
+            1343, 2, 2, 8, 49, 37)
+        assert http.parse_date(
+            'Thu, 01 Jan 1970 00:00:00 GMT') == datetime(1970, 1, 1, 0, 0)
         assert http.parse_date('Thu, 33 Jan 1970 00:00:00 GMT') is None
 
     def test_remove_entity_headers(self):
         now = http.http_date()
-        headers1 = [('Date', now), ('Content-Type', 'text/html'), ('Content-Length', '0')]
+        headers1 = [
+            ('Date', now), ('Content-Type', 'text/html'), ('Content-Length', '0')]
         headers2 = datastructures.Headers(headers1)
 
         http.remove_entity_headers(headers1)
@@ -238,8 +247,10 @@ class HTTPUtilityTestCase(WerkzeugTestCase):
 
     def test_dump_header(self):
         assert http.dump_header([1, 2, 3]) == '1, 2, 3'
-        assert http.dump_header([1, 2, 3], allow_token=False) == '"1", "2", "3"'
-        assert http.dump_header({'foo': 'bar'}, allow_token=False) == 'foo="bar"'
+        assert http.dump_header(
+            [1, 2, 3], allow_token=False) == '"1", "2", "3"'
+        assert http.dump_header(
+            {'foo': 'bar'}, allow_token=False) == 'foo="bar"'
         assert http.dump_header({'foo': 'bar'}) == 'foo=bar'
 
     def test_is_resource_modified(self):
@@ -256,29 +267,32 @@ class HTTPUtilityTestCase(WerkzeugTestCase):
         env['HTTP_IF_NONE_MATCH'] = http.generate_etag('awesome')
         assert not http.is_resource_modified(env, data='awesome')
 
-        env['HTTP_IF_MODIFIED_SINCE'] = http.http_date(datetime(2008, 1, 1, 12, 30))
+        env['HTTP_IF_MODIFIED_SINCE'] = http.http_date(
+            datetime(2008, 1, 1, 12, 30))
         assert not http.is_resource_modified(env,
-            last_modified=datetime(2008, 1, 1, 12, 00))
+                                             last_modified=datetime(2008, 1, 1, 12, 00))
         assert http.is_resource_modified(env,
-            last_modified=datetime(2008, 1, 1, 13, 00))
+                                         last_modified=datetime(2008, 1, 1, 13, 00))
 
     def test_date_formatting(self):
         assert http.cookie_date(0) == 'Thu, 01-Jan-1970 00:00:00 GMT'
-        assert http.cookie_date(datetime(1970, 1, 1)) == 'Thu, 01-Jan-1970 00:00:00 GMT'
+        assert http.cookie_date(
+            datetime(1970, 1, 1)) == 'Thu, 01-Jan-1970 00:00:00 GMT'
         assert http.http_date(0) == 'Thu, 01 Jan 1970 00:00:00 GMT'
-        assert http.http_date(datetime(1970, 1, 1)) == 'Thu, 01 Jan 1970 00:00:00 GMT'
+        assert http.http_date(
+            datetime(1970, 1, 1)) == 'Thu, 01 Jan 1970 00:00:00 GMT'
 
     def test_cookies(self):
         assert http.parse_cookie('dismiss-top=6; CP=null*; PHPSESSID=0a539d42abc001cd'
-                            'c762809248d4beed; a=42') == {
+                                 'c762809248d4beed; a=42') == {
             'CP':           u'null*',
             'PHPSESSID':    u'0a539d42abc001cdc762809248d4beed',
             'a':            u'42',
             'dismiss-top':  u'6'
         }
         assert set(http.dump_cookie('foo', 'bar baz blub', 360, httponly=True,
-                               sync_expires=False).split('; ')) == \
-               set(['HttpOnly', 'Max-Age=360', 'Path=/', 'foo="bar baz blub"'])
+                                    sync_expires=False).split('; ')) == \
+            set(['HttpOnly', 'Max-Age=360', 'Path=/', 'foo="bar baz blub"'])
         assert http.parse_cookie('fo234{=bar blub=Blah') == {'blub': 'Blah'}
 
     def test_cookie_quoting(self):
@@ -379,9 +393,9 @@ class RegressionTestCase(WerkzeugTestCase):
     def test_best_match_works(self):
         # was a bug in 0.6
         rv = http.parse_accept_header('foo=,application/xml,application/xhtml+xml,'
-                                     'text/html;q=0.9,text/plain;q=0.8,'
-                                     'image/png,*/*;q=0.5',
-                                     datastructures.MIMEAccept).best_match(['foo/bar'])
+                                      'text/html;q=0.9,text/plain;q=0.8,'
+                                      'image/png,*/*;q=0.5',
+                                      datastructures.MIMEAccept).best_match(['foo/bar'])
         self.assert_equal(rv, 'foo/bar')
 
 

@@ -12,6 +12,7 @@ __all__ = (
 
 
 class SearchField(core.StringField):
+
     """
     Represents an ``<input type="search">``.
     """
@@ -19,6 +20,7 @@ class SearchField(core.StringField):
 
 
 class TelField(core.StringField):
+
     """
     Represents an ``<input type="tel">``.
     """
@@ -26,6 +28,7 @@ class TelField(core.StringField):
 
 
 class URLField(core.StringField):
+
     """
     Represents an ``<input type="url">``.
     """
@@ -33,6 +36,7 @@ class URLField(core.StringField):
 
 
 class EmailField(core.StringField):
+
     """
     Represents an ``<input type="email">``.
     """
@@ -40,6 +44,7 @@ class EmailField(core.StringField):
 
 
 class DateTimeField(core.DateTimeField):
+
     """
     Represents an ``<input type="datetime">``.
     """
@@ -47,6 +52,7 @@ class DateTimeField(core.DateTimeField):
 
 
 class DateField(core.DateField):
+
     """
     Represents an ``<input type="date">``.
     """
@@ -54,6 +60,7 @@ class DateField(core.DateField):
 
 
 class DateTimeLocalField(core.DateTimeField):
+
     """
     Represents an ``<input type="datetime-local">``.
     """
@@ -61,6 +68,7 @@ class DateTimeLocalField(core.DateTimeField):
 
 
 class IntegerField(core.IntegerField):
+
     """
     Represents an ``<input type="number">``.
     """
@@ -68,6 +76,7 @@ class IntegerField(core.IntegerField):
 
 
 class DecimalField(core.DecimalField):
+
     """
     Represents an ``<input type="number">``.
     """
@@ -75,6 +84,7 @@ class DecimalField(core.DecimalField):
 
 
 class IntegerRangeField(core.IntegerField):
+
     """
     Represents an ``<input type="range">``.
     """
@@ -82,8 +92,8 @@ class IntegerRangeField(core.IntegerField):
 
 
 class DecimalRangeField(core.DecimalField):
+
     """
     Represents an ``<input type="range">``.
     """
     widget = widgets.RangeInput()
-

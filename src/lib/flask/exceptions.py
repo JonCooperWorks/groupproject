@@ -13,6 +13,7 @@ from .helpers import json
 
 
 class JSONHTTPException(HTTPException):
+
     """A base class for HTTP exceptions with ``Content-Type:
     application/json``.
 
@@ -37,6 +38,7 @@ class JSONHTTPException(HTTPException):
 
 
 class JSONBadRequest(JSONHTTPException, BadRequest):
+
     """Represents an HTTP ``400 Bad Request`` error whose body contains an
     error message in JSON format instead of HTML format (as in the superclass).
 

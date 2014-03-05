@@ -39,7 +39,7 @@ class SimpleCacheTestCase(WerkzeugTestCase):
         c = cache.SimpleCache()
         c.set_many({0: 0, 1: 1, 2: 4})
         assert c.get(2) == 4
-        c.set_many((i, i*i) for i in xrange(3))
+        c.set_many((i, i * i) for i in xrange(3))
         assert c.get(2) == 4
 
 
@@ -66,7 +66,6 @@ class FileSystemCacheTestCase(WerkzeugTestCase):
         cache_files = os.listdir(tmp_dir)
         shutil.rmtree(tmp_dir)
         assert len(cache_files) <= THRESHOLD
-
 
     def test_filesystemcache_clear(self):
         tmp_dir = tempfile.mkdtemp()
@@ -147,7 +146,6 @@ class RedisCacheTestCase(WerkzeugTestCase):
         assert c.inc('foo') == 2
         assert c.dec('foo') == 1
         c.delete('foo')
-
 
     def test_true_false(self):
         c = self.make_cache()

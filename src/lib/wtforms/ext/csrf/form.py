@@ -7,6 +7,7 @@ from .fields import CSRFTokenField
 
 
 class SecureForm(Form):
+
     """
     Form that enables CSRF processing via subclassing hooks.
     """

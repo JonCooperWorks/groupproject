@@ -28,10 +28,12 @@ from werkzeug.wsgi import FileWrapper
 
 
 class WSGIWarning(Warning):
+
     """Warning class for WSGI warnings."""
 
 
 class HTTPWarning(Warning):
+
     """Warning class for HTTP warnings."""
 
 
@@ -69,7 +71,8 @@ class InputStream(object):
                              'on all major servers.'),
                  stacklevel=2)
         else:
-            raise TypeError('too many arguments passed to wsgi.input.readline()')
+            raise TypeError(
+                'too many arguments passed to wsgi.input.readline()')
         return self._stream.readline(*args)
 
     def __iter__(self):
@@ -159,7 +162,7 @@ class GuardedIterator(object):
                     if key not in ('expires', 'content-location') and \
                        is_entity_header(key):
                         warn(HTTPWarning('entity header %r found in 304 '
-                            'response' % key))
+                                         'response' % key))
                 if bytes_sent:
                     warn(HTTPWarning('304 responses must not have a body'))
             elif 100 <= status_code < 200 or status_code == 204:
@@ -183,6 +186,7 @@ class GuardedIterator(object):
 
 
 class LintMiddleware(object):
+
     """This middleware wraps an application and warns on common errors.
     Among other thing it currently checks for the following problems:
 
@@ -233,7 +237,6 @@ class LintMiddleware(object):
             warn(WSGIWarning('PATH_INFO does not start with a slash: %r'
                              % path_info), stacklevel=3)
 
-
     def check_start_response(self, status, headers, exc_info):
         check_string('status', status)
         status_code = status.split(None, 1)[0]
@@ -260,7 +263,7 @@ class LintMiddleware(object):
             if name.lower() == 'status':
                 warn(WSGIWarning('The status header is not supported due to '
                                  'conflicts with the CGI spec.'),
-                                 stacklevel=3)
+                     stacklevel=3)
 
         if exc_info is not None and not isinstance(exc_info, tuple):
             warn(WSGIWarning('invalid value for exc_info'), stacklevel=3)
@@ -293,7 +296,8 @@ class LintMiddleware(object):
 
     def __call__(self, *args, **kwargs):
         if len(args) != 2:
-            warn(WSGIWarning('Two arguments to WSGI app required'), stacklevel=2)
+            warn(
+                WSGIWarning('Two arguments to WSGI app required'), stacklevel=2)
         if kwargs:
             warn(WSGIWarning('No keyword arguments to WSGI app allowed'),
                  stacklevel=2)

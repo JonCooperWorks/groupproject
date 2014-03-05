@@ -58,6 +58,7 @@ class MemoryTestCase(FlaskTestCase):
 
     def test_memory_consumption(self):
         app = flask.Flask(__name__)
+
         @app.route('/')
         def index():
             return flask.render_template('simple_template.html', whiskey=42)
@@ -91,12 +92,15 @@ class ExceptionTestCase(FlaskTestCase):
             whatever = 42
         app = flask.Flask(__name__)
         app.testing = True
+
         @app.errorhandler(Foo)
         def handle_foo(e):
             return str(e.whatever)
+
         @app.route('/')
         def index():
             raise flask.abort(flask.redirect(flask.url_for('test')))
+
         @app.route('/test')
         def test():
             raise Foo()
