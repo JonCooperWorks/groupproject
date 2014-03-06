@@ -52,3 +52,9 @@ class Course(ndb.Model):
 class Enrollment(ndb.Model):
     student = ndb.KeyProperty()
     course = ndb.KeyProperty()
+
+
+class Question(ndb.Model):
+    question_type = ndb.StringProperty(choices=['closed', 'open'])
+    question = ndb.StringProperty()
+    number = ndb.IntegerProperty()

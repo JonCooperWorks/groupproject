@@ -1,7 +1,5 @@
 import unittest
 
-from google.appengine.ext import testbed
-
 from application import models
 
 
@@ -69,3 +67,12 @@ class EnrollmentTestCase(unittest.TestCase):
         enrollment = models.Enrollment()
         self.assertIsNone(enrollment.student)
         self.assertIsNone(enrollment.course)
+
+
+class QuestionTestCase(unittest.TestCase):
+
+    def test_defaults(self):
+        question = models.Question()
+        self.assertIsNone(question.number)
+        self.assertIsNone(question.question)
+        self.assertIsNone(question.question_type)
