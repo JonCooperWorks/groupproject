@@ -1,13 +1,14 @@
 -extends "base.html" 
 
 -block content
-  #analysis: %section
-    .progress.progress-striped.active
-      .bar(style="width: 20%")
-
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
     %h1 Analysis Summary
     %h2 COMP3901 
     %h3 200/1000 Students Finished Survey
+
+    #analysis: %section
+     .progress.progress-striped
+      .bar(style="width: 20%")
 
     %table.table
       %thead
@@ -32,39 +33,78 @@
 
         #collapseOne.accordion-body.collapse
           .accordion-inner
+          <script type="text/javascript">
+
+            // Load the Visualization API and the piechart package.
+            google.load('visualization', '1.0', {'packages':['corechart']});
+
+            // Set a callback to run when the Google Visualization API is loaded.
+            google.setOnLoadCallback(drawChart);
+
+            // Callback that creates and populates a data table,
+            // instantiates the pie chart, passes in the data and
+            // draws it.
+            function drawChart() {
+
+              // Create the data table.
+              var data = new google.visualization.DataTable();
+              data.addColumn('string', 'Rating');
+              data.addColumn('number', 'Response');
+              data.addRows([
+                ['1', 2],
+                ['2', 2],
+                ['3', 4],
+                ['4', 0],
+                ['5', 2]
+              ]);
+
+              // Set chart options
+              var options = {'title':'Q1. Was the lecturer on time?',
+                             'width':600,
+                             'height':300};
+
+              // Instantiate and draw our chart, passing in some options.
+              var chart = new google.visualization.PieChart(document.getElementById('chart_div'));
+              chart.draw(data, options);
+            }
+          </script>
             .row
-              .span10
-                %table.table
-                  %thead
-                    %tr
-                      %th Rating
-                      %th Repsonses
-                      %th Total
-                  %tbody
-                    %tr
-                      %td 1
-                      %td 2
-                      %td 20%
-                    %tr
-                      %td 2
-                      %td 2
-                      %td 20%
-                    %tr
-                      %td 3
-                      %td 4
-                      %td 40%
-                    %tr
-                      %td 4
-                      %td 0
-                      %td 0%
-                    %tr
-                      %td 5
-                      %td 2
-                      %td 20%
-                    %tr
-                      %td Total
-                      %td 
-                      %td  10
+              .offset3.span6
+                 #chart_div
+            .row
+              .offset1.span10
+                .center
+                  %table.table
+                    %thead
+                      %tr
+                        %th Rating
+                        %th Repsonses
+                        %th Total
+                    %tbody
+                      %tr
+                        %td 1
+                        %td 2
+                        %td 20%
+                      %tr
+                        %td 2
+                        %td 2
+                        %td 20%
+                      %tr
+                        %td 3
+                        %td 4
+                        %td 40%
+                      %tr
+                        %td 4
+                        %td 0
+                        %td 0%
+                      %tr
+                        %td 5
+                        %td 2
+                        %td 20%
+                      %tr
+                        %td Total
+                        %td 
+                        %td  10
 
 
     .accordion-group

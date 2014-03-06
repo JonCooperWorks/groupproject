@@ -29,6 +29,9 @@ app.add_url_rule('/analysis', 'analysis', view_func=views.analysis)
 # Signup Page
 app.add_url_rule('/signup', 'signup', view_func=views.signup)
 
+# Landing Page
+app.add_url_rule('/landing', 'landing', view_func=views.landing)
+
 # Test route page allows me to style while work is done on the backend
 app.add_url_rule('/surveytest', 'surveytest', view_func=views.surveytest)
 app.add_url_rule('/analysistest', 'analysistest', view_func=views.analysistest)
