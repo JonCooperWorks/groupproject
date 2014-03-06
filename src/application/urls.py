@@ -50,9 +50,11 @@ app.add_url_rule('/survey', 'survey', view_func=views.survey)
 # Analysis Page
 app.add_url_rule('/analysis', 'analysis', view_func=views.analysis)
 
+# Signup Page
+app.add_url_rule('/signup', 'signup', view_func=views.signup)
+
 # Test route page allows me to style while work is done on the backend
 app.add_url_rule('/surveytest', 'surveytest', view_func=views.surveytest)
-app.add_url_rule('/logintest', 'logintest', view_func=views.logintest)
 app.add_url_rule('/analysistest', 'analysistest', view_func=views.analysistest)
 
 # Error handlers

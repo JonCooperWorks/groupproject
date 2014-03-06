@@ -1,8 +1,7 @@
-{% extends "base.html" %}
+-extends "base.html" 
 
-{% block content %}
-
-  %section
+-block content
+  #survey: %section
     // TODO fill in javascript to change bar progress.
     .progress.progress-striped.active
       .bar(style="width: 10%")
@@ -31,4 +30,3 @@
         .row
           .form-group.span10
             %button(type="submit", class="btn btn-default") Submit
-{% endblock content %}

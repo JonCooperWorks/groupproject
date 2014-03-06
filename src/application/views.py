@@ -37,13 +37,13 @@ def survey():
 def analysis():
     return render_template('analysis.haml')
 
+def signup():
+    return render_template('signup.haml')
+
 
 # Handlersfor testing styling.
 def surveytest():
     return render_template('surveytest.haml')
-
-def logintest():
-    return render_template('logintest.haml')
 
 def analysistest():
     return render_template('analysistest.haml')
