@@ -59,3 +59,7 @@ class Question(ndb.Model):
     question = ndb.StringProperty()
     number = ndb.IntegerProperty()
     is_active = ndb.BooleanProperty()
+
+    @classmethod
+    def get_active(cls):
+        return cls.query().filter(cls.is_active == True)

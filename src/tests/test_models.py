@@ -76,3 +76,9 @@ class QuestionTestCase(testing.TestCase):
         self.assertIsNone(question.question)
         self.assertIsNone(question.question_type)
         self.assertIsNone(question.is_active)
+
+    def test_is_active(self):
+        question = models.Question(is_active=True).put()
+        models.Question(is_active=False).put()
+        self.assertEqual(1, models.Question.get_active().count())
+        self.assertEqual(question, models.Question.get_active().get().key)
