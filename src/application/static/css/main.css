@@ -6,3 +6,43 @@
 .nowrap { white-space: nowrap; }
 
 /* Your customizations here */
+
+.center {text-align: center;}
+
+#login input {
+  border-radius: 3px;
+  font-size: 16px;
+  width: 96%;
+  margin-bottom: 16px;
+  height: 27px;
+  color: black;
+} 
+
+#login button.login {
+  color: #fff;
+  background: #187CCC;
+  font-size: 15px;
+  margin: 0 auto;
+  display: inline-block;
+  padding: 6px 19px;
+  border: 0 none;
+} 
+
+#signup input {
+  border-radius: 3px;
+  font-size: 16px;
+  width: 96%;
+  margin-bottom: 16px;
+  height: 27px;
+  color: black;
+} 
+
+#signup button {
+  color: #fff;
+  background: #187CCC;
+  font-size: 15px;
+  margin: 0 auto;
+  display: inline-block;
+  padding: 6px 19px;
+  border: 0 none;
+} 

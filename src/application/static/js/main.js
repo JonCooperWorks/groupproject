@@ -16,3 +16,7 @@ var Utils = {
 };
 
 /* Your custom JavaScript here */
+$(document).ready(function ($) {
+
+
+});

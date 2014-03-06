@@ -1,0 +1,117 @@
+-extends "base.html" 
+
+-block content
+  #analysis: %section
+    .progress.progress-striped.active
+      .bar(style="width: {{ survey.progress }}")
+
+    %h1 Analysis Summary
+    %h2 {{ survey.name }}
+    %h3 {survey.studentsparticipated}/{survey.totalstudentstaking} Students Finished Survey
+
+    %table.table
+      %thead
+        %tr
+          %th Question
+          %th Average Response
+      %tbody
+        -for question in questions
+          %tr
+            %th {{ question.question }}
+            %th {{ question.reponseAvg }}
+
+    %h3 Rating : {{ survey.rating}}
+
+    .accordion#accordion2
+    -for question in questions
+      -if question.type == onetofivetype
+        .accordion-group
+          .accordion-heading
+            %a.accordion-toggle(data-toggle="collapse", data-parent="#accordion2", href="#{{survey.question}}")
+              %h3 Q{{question.number}}. {{question.question}} 
+
+          #{{survey.question}}.accordion-body.collapse
+            .accordion-inner
+              /* TODO - Some Javascript Graph Here */
+              .row
+                .span10
+                  %table.table
+                    %thead
+                      %tr
+                        %th Rating
+                        %th Repsonses
+                        %th Total
+                    %tbody
+                      %tr
+                        %td 1
+                        %td {{question.question.rating1percentage}}
+                        %td {{question.question.rating1total}}
+                      %tr
+                        %td 2
+                        %td {{question.question.rating2percentage}}</td>
+                        %td {{question.question.rating2total}}</td>
+                      %tr
+                        %td 3
+                        %td {{question.question.rating3percentage}}
+                        %td {{question.question.rating3total}}
+                      %tr
+                        %td 4
+                        %td {{question.question.rating4percentage}}
+                        %td {{question.question.rating4total}}
+                      %tr
+                        %td 5
+                        %td {{question.question.rating5percentage}}
+                        %td {{question.question.rating5total}}
+                      %tr
+                        %td Total
+                        %td 
+                        %td {{survey.totalanswered}} 
+
+
+    .accordion-group
+      .accordion-heading
+        %a.accordion-toggle(data-toggle="collapse", data-parent="#accordion2", href="#{{survery.question}}")
+          -if question.type == onetofivetype
+            %h3 Q{question.number}}. {{question.question}} 
+
+      #{{survey.question}}.accordion-body.collapse
+        .accordion-inner
+          /* TODO - Some Javascript Graph Here */
+          .row
+            .span10
+              %table.table
+                %thead
+                  %tr
+                    %th Rating
+                    %th Repsonses
+                    %th Total
+                %tbody
+                  %tr
+                    %td Negative
+                    %td {{question.question.negativeratingpercentage}}
+                    %td {{question.question.negativeratingtotal}}
+              
+                  %tr
+                    %td Partly Negative
+                    %td {{question.question.partlynegativeratingpercentage}}
+                    %td {{question.question.partlynegativeratingtotal}}
+                  
+                  %tr
+                    %td Neutral
+                    %td {{question.question.neutralratingpercentage}}
+                    %td {{question.question.neutralratingtotal}}
+                  
+                  %tr
+                    %td Partly Positive
+                    %td {{question.question.partlypositivepercentage}}
+                    %td {{question.question.partlypositiveratingtotal}}
+                  
+                  %tr
+                    %td Positive
+                    %td {{question.question.positivepercentage}}
+                    %td {{question.question.positivetotal}}
+                  
+                  %tr
+                    %td Total
+                    %td 
+                    %td {{survey.totalanswered}}

@@ -28,6 +28,25 @@ cache = Cache(app)
 def home():
     return redirect(url_for('list_examples'))
 
+def login():
+    return render_template('login.haml')
+
+def survey():
+    return render_template('survey.haml')
+
+def analysis():
+    return render_template('analysis.haml')
+
+def signup():
+    return render_template('signup.haml')
+
+
+# Handlersfor testing styling.
+def surveytest():
+    return render_template('surveytest.haml')
+
+def analysistest():
+    return render_template('analysistest.haml')
 
 def say_hello(username):
     """Contrived example to demonstrate Flask's url routing capabilities"""
