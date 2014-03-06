@@ -7,11 +7,30 @@ App Engine datastore models
 
 
 from google.appengine.ext import ndb
+from webapp2_extras.security import generate_password_hash, check_password_hash
 
 
 class User(ndb.Model):
     username = ndb.StringProperty()
     password_hash = ndb.StringProperty()
+
+    @classmethod
+    def create(cls, username, password):
+        user = cls(username=username,
+                   password_hash=generate_password_hash(password))
+        user.put()
+        return user
+
+    @classmethod
+    def authenticate(cls, username, password):
+        user = cls.query().filter(cls.username == username).get()
+        if user is None:
+            return None
+
+        if check_password_hash(password, user.password_hash):
+            return user
+
+        return None
 
 
 class Student(ndb.Model):
