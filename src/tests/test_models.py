@@ -1,9 +1,8 @@
-import unittest
-
 from application import models
+from lib import testing
 
 
-class UserTestCase(unittest.TestCase):
+class UserTestCase(testing.TestCase):
 
     def test_defaults(self):
         user = models.User()
@@ -11,7 +10,7 @@ class UserTestCase(unittest.TestCase):
         self.assertIsNone(user.password_hash)
 
 
-class StudentTestCase(unittest.TestCase):
+class StudentTestCase(testing.TestCase):
 
     def test_defaults(self):
         student = models.Student()
@@ -24,7 +23,7 @@ class StudentTestCase(unittest.TestCase):
         self.assertIsNone(student.year)
 
 
-class DepartmentTestCase(unittest.TestCase):
+class DepartmentTestCase(testing.TestCase):
 
     def test_defaults(self):
         dept = models.Department()
@@ -32,7 +31,7 @@ class DepartmentTestCase(unittest.TestCase):
         self.assertIsNone(dept.faculty)
 
 
-class FacultyTestCase(unittest.TestCase):
+class FacultyTestCase(testing.TestCase):
 
     def test_defaults(self):
         faculty = models.Faculty()
@@ -40,7 +39,7 @@ class FacultyTestCase(unittest.TestCase):
         self.assertIsNone(faculty.head_of_department)
 
 
-class LecturerTestCase(unittest.TestCase):
+class LecturerTestCase(testing.TestCase):
 
     def test_defaults(self):
         lecturer = models.Lecturer()
@@ -50,7 +49,7 @@ class LecturerTestCase(unittest.TestCase):
         self.assertIsNone(lecturer.department)
 
 
-class CourseTestCase(unittest.TestCase):
+class CourseTestCase(testing.TestCase):
 
     def test_defaults(self):
         course = models.Course()
@@ -61,7 +60,7 @@ class CourseTestCase(unittest.TestCase):
         self.assertIsNone(course.faculty)
 
 
-class EnrollmentTestCase(unittest.TestCase):
+class EnrollmentTestCase(testing.TestCase):
 
     def test_defaults(self):
         enrollment = models.Enrollment()
@@ -69,7 +68,7 @@ class EnrollmentTestCase(unittest.TestCase):
         self.assertIsNone(enrollment.course)
 
 
-class QuestionTestCase(unittest.TestCase):
+class QuestionTestCase(testing.TestCase):
 
     def test_defaults(self):
         question = models.Question()
@@ -77,3 +76,9 @@ class QuestionTestCase(unittest.TestCase):
         self.assertIsNone(question.question)
         self.assertIsNone(question.question_type)
         self.assertIsNone(question.is_active)
+
+    def test_is_active(self):
+        question = models.Question(is_active=True).put()
+        models.Question(is_active=False).put()
+        self.assertEqual(1, models.Question.get_active().count())
+        self.assertEqual(question, models.Question.get_active().get().key)
