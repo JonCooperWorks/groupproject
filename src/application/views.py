@@ -2,6 +2,8 @@ from flask import render_template, url_for, redirect
 from flask_cache import Cache
 
 from application import app
+from application.forms import LoginForm
+from application.models import User
 
 
 # Flask-Cache (configured to use App Engine Memcache API)
@@ -13,6 +15,13 @@ def home():
 
 
 def login():
+    form = LoginForm()
+    if form.validate_on_submit():
+        user = User.authenticate(form.username.data, form.password.data)
+        if user is None:
+            return render_template('login.haml', error='Invalid login')
+
+        return redirect(url_for('survey'))
     return render_template('login.haml')
 
 
