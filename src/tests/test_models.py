@@ -76,3 +76,4 @@ class QuestionTestCase(unittest.TestCase):
         self.assertIsNone(question.number)
         self.assertIsNone(question.question)
         self.assertIsNone(question.question_type)
+        self.assertIsNone(question.is_active)

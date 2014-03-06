@@ -58,3 +58,4 @@ class Question(ndb.Model):
     question_type = ndb.StringProperty(choices=['closed', 'open'])
     question = ndb.StringProperty()
     number = ndb.IntegerProperty()
+    is_active = ndb.BooleanProperty()
