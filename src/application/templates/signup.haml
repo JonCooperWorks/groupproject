@@ -1,0 +1,32 @@
+-extends "base.html" 
+
+-block content
+  #signup.container
+    .row
+      .offset3.span6.well
+        %h2.center
+          Sign Up
+        %form.send-message(action="", method="POST")
+
+          .control-group
+            %label.control-label(for="name") Name:
+            .controls
+              %input#name(type="text", name="name", required="required", \
+                          value="")
+
+          .control-group
+            %label.control-label(for="email") E-mail address:
+            .controls
+              %input#email(type="email", name="email", required="required", \
+                           value="")
+
+          .control-group
+            %label.control-label(for="password") Password:
+            .controls
+              %input#password(type="password", name="password", required="required", \
+                              autocomplete="off")
+
+          .form-actions.center
+            %button(type="submit")
+              %i.icon-thumbs-up
+              Sign Up

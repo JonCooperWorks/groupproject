@@ -1,0 +1,25 @@
+-extends "base.html" 
+
+-block content
+  #login
+    .row
+      .span5.offset3.login-box.well
+        %h3.center Login
+
+        %form#login-form(action="", method="POST")
+          %input#redirect(type="hidden", name="redirect", \
+                          value="")
+
+          %input#username(type="text", name="username", required="required", \
+                          value="", \
+                          placeholder="Email")
+
+          %input#password(type="password", name="password", \
+                          required="required", placeholder="Password", \
+                          autocomplete="off")
+
+          .button-container.center
+            %button.btn.login(type="submit")
+              %i.icon-lock"
+              &nbsp;
+              Login

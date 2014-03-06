@@ -1,5 +1,6 @@
 VIRTUALENV="virtualenv"
 virtualenv_dir="venv"
+APPENGINE=/usr/local/google_appengine
 
 setup: venv deps
 
@@ -13,3 +14,5 @@ deps:
 keys:
 	./src/application/generate_keys.py
 
+serve:
+	@$(PYTHON) $(APPENGINE)/dev_appserver.py src/
