@@ -2,7 +2,7 @@ from flask import render_template, url_for, redirect
 from flask_cache import Cache
 
 from application import app
-
+from models import Question
 
 # Flask-Cache (configured to use App Engine Memcache API)
 cache = Cache(app)
@@ -17,7 +17,8 @@ def login():
 
 
 def survey():
-    return render_template('survey.haml')
+    questions = Question.is_active()
+    return render_template('survey.haml', questions=questions)
 
 
 def analysis():
