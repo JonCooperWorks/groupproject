@@ -4,10 +4,30 @@ from lib import testing
 
 class UserTestCase(testing.TestCase):
 
+    CREDENTIALS = ('username', 'password')
+
     def test_defaults(self):
         user = models.User()
         self.assertIsNone(user.username)
         self.assertIsNone(user.password_hash)
+
+    def test_create(self):
+        user = models.User.create(*self.CREDENTIALS)
+        username, password = self.CREDENTIALS
+        self.assertEqual(username, user.username)
+        self.assertNotEqual(password, user.password_hash)
+
+    def test_authenticate(self):
+        models.User.create(*self.CREDENTIALS)
+        username, password = self.CREDENTIALS
+        user = models.User.authenticate(username, password)
+        self.assertIsNotNone(user)
+        self.assertEqual(username, user.username)
+
+    def test_authenticate_rejects_bad_password(self):
+        models.User.create(*self.CREDENTIALS)
+        user = models.User.authenticate('username', 'wrong')
+        self.assertIsNone(user)
 
 
 class StudentTestCase(testing.TestCase):
