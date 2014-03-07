@@ -6,13 +6,17 @@
       .span5.offset3.login-box.well
         %h3.center Login
 
-        %form#login-form(action="", method="POST")
+        -if error
+          .alert.alert-error
+              #{error}
+
+        %form#login-form(action="#{url_for('login')}", method="POST")
           %input#redirect(type="hidden", name="redirect", \
                           value="")
 
           %input#username(type="text", name="username", required="required", \
                           value="", \
-                          placeholder="Email")
+                          placeholder="Username")
 
           %input#password(type="password", name="password", \
                           required="required", placeholder="Password", \
