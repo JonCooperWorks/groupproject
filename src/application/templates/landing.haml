@@ -1,0 +1,17 @@
+-extends "base.html"
+
+-block content
+
+  %h2 My courses 
+
+  %table.table
+    %thead
+      %tr Course Code
+      %tr Course Title
+      %tr Link to Survey
+    %tbody
+      -for course in student.courses
+        %tr {{ course.code }}
+        %tr {{ course.title}}]
+        %tr 
+          %a(href="") Link to Survey

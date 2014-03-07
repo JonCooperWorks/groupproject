@@ -39,6 +39,9 @@ def analysis():
 def signup():
     return render_template('signup.haml')
 
+def landing():
+    return render_template('landing.haml')
+
 
 # Handlersfor testing styling.
 def surveytest():
