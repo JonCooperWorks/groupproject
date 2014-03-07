@@ -4,32 +4,31 @@
   #survey: %section
     .progress.progress-striped.active
       .bar(style="width: 10%")
-    -for question in questions
-      -if question.type == onetofivetype
-          %div
-            %form(action=" {{ url_for('submitsurvey') }} ", method="POST")
-              .row
-                .formgroup.span10
-                  %label.control-label(for="{{question.number}}")
-                    {{question.question}}
-                  %input(type="radio", name="{{question.number}}", value="1") 
-                    
-                  %input(type="radio", name="{{question.number}}", value="2") 
-                    
-                  %input(type="radio", name="{{question.number}}", value="3") 
-                    
-                  %input(type="radio", name="{{question.number}}", value="4") 
-                    
-                  %input(type="radio", name="{{question.number}}", value="5")  
-                    
+    %div
+      %form(action="", method="POST")
+      -for question in questions
+        -if question.question_type == 'closed'
+          .row
+            .formgroup.span10
+              %label.control-label(for="{{question.key}}")
+                {{question.question}}
+              %input(type="radio", name="{{question.key}}", value="1") 
+                
+              %input(type="radio", name="{{question.key}}", value="2") 
+                
+              %input(type="radio", name="{{question.key}}", value="3") 
+                
+              %input(type="radio", name="{{question.key}}", value="4") 
+                
+              %input(type="radio", name="{{question.key}}", value="5")  
+              
 
-
-      -if question.type == openended
-        .row
-          .formgroup.span10
-            %label.control-label(for="{{question.number}}")
-              {{question.question}}
-            %input.form-control(type="text", class="form-control", id="{{question.number}}")
+        -if question.question_type == 'open'
+          .row
+            .formgroup.span10
+              %label.control-label(for="{{question.key}}")
+                {{question.question}}
+              %input.form-control(type="text", class="form-control", id="{{question.key}}")
 
       .row          
         .form-group.span10
