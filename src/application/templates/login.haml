@@ -14,6 +14,8 @@
           %input#redirect(type="hidden", name="redirect", \
                           value="")
 
+          #{form.csrf_token}
+
           %input#username(type="text", name="username", required="required", \
                           value="", \
                           placeholder="Username")

@@ -19,3 +19,4 @@ class LoginTestCase(testing.TestCase):
         response = self.app.post(
             '/login', data={'username': username, 'password': 'wrong'})
         self.assertEqual(200, response.status_code)
+        self.assertIn('Invalid login', response.data)

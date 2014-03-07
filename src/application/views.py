@@ -20,9 +20,11 @@ def login():
     if form.validate_on_submit():
         user = User.authenticate(form.username.data, form.password.data)
         if user is None:
-            return render_template('login.haml', error='Invalid login')
+            return render_template('login.haml',
+                                   form=form,
+                                   error='Invalid login')
         return redirect(url_for('survey'))
-    return render_template('login.haml')
+    return render_template('login.haml', form=form)
 
 
 def survey():
