@@ -46,3 +46,17 @@
   padding: 6px 19px;
   border: 0 none;
 } 
+
+.yourDiv{
+  position:absolute;
+  top: 123px;
+}
+
+#survey .progress{
+  position: fixed;
+  margin-left: -50px;
+  width: 90%;
+  height: 20px;
+  right: 5%;
+  top: 65px;
+}
