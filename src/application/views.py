@@ -1,10 +1,13 @@
+import json
+
 from flask import render_template, url_for, redirect
 from flask_cache import Cache
+from google.appengine.api import mail
 
 from application import app
 from application.forms import LoginForm
 from application.models import User
-from application.models import Question
+from application.models import Question, Student
 
 
 # Flask-Cache (configured to use App Engine Memcache API)
@@ -39,8 +42,20 @@ def analysis():
 def signup():
     return render_template('signup.haml')
 
+
 def landing():
     return render_template('landing.haml')
+
+
+def notify_students():
+    students = Student.query()
+    for student in students:
+        subject = 'Course Review Survey'
+        body = 'Do your survey'
+        mail.send_mail(
+            'surveymailer450@gmail.com', student.email_address, subject, body)
+
+    return json.dumps({'status': 'OK'})
 
 
 # Handlersfor testing styling.
