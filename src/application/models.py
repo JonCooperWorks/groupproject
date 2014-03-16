@@ -50,7 +50,7 @@ class Department(ndb.Model):
 
 class Faculty(ndb.Model):
     name = ndb.StringProperty()
-    head_of_department = ndb.StringProperty()
+    head_of_department = ndb.KeyProperty(kind=Lecturer)
 
 
 class Lecturer(ndb.Model):
