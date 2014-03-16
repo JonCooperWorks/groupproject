@@ -68,6 +68,7 @@ class Course(ndb.Model):
     faculty = ndb.KeyProperty(kind=Faculty)
     total_students = ndb.IntegerProperty()
 
+
 class Enrollment(ndb.Model):
     student = ndb.KeyProperty(kind=Student)
     course = ndb.KeyProperty(kind=Course)
