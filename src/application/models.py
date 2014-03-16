@@ -48,16 +48,16 @@ class Department(ndb.Model):
     faculty = ndb.KeyProperty()
 
 
-class Faculty(ndb.Model):
-    name = ndb.StringProperty()
-    head_of_department = ndb.KeyProperty(kind=Lecturer)
-
-
 class Lecturer(ndb.Model):
     user = ndb.KeyProperty()
     name = ndb.StringProperty()
     title = ndb.StringProperty()
     department = ndb.KeyProperty()
+
+
+class Faculty(ndb.Model):
+    name = ndb.StringProperty()
+    head_of_department = ndb.KeyProperty(kind=Lecturer)
 
 
 class Course(ndb.Model):
