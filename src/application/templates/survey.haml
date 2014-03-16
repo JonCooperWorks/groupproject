@@ -5,36 +5,36 @@
     .progress.progress-striped.active
       .bar(style="width: 0%")
     %div
-      %form(action="", method="POST")
+      %form(action="{{url_for('survey')}}", method="POST")
         -for question in questions
           -if question.question_type == 'closed'
             .row
               .formgroup.span10
-                %label.control-label(for="{{question.key}}")
+                %label.control-label(for="{{question.key.urlsafe()}}")
                   {{question.question}}
                 %label.radio.inline 
-                  %input(type="radio", name="{{question.key}}", value="1") 
+                  %input(type="radio", name="{{question.key.urlsafe()}}", value="1") 
                   1
                 %label.radio.inline 
-                  %input(type="radio", name="{{question.key}}", value="2") 
+                  %input(type="radio", name="{{question.key.urlsafe()}}", value="2") 
                   2
                 %label.radio.inline 
-                  %input(type="radio", name="{{question.key}}", value="3") 
+                  %input(type="radio", name="{{question.key.urlsafe()}}", value="3") 
                   3
                 %label.radio.inline 
-                  %input(type="radio", name="{{question.key}}", value="4") 
+                  %input(type="radio", name="{{question.key.urlsafe()}}", value="4") 
                   4
                 %label.radio.inline 
-                  %input(type="radio", name="{{question.key}}", value="5")
+                  %input(type="radio", name="{{question.key.urlsafe()}}", value="5")
                   5  
-                
+                 
 
           -if question.question_type == 'open'
             .row
               .formgroup.span10
-                %label.control-label(for="{{question.key}}")
+                %label.control-label(for="{{question.key.urlsafe()}}")
                   {{question.question}}
-                %input.form-control(type="text", class="form-control", id="{{question.key}}")
+                %input.form-control(type="text", class="form-control", name="{{question.key.urlsafe()}}")
 
         .row          
           .form-group.span10

@@ -22,7 +22,8 @@ app.add_url_rule(
     '/login', 'login', view_func=views.login, methods=['GET', 'POST'])
 
 # Survey Page
-app.add_url_rule('/survey', 'survey', view_func=views.survey)
+app.add_url_rule('/survey', 'survey',  methods=['GET', 'POST'],
+                 view_func=views.survey)
 
 # Analysis Page
 app.add_url_rule('/analysis', 'analysis', view_func=views.analysis)
@@ -40,8 +41,10 @@ app.add_url_rule('/notify-students', 'notify-students',
 # Test route page allows me to style while work is done on the backend
 app.add_url_rule('/surveytest', 'surveytest', view_func=views.surveytest)
 app.add_url_rule('/analysistest', 'analysistest', view_func=views.analysistest)
-app.add_url_rule('/studenttestview', 'studenttestview', view_func=views.studenttestview)
-app.add_url_rule('/lecturertestview', 'lecturertestview', view_func=views.lecturertestview)
+app.add_url_rule('/studenttestview', 'studenttestview',
+                 view_func=views.studenttestview)
+app.add_url_rule('/lecturertestview', 'lecturertestview',
+                 view_func=views.lecturertestview)
 app.add_url_rule('/populatequestions', 'populatequestions', view_func=views.populatequestions)
 app.add_url_rule('/populatestudents', 'populatestudents', view_func=views.populatestudents)
 
