@@ -44,7 +44,7 @@ class Student(ndb.Model):
     gender = ndb.StringProperty(choices=['M', 'F'])
     status = ndb.StringProperty(choices=['FT', 'PT'])
     year = ndb.IntegerProperty()
-    courses = ndb.KeyProperty(kind=Course, repeated=True)
+    courses = ndb.KeyProperty(repeated=True)
 
 
 class Department(ndb.Model):
@@ -96,5 +96,3 @@ class Answer(ndb.Model):
     string_value = ndb.StringProperty()
     int_value = ndb.IntegerProperty()
     survey = ndb.KeyProperty(kind=Survey)
-
-
