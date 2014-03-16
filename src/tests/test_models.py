@@ -102,3 +102,22 @@ class QuestionTestCase(testing.TestCase):
         models.Question(is_active=False).put()
         self.assertEqual(1, models.Question.get_active().count())
         self.assertEqual(question, models.Question.get_active().get().key)
+
+
+class SurveyTestCase(testing.TestCase):
+
+    def test_defaults(self):
+        survey = models.Survey()
+        self.assertIsNone(survey.participant)
+        self.assertIsNone(survey.course)
+        self.assertIsNone(survey.lecturer)
+        self.assertEqual(0, len(survey.questions))
+
+
+class AnswerTestCase(testing.TestCase):
+
+    def test_defaults(self):
+        answer = models.Answer()
+        self.assertIsNone(answer.question)
+        self.assertIsNone(answer.string_value)
+        self.assertIsNone(answer.survey)

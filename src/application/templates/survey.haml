@@ -5,31 +5,38 @@
     .progress.progress-striped.active
       .bar(style="width: 10%")
     %div
-      %form(action="", method="POST")
-      -for question in questions
-        -if question.question_type == 'closed'
-          .row
-            .formgroup.span10
-              %label.control-label(for="{{question.key}}")
-                {{question.question}}
-              %input(type="radio", name="{{question.key}}", value="1") 
-                
-              %input(type="radio", name="{{question.key}}", value="2") 
-                
-              %input(type="radio", name="{{question.key}}", value="3") 
-                
-              %input(type="radio", name="{{question.key}}", value="4") 
-                
-              %input(type="radio", name="{{question.key}}", value="5")  
-              
+      %form(action="{{url_for('survey')}}", method="POST")
+        -for question in questions
+          -if question.question_type == 'closed'
+            .row
+              .formgroup.span10
+                %label.control-label(for="{{question.key.urlsafe()}}")
+                  {{question.question}}
 
-        -if question.question_type == 'open'
-          .row
-            .formgroup.span10
-              %label.control-label(for="{{question.key}}")
-                {{question.question}}
-              %input.form-control(type="text", class="form-control", id="{{question.key}}")
+                1
+                %input(type="radio", name="{{question.key.urlsafe()}}", value="1") 
+                  
 
-      .row          
-        .form-group.span10
-          %button(type="submit", class="btn btn-default") Submit
+                2
+                %input(type="radio", name="{{question.key.urlsafe()}}", value="2") 
+
+                3
+                %input(type="radio", name="{{question.key.urlsafe()}}", value="3") 
+
+                4
+                %input(type="radio", name="{{question.key.urlsafe()}}", value="4") 
+
+                5
+                %input(type="radio", name="{{question.key.urlsafe()}}", value="5")  
+                
+
+          -if question.question_type == 'open'
+            .row
+              .formgroup.span10
+                %label.control-label(for="{{question.key.urlsafe()}}")
+                  {{question.question}}
+                %input.form-control(type="text", class="form-control", name="{{question.key.urlsafe()}}")
+
+        .row          
+          .form-group.span10
+            %button(type="submit", class="btn btn-default") Submit
