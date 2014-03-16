@@ -32,6 +32,9 @@ class User(ndb.Model):
 
         return None
 
+    def get_id(self):
+        return self.key.urlsafe()
+
 
 class Student(ndb.Model):
     user = ndb.KeyProperty()
@@ -41,6 +44,7 @@ class Student(ndb.Model):
     gender = ndb.StringProperty(choices=['M', 'F'])
     status = ndb.StringProperty(choices=['FT', 'PT'])
     year = ndb.IntegerProperty()
+    courses = ndb.KeyProperty(kind=Course, repeated=True)
 
 
 class Department(ndb.Model):
@@ -67,11 +71,6 @@ class Course(ndb.Model):
     department = ndb.KeyProperty(kind=Department)
     faculty = ndb.KeyProperty(kind=Faculty)
     total_students = ndb.IntegerProperty()
-
-
-class Enrollment(ndb.Model):
-    student = ndb.KeyProperty(kind=Student)
-    course = ndb.KeyProperty(kind=Course)
 
 
 class Question(ndb.Model):
