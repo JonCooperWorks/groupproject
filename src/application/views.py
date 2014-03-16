@@ -9,6 +9,7 @@ from application.forms import LoginForm
 from application.models import User
 from application.models import Question, Student
 from models import Question
+from models import Student
 
 
 # Flask-Cache (configured to use App Engine Memcache API)
@@ -50,14 +51,18 @@ def landing():
 
 def notify_students():
     students = Student.query()
+
     for student in students:
+        sender = 'surveymailer450@gmail.com'
         subject = 'Course Review Survey'
-        body = 'Do your survey'
-        mail.send_mail(
-            'surveymailer450@gmail.com', student.email_address, subject, body)
+        html = render_template('email/survey_email.haml',student=student)
+
+        mail_kwargs = {'html': html, 'body': 'TODO.txt',
+                       'to': student.email_address,
+                       'sender': sender, 'subject': subject}
+        mail.send_mail(**mail_kwargs)
 
     return json.dumps({'status': 'OK'})
-
 
 # Handlersfor testing styling.
 def surveytest():
@@ -132,7 +137,10 @@ def populatequestions():
                         is_active=True)
     question.put()
 
-
+def populatestudents():
+    student = Student(name='K Leyow',
+                      email_address='kleyow@gmail.com')
+    student.put()
 
 def warmup():
     """App Engine warmup handler

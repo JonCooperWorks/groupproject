@@ -6,16 +6,49 @@
 
   %h4 Here the analytics for courses taught
 
-  %ul
-    %li
-      %a
-        COMP 3900 - Group Project
-    %li
-      %a
-        COMP 2300 - Some Course
-    %li
-      %a
-        COMP 3100 - Some Course
-    %li
-      %a
-        COMP 2900 - Some Course
+  .center
+    %table.table
+      %thead
+        %tr
+          %th Course Code
+          %th Course Title
+          %th Course Faculty
+          %th Course Department
+          %th Course Survey Completion
+      %tbody
+        %tr
+          %td 
+            %a(href="#") COMP3900
+          %td Group Project
+          %td Pure And Applied
+          %td Computer Science
+          %td 
+            .progress.progress-striped.active
+              .bar(style="width: 0%")
+        %tr
+          %td 
+            %a(href="#") COMP2900
+          %td Some Course
+          %td Pure And Applied
+          %td Computer Science
+          %td 
+            .progress.progress-striped.active
+              .bar(style="width: 0%")
+        %tr
+          %td 
+            %a(href="#") COMP2900
+          %td Some Course
+          %td Pure And Applied
+          %td Computer Science
+          %td 
+            .progress.progress-striped.active
+              .bar(style="width: 0%")
+        %tr
+          %td 
+            %a(href="#") COMP2900
+          %td Some Course
+          %td Pure And Applied
+          %td Computer Science
+          %td 
+            .progress.progress-striped.active
+              .bar(style="width: 0%")

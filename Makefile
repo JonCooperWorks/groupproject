@@ -15,4 +15,5 @@ keys:
 	./src/application/generate_keys.py
 
 serve:
-	@$(PYTHON) $(APPENGINE)/dev_appserver.py src/
+	@$(PYTHON) $(APPENGINE)/dev_appserver.py src/ \
+			--enable_sendmail
