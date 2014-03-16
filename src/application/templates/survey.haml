@@ -6,7 +6,7 @@
       .bar(style="width: 0%")
     %div
       %form(action="{{url_for('survey')}}", method="POST")
-        -for question in questions
+        -for question in questions| sort(attribute='number')
           -if question.question_type == 'closed'
             .row
               .formgroup.span10
