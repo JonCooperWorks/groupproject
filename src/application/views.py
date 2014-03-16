@@ -1,6 +1,7 @@
 import json
 
 from flask import render_template, url_for, redirect, request
+from flask.ext.flask_login import login_required
 from flask_cache import Cache
 from google.appengine.api import mail
 from google.appengine.ext import ndb
@@ -27,10 +28,13 @@ def login():
             return render_template('login.haml',
                                    form=form,
                                    error='Invalid login')
+
+        login_user(user)
         return redirect(url_for('survey'))
     return render_template('login.haml', form=form)
 
 
+@login_required
 def survey():
     if request.method == 'POST':
         answers = []
