@@ -36,6 +36,9 @@ class User(ndb.Model):
         return self.key.urlsafe()
 
 
+    def get_id(self):
+        return self.key.urlsafe()
+
 class Student(ndb.Model):
     user = ndb.KeyProperty()
     name = ndb.StringProperty()
