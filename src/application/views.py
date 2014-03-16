@@ -1,13 +1,14 @@
 import json
 
-from flask import render_template, url_for, redirect
+from flask import render_template, url_for, redirect, request
 from flask_cache import Cache
 from google.appengine.api import mail
+from google.appengine.ext import ndb
 
 from application import app
 from application.forms import LoginForm
 from application.models import User
-from application.models import Question, Student
+from application.models import Question, Student, Answer
 
 
 # Flask-Cache (configured to use App Engine Memcache API)
@@ -31,6 +32,29 @@ def login():
 
 
 def survey():
+    if request.method == 'POST':
+        answers = []
+        for question, answer in request.form.items():
+            # TODO: Assign each question to a Survey object.
+            # This can only be done once we tie each survey to a course, and
+            # set up the entity hierarchy properly.
+            question = ndb.Key(urlsafe=question).get()
+            if question is None:
+                continue
+
+            if question.question_type == 'closed':
+                answers.append(
+                    Answer(question=question.key, int_value=int(answer)))
+
+            else:
+                answers.append(
+                    Answer(question=question.key, string_value=answer))
+
+        ndb.put_multi(answers)
+
+        # TODO: Redirect them somewhere
+        return redirect(url_for('survey'))
+
     questions = Question.get_active()
     return render_template('survey.haml', questions=questions)
 
@@ -66,8 +90,10 @@ def surveytest():
 def analysistest():
     return render_template('analysistest.haml')
 
+
 def studenttestview():
     return render_template('studenttestview.haml')
+
 
 def lecturertestview():
     return render_template('lecturertestview.haml')

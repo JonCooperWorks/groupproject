@@ -64,13 +64,13 @@ class Course(ndb.Model):
     name = ndb.StringProperty()
     start_date = ndb.DateProperty()
     end_date = ndb.DateProperty()
-    department = ndb.KeyProperty()
-    faculty = ndb.KeyProperty()
+    department = ndb.KeyProperty(kind=Department)
+    faculty = ndb.KeyProperty(kind=Faculty)
 
 
 class Enrollment(ndb.Model):
-    student = ndb.KeyProperty()
-    course = ndb.KeyProperty()
+    student = ndb.KeyProperty(kind=Student)
+    course = ndb.KeyProperty(kind=Course)
 
 
 class Question(ndb.Model):
@@ -82,3 +82,19 @@ class Question(ndb.Model):
     @classmethod
     def get_active(cls):
         return cls.query().filter(cls.is_active == True)
+
+
+class Survey(ndb.Model):
+    participant = ndb.KeyProperty(kind=Student)
+    course = ndb.KeyProperty(kind=Course)
+    lecturer = ndb.KeyProperty(kind=Lecturer)
+    questions = ndb.KeyProperty(kind=Question, repeated=True)
+
+
+class Answer(ndb.Model):
+    question = ndb.KeyProperty(kind=Question)
+    string_value = ndb.StringProperty()
+    int_value = ndb.IntegerProperty()
+    survey = ndb.KeyProperty(kind=Survey)
+
+
