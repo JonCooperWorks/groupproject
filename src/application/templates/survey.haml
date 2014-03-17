@@ -1,4 +1,4 @@
--extends "base.html" 
+-extends "base.html"
 
 -block content
   #survey: %section
@@ -36,7 +36,7 @@
                   {{question.question}}
                 %input.form-control(type="text", class="form-control", name="{{question.key.urlsafe()}}")
 
-        .row          
+        .row
           .form-group.span10
             %button(type="submit", class="btn btn-default") Submit
 

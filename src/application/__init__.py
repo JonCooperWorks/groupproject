@@ -3,11 +3,28 @@ Initialize Flask app
 
 """
 from flask import Flask
+from flask.ext.flask_login import LoginManager
+from google.appengine.ext import ndb
 import os
 from flask_debugtoolbar import DebugToolbarExtension
 from werkzeug.debug import DebuggedApplication
 
 app = Flask('application')
+
+login_manager = LoginManager()
+login_manager.init_app(app)
+login_manager.login_view = '/login'
+
+
+@login_manager.user_loader
+def load_user(user_key):
+    try:
+        user = ndb.Key(urlsafe=user_key).get()
+
+    except ndb.BadKeyError:
+        user = None
+
+    return user
 
 if os.getenv('FLASK_CONF') == 'DEV':
         # development settings n
