@@ -80,14 +80,6 @@ class CourseTestCase(testing.TestCase):
         self.assertIsNone(course.faculty)
 
 
-class EnrollmentTestCase(testing.TestCase):
-
-    def test_defaults(self):
-        enrollment = models.Enrollment()
-        self.assertIsNone(enrollment.student)
-        self.assertIsNone(enrollment.course)
-
-
 class QuestionTestCase(testing.TestCase):
 
     def test_defaults(self):
