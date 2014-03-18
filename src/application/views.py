@@ -77,11 +77,16 @@ def landing():
 
 def notify_students():
     students = Student.query()
+
     for student in students:
+        sender = 'surveymailer450@gmail.com'
         subject = 'Course Review Survey'
-        body = 'Do your survey'
-        mail.send_mail(
-            'surveymailer450@gmail.com', student.email_address, subject, body)
+        html = render_template('email/survey_email.haml',student=student)
+
+        mail_kwargs = {'html': html, 'body': 'TODO.txt',
+                       'to': student.email_address,
+                       'sender': sender, 'subject': subject}
+        mail.send_mail(**mail_kwargs)
 
     return json.dumps({'status': 'OK'})
 
@@ -102,6 +107,69 @@ def studenttestview():
 def lecturertestview():
     return render_template('lecturertestview.haml')
 
+def populatequestions():
+    question = Question(question_type='closed',
+                        question='The lecturer arrived on time for classes.',
+                        number=1, 
+                        is_active=True)
+    question.put()
+    question = Question(question_type='closed',
+                        question='The lecturer was prepared for classes.',
+                        number=2, 
+                        is_active=True)
+    question.put()
+    question = Question(question_type='closed',
+                        question='The lecturer displayed sound knowledge of the subject matter.',
+                        number=3, 
+                        is_active=True)
+    question.put()
+    question = Question(question_type='closed',
+                        question='The lecturer treated students fairly.',
+                        number=4, 
+                        is_active=True)
+    question.put()
+    question = Question(question_type='closed',
+                        question='The lecturer enforced the established classroom rules.',
+                        number=5, 
+                        is_active=True)
+    question.put()
+    question = Question(question_type='closed',
+                        question='The lecturer explained the material well.',
+                        number=6, 
+                        is_active=True)
+    question.put()
+    question = Question(question_type='closed',
+                        question='The lecturer encouraged participation.',
+                        number=7, 
+                        is_active=True)
+    question.put()
+    question = Question(question_type='closed',
+                        question='The lecturer was enthusiastic about the material that was taught.',
+                        number=8, 
+                        is_active=True)
+    question.put()
+    question = Question(question_type='closed',
+                        question='The lecturer gave useful reposnses to questions asked by students.',
+                        number=9, 
+                        is_active=True)
+    question.put()
+    question = Question(question_type='closed',
+                        question='The lecturer inspired me to learn',
+                        number=10, 
+                        is_active=True)
+    question.put()
+
+
+    question = Question(question_type='open',
+                        question='What did you like best about this course?.',
+                        number=11, 
+                        is_active=True)
+    question.put()
+
+def populatestudents():
+    student = Student(name='K Leyow',
+                      email_address='kleyow@gmail.com')
+    student.put()
 
 def warmup():
     """App Engine warmup handler
