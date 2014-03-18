@@ -107,15 +107,3 @@ def warmup():
     """App Engine warmup handler
     """
     return ''
-
-@app.route('/usermake')
-def makeuser():
-    ls = [
-        {'question_type':'closed', 'question':'The lecturer arrived on', 'is_active': True},
-        {'question_type':'closed', 'question':'The lecturer was prepared for classes', 'is_active':True},
-        {'question_type':'closed', 'question':'The lecturer\'s use of interactive technology ..', 'is_active': True}
-    ]
-    for l in ls:
-        Question(**l).put()
-
-    return 'done'
