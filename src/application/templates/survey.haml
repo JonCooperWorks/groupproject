@@ -12,22 +12,22 @@
               .formgroup.span10
                 %label.control-label(for="{{question.key.urlsafe()}}")
                   {{question.question}}
-                %label.radio.inline 
-                  %input(type="radio", name="{{question.key.urlsafe()}}", value="1") 
+                %label.radio.inline
+                  %input(type="radio", name="{{question.key.urlsafe()}}", value="1")
                   1
-                %label.radio.inline 
-                  %input(type="radio", name="{{question.key.urlsafe()}}", value="2") 
+                %label.radio.inline
+                  %input(type="radio", name="{{question.key.urlsafe()}}", value="2")
                   2
-                %label.radio.inline 
-                  %input(type="radio", name="{{question.key.urlsafe()}}", value="3") 
+                %label.radio.inline
+                  %input(type="radio", name="{{question.key.urlsafe()}}", value="3")
                   3
-                %label.radio.inline 
-                  %input(type="radio", name="{{question.key.urlsafe()}}", value="4") 
+                %label.radio.inline
+                  %input(type="radio", name="{{question.key.urlsafe()}}", value="4")
                   4
-                %label.radio.inline 
+                %label.radio.inline
                   %input(type="radio", name="{{question.key.urlsafe()}}", value="5")
-                  5  
-                 
+                  5
+
 
           -if question.question_type == 'open'
             .row
@@ -50,7 +50,7 @@
       });
 
       var count = 0;
-      $.each(names, function() { 
+      $.each(names, function() {
           count++;
       });
 
