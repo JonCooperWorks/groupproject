@@ -57,7 +57,7 @@ def survey():
         ndb.put_multi(answers)
 
         # TODO: Redirect them somewhere
-        return redirect(url_for('survey'))
+        return redirect(url_for('login'))
 
     questions = Question.get_active()
     return render_template('survey.haml', questions=questions)
