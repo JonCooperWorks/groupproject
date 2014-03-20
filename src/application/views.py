@@ -1,7 +1,7 @@
 import json
 
 from flask import render_template, url_for, redirect, request
-from flask.ext.flask_login import login_required
+from flask.ext.flask_login import login_required, login_user
 from flask_cache import Cache
 from google.appengine.api import mail
 from google.appengine.ext import ndb
@@ -29,7 +29,7 @@ def login():
                                    form=form,
                                    error='Invalid login')
 
-        login_user(user)
+        login_user(user, force=True)
         return redirect(url_for('survey'))
     return render_template('login.haml', form=form)
 
