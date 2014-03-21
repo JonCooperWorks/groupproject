@@ -171,6 +171,10 @@ def populatestudents():
                       email_address='kleyow@gmail.com')
     student.put()
 
+def populateusers():
+    user = User()
+    user.create('user', 'password')
+
 def warmup():
     """App Engine warmup handler
     """
