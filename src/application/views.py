@@ -158,8 +158,6 @@ def populatequestions():
                         number=10,
                         is_active=True)
     question.put()
-
-
     question = Question(question_type='open',
                         question='What did you like best about this course?.',
                         number=11,
