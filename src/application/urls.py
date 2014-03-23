@@ -41,8 +41,6 @@ app.add_url_rule('/notify-students', 'notify-students',
 # Test route page allows me to style while work is done on the backend
 app.add_url_rule('/surveytest', 'surveytest', view_func=views.surveytest)
 app.add_url_rule('/analysistest', 'analysistest', view_func=views.analysistest)
-app.add_url_rule('/studenttestview', 'studenttestview',
-                 view_func=views.studenttestview)
 app.add_url_rule('/lecturertestview', 'lecturertestview',
                  view_func=views.lecturertestview)
 app.add_url_rule('/populatequestions', 'populatequestions', view_func=views.populatequestions)

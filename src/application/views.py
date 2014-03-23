@@ -100,10 +100,6 @@ def analysistest():
     return render_template('analysistest.haml')
 
 
-def studenttestview():
-    return render_template('studenttestview.haml')
-
-
 def lecturertestview():
     return render_template('lecturertestview.haml')
 
