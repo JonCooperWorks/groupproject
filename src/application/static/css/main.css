@@ -68,3 +68,16 @@
 .well-alt {
   padding: 19px;
 }
+
+.dimension {
+  padding-bottom: 19px;
+  padding-top: 19px;
+  background-color: #90c8f3;
+  margin-top:19px;
+  margin-bottom: 19px;
+  border-radius: 2px;
+}
+
+input.open {
+  width:60%;
+}

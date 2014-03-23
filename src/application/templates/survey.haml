@@ -14,7 +14,7 @@
 
             -if dimension != dimensionCheck
               -set dimensionCheck = dimension
-              .row.well-alt: .span12.center
+              .row.dimension: .span12.center
                 %h3 {{ question.dimension }}
 
             .row(class="{{ loop.cycle('well', 'well-alt') }}")
@@ -40,13 +40,14 @@
           -if question.question_type == 'open'
             -if dimension != dimensionCheck
               -set dimensionCheck = dimension
-              .row.well-alt: .span12.center
+              .row.dimension: .span12.center
                 %h3 {{ question.dimension }}
+
             .row.well-alt
               .formgroup.span12
                 %label.control-label(for="{{question.key.urlsafe()}}")
                   {{question.question}}
-                %input.form-control(type="text", class="form-control", name="{{question.key.urlsafe()}}")
+                %input.open.form-control(type="text", class="form-control", name="{{question.key.urlsafe()}}")
 
         .row
           .center
