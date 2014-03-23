@@ -16,7 +16,7 @@
   margin-bottom: 16px;
   height: 27px;
   color: black;
-} 
+}
 
 #login button.login {
   color: #fff;
@@ -26,7 +26,7 @@
   display: inline-block;
   padding: 6px 19px;
   border: 0 none;
-} 
+}
 
 #signup input {
   border-radius: 3px;
@@ -35,7 +35,7 @@
   margin-bottom: 16px;
   height: 27px;
   color: black;
-} 
+}
 
 #signup button {
   color: #fff;
@@ -45,7 +45,7 @@
   display: inline-block;
   padding: 6px 19px;
   border: 0 none;
-} 
+}
 
 .yourDiv{
   position:absolute;
@@ -63,4 +63,21 @@
 
 .hiddenRow {
     padding: 0 !important;
+}
+
+.well-alt {
+  padding: 19px;
+}
+
+.dimension {
+  padding-bottom: 19px;
+  padding-top: 19px;
+  background-color: #90c8f3;
+  margin-top:19px;
+  margin-bottom: 19px;
+  border-radius: 2px;
+}
+
+input.open {
+  width:60%;
 }

@@ -1,0 +1,30 @@
+closed| Professionalism| The lecturer arrived on time for classes.
+closed| Professionalism|  The lecturer was prepared for classes.
+closed| Professionalism|  The lecturer displayed sound knowledge of the subject matter.
+closed| Professionalism|  The lecturer treated students fairly.
+closed| Professionalism|  The lecturer enforced the established classroom rules.
+closed| Organization and Teaching| The lecturer ensured that the course outline was accessible to all students.
+closed| Organization and Teaching| The material covered in the classes was clearly related to the course outline.
+closed| Organization and Teaching| The lecturer used language and illustrations which helped to improve my learning.
+closed| Organization and Teaching| The lecturer's use of interactive technology(power point, email, OurVLE videos) has helped me better understand the material
+closed| Organization and Teaching| The lecturer guided me about what material should be read for various aspects of the course.
+closed| Classroom Engagement| The lecturer explained the material well.
+closed| Classroom Engagement| The lecturer encouraged participation.
+closed| Classroom Engagement| The lecturer was enthusiastic about the material that was taught.
+closed| Classroom Engagement| The lecturer gave useful reposnses to questions asked by students.
+closed| Classroom Engagement| The lecturer inspired me to learn.
+closed| Individual Rapport| The lecturer provided oppurtunities to students for individual consultation.
+closed| Individual Rapport| The lecturer used student's comments and questions to improve their learning.
+closed| Individual Rapport| The advice given by the lecturer in individual consultation was helpful.
+closed| Individual Rapport| The lecturer found innovative ways of helping students who had problems with the course material.
+closed| Individual Rapport| The lecturer made me feel comfortable in asking questions about the course material/assignments.
+closed| Value Added| My attendance at classes taught me more than I would have learnt by simply reading the textbook, lecture slides or slides.
+closed| Value Added| The lecturer helped me to learn in ways that are meaningful.
+closed| Value Added| The assessments (assignments, quizzes or exams) were relevant to the content and objectives of the course.
+closed| Value Added| The lecturer provided me with helpful feedback after marking my assignments and tests/quizzes.
+closed| Value Added| Participation in the class helped me to grow and develop personally.
+open| Open-Ended| What did you like best about this course?
+open| Open-Ended| What did you like best about this lecturer?
+open| Open-Ended| What did you like least about this course?
+open| Open-Ended| What did you like least about this lecturer?
+open| Open-Ended| What improvements to the course would you suggest?

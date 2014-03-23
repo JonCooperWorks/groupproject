@@ -57,7 +57,7 @@ def survey():
         ndb.put_multi(answers)
 
         # TODO: Redirect them somewhere
-        return redirect(url_for('survey'))
+        return redirect(url_for('login'))
 
     questions = Question.get_active()
     return render_template('survey.haml', questions=questions)
@@ -81,7 +81,7 @@ def notify_students():
     for student in students:
         sender = 'surveymailer450@gmail.com'
         subject = 'Course Review Survey'
-        html = render_template('email/survey_email.haml',student=student)
+        html = render_template('email/survey_email.haml', student=student)
 
         mail_kwargs = {'html': html, 'body': 'TODO.txt',
                        'to': student.email_address,
@@ -107,85 +107,31 @@ def studenttestview():
 def lecturertestview():
     return render_template('lecturertestview.haml')
 
+
 def populatequestions():
-    question = Question(question_type='closed',
-                        question='The lecturer arrived on time for classes.',
-                        number=1,
-                        is_active=True,
-                        max_scale=5)
-    question.put()
-    question = Question(question_type='closed',
-                        question='The lecturer was prepared for classes.',
-                        number=2,
-                        is_active=True,
-                        max_scale=5)
-    question.put()
-    question = Question(question_type='closed',
-                        question='The lecturer displayed sound knowledge of the subject matter.',
-                        number=3,
-                        is_active=True,
-                        max_scale=5)
-    question.put()
-    question = Question(question_type='closed',
-                        question='The lecturer treated students fairly.',
-                        number=4,
-                        is_active=True,
-                        max_scale=5)
-    question.put()
-    question = Question(question_type='closed',
-                        question='The lecturer enforced the established classroom rules.',
-                        number=5,
-                        is_active=True,
-                        max_scale=5)
-    question.put()
-    question = Question(question_type='closed',
-                        question='The lecturer explained the material well.',
-                        number=6,
-                        is_active=True,
-                        max_scale=5)
-    question.put()
-    question = Question(question_type='closed',
-                        question='The lecturer encouraged participation.',
-                        number=7,
-                        is_active=True,
-                        max_scale=5)
-    question.put()
-    question = Question(question_type='closed',
-                        question='The lecturer was enthusiastic about the material that was taught.',
-                        number=8,
-                        is_active=True,
-                        max_scale=5)
-    question.put()
-    question = Question(question_type='closed',
-                        question='The lecturer gave useful reposnses to questions asked by students.',
-                        number=9,
-                        is_active=True,
-                        max_scale=5)
-    question.put()
-    question = Question(question_type='closed',
-                        question='The lecturer inspired me to learn',
-                        number=10,
-                        is_active=True,
-                        max_scale=5)
-    question.put()
+    file = open("application/questions.txt", 'r')
+    number = 0
+    for line in file:
+        number += 1
+        parsed_line = line.split('|')
+        question = Question(question_type=parsed_line[0],
+                            dimension=parsed_line[1],
+                            question=parsed_line[2],
+                            is_active=True,
+                            number=number)
+        question.put()
 
-
-    question = Question(question_type='open',
-                        question='What did you like best about this course?.',
-                        number=11,
-                        is_active=True,
-                        max_scale=5)
-    question.put()
 
 def populatestudents():
     student = Student(name='K Leyow',
                       email_address='kleyow@gmail.com')
     student.put()
 
-@app.route('/usersmake')
-def makeuser():
-    User.create('test', 'test')
-    return 'done'
+
+def populateusers():
+    user = User()
+    user.create('user', 'password')
+
 
 def warmup():
     """App Engine warmup handler
