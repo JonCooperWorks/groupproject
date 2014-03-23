@@ -83,7 +83,7 @@ class Question(ndb.Model):
     number = ndb.IntegerProperty()
     is_active = ndb.BooleanProperty()
     dimension = ndb.StringProperty()
-    max_scale = ndb.IntegerProperty()
+    max_scale = ndb.IntegerProperty(default=5)
 
     @classmethod
     def get_active(cls):
