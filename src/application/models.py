@@ -94,7 +94,6 @@ class Survey(ndb.Model):
     participant = ndb.KeyProperty(kind=Student)
     course = ndb.KeyProperty(kind=Course)
     lecturer = ndb.KeyProperty(kind=Lecturer)
-    questions = ndb.KeyProperty(kind=Question, repeated=True)
 
 
 class Answer(ndb.Model):
