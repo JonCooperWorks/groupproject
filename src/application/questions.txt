@@ -23,8 +23,8 @@ closed| Value Added| The lecturer helped me to learn in ways that are meaningful
 closed| Value Added| The assessments (assignments, quizzes or exams) were relevant to the content and objectives of the course.
 closed| Value Added| The lecturer provided me with helpful feedback after marking my assignments and tests/quizzes.
 closed| Value Added| Participation in the class helped me to grow and develop personally.
-open| Open-Ended| What did you like best about this course?.
+open| Open-Ended| What did you like best about this course?
 open| Open-Ended| What did you like best about this lecturer?
-open| Open-Ended| What did you like least about this course?.
+open| Open-Ended| What did you like least about this course?
 open| Open-Ended| What did you like least about this lecturer?
 open| Open-Ended| What improvements to the course would you suggest?

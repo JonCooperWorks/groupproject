@@ -4,12 +4,21 @@
   #survey: %section
     .progress.progress-striped.active
       .bar(style="width: 0%")
+
     %div
       %form(action="{{url_for('survey')}}", method="POST")
+        -set dimensionCheck = ''
         -for question in questions| sort(attribute='number')
+          -set dimension = question.dimension
           -if question.question_type == 'closed'
-            .row(class="{{ loop.cycle('well', 'well-alt') }}"")
-              .formgroup.span10
+
+            -if dimension != dimensionCheck
+              -set dimensionCheck = dimension
+              .row.well-alt: .span12.center
+                %h3 {{ question.dimension }}
+
+            .row(class="{{ loop.cycle('well', 'well-alt') }}")
+              .formgroup.span12
                 %label.control-label(for="{{question.key.urlsafe()}}")
                   {{question.question}}
                 %label.radio.inline
@@ -28,10 +37,13 @@
                   %input(type="radio", name="{{question.key.urlsafe()}}", value="5")
                   5
 
-
           -if question.question_type == 'open'
+            -if dimension != dimensionCheck
+              -set dimensionCheck = dimension
+              .row.well-alt: .span12.center
+                %h3 {{ question.dimension }}
             .row.well-alt
-              .formgroup.span10
+              .formgroup.span12
                 %label.control-label(for="{{question.key.urlsafe()}}")
                   {{question.question}}
                 %input.form-control(type="text", class="form-control", name="{{question.key.urlsafe()}}")
