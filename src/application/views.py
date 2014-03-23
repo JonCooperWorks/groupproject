@@ -92,12 +92,12 @@ def notify_students():
 
 
 # Handlersfor testing styling.
-def surveytest():
-    return render_template('surveytest.haml')
-
-
 def analysistest():
     return render_template('analysistest.haml')
+
+
+def studenttestview():
+    return render_template('studenttestview.haml')
 
 
 def lecturertestview():
