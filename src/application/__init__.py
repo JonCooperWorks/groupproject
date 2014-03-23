@@ -4,7 +4,7 @@ Initialize Flask app
 """
 from flask import Flask
 from flask.ext.flask_login import LoginManager
-from google.appengine.ext import ndb
+from google.appengine.ext import db, ndb
 import os
 from flask_debugtoolbar import DebugToolbarExtension
 from werkzeug.debug import DebuggedApplication
@@ -21,7 +21,7 @@ def load_user(user_key):
     try:
         user = ndb.Key(urlsafe=user_key).get()
 
-    except ndb.BadKeyError:
+    except db.BadKeyError:
         user = None
 
     return user

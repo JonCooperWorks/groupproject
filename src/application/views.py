@@ -1,15 +1,14 @@
 import json
 
-from flask import render_template, url_for, redirect, request
+from flask import render_template, url_for, redirect, request, abort
 from flask.ext.flask_login import login_required, login_user
 from flask_cache import Cache
 from google.appengine.api import mail
-from google.appengine.ext import ndb
+from google.appengine.ext import db, ndb
 
 from application import app
 from application.forms import LoginForm
-from application.models import User
-from application.models import Question, Student, Answer
+from application.models import *
 
 
 # Flask-Cache (configured to use App Engine Memcache API)
@@ -30,13 +29,26 @@ def login():
                                    error='Invalid login')
 
         login_user(user, force=True)
-        return redirect(url_for('survey'))
+        return redirect('/surveytest')
     return render_template('login.haml', form=form)
 
 
 @login_required
-def survey():
+def survey(lecturer_key, course_key):
+    lecturer_key, course_key = (ndb.Key(urlsafe=lecturer_key),
+                                ndb.Key(urlsafe=course_key))
+    try:
+        lecturer, course = ndb.get_multi([lecturer_key, course_key])
+
+    except db.BadKeyError:
+        lecturer, course = None, None
+
+    if None in (lecturer, course):
+        return abort(404)
+
     if request.method == 'POST':
+        survey = Survey(course=course.key, lecturer=lecturer.key)
+        survey.put()
         answers = []
         for question, answer in request.form.items():
             # TODO: Assign each question to a Survey object.
@@ -48,11 +60,15 @@ def survey():
 
             if question.question_type == 'closed':
                 answers.append(
-                    Answer(question=question.key, int_value=int(answer)))
+                    Answer(question=question.key,
+                           int_value=int(answer),
+                           parent=survey.key))
 
             else:
                 answers.append(
-                    Answer(question=question.key, string_value=answer))
+                    Answer(question=question.key,
+                           string_value=answer,
+                           parent=survey.key))
 
         ndb.put_multi(answers)
 
@@ -60,7 +76,11 @@ def survey():
         return redirect(url_for('login'))
 
     questions = Question.get_active()
-    return render_template('survey.haml', questions=questions)
+    return render_template(
+        'survey.haml',
+        questions=questions,
+        lecturer_key=lecturer_key.urlsafe(),
+        course_key=course_key.urlsafe())
 
 
 def analysis():
@@ -131,6 +151,9 @@ def populatestudents():
 def populateusers():
     user = User()
     user.create('user', 'password')
+    l = Lecturer(name='Jimmy', title='Dr').put()
+    c = Course(name='test').put()
+    return '%s/%s' % (l.urlsafe(), c.urlsafe())
 
 
 def warmup():

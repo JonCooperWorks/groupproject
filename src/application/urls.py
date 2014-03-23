@@ -22,7 +22,8 @@ app.add_url_rule(
     '/login', 'login', view_func=views.login, methods=['GET', 'POST'])
 
 # Survey Page
-app.add_url_rule('/survey', 'survey',  methods=['GET', 'POST'],
+app.add_url_rule('/survey/<lecturer_key>/<course_key>', 'survey',
+                 methods=['GET', 'POST'],
                  view_func=views.survey)
 
 # Analysis Page
