@@ -18,6 +18,9 @@ cache = Cache(app)
 def home():
     return redirect(url_for('login'))
 
+def studenthome():
+    return render_template('studenthome.haml')
+
 
 def login():
     form = LoginForm()
@@ -29,7 +32,7 @@ def login():
                                    error='Invalid login')
 
         login_user(user, force=True)
-        return redirect('/surveytest')
+        return redirect('/studenttestview')
     return render_template('login.haml', form=form)
 
 
