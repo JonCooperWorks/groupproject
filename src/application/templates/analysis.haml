@@ -3,13 +3,13 @@
 -block content
     %h1 Analysis Summary
     %h2 {{ survey.name }}
-    %h3 {survey.studentsparticipated}/{survey.totalstudentstaking} Students Finished Survey
+    %h3 {{ survey.studentsparticipated }} /{{ survey.totalstudentstaking }} Students Finished Survey
 
     #analysis: %section
       .progress.progress-striped
         .bar(style="width: {{ survey.progress }}")
 
-    %h3 Rating : {{ survey.rating}}
+    %h3 Rating : {{ survey.rating }}
 
     %table.table(style="border-collapse:collapse;")
 
