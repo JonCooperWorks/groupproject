@@ -110,66 +110,82 @@ def lecturertestview():
 def populatequestions():
     question = Question(question_type='closed',
                         question='The lecturer arrived on time for classes.',
-                        number=1, 
-                        is_active=True)
+                        number=1,
+                        is_active=True,
+                        max_scale=5)
     question.put()
     question = Question(question_type='closed',
                         question='The lecturer was prepared for classes.',
-                        number=2, 
-                        is_active=True)
+                        number=2,
+                        is_active=True,
+                        max_scale=5)
     question.put()
     question = Question(question_type='closed',
                         question='The lecturer displayed sound knowledge of the subject matter.',
-                        number=3, 
-                        is_active=True)
+                        number=3,
+                        is_active=True,
+                        max_scale=5)
     question.put()
     question = Question(question_type='closed',
                         question='The lecturer treated students fairly.',
-                        number=4, 
-                        is_active=True)
+                        number=4,
+                        is_active=True,
+                        max_scale=5)
     question.put()
     question = Question(question_type='closed',
                         question='The lecturer enforced the established classroom rules.',
-                        number=5, 
-                        is_active=True)
+                        number=5,
+                        is_active=True,
+                        max_scale=5)
     question.put()
     question = Question(question_type='closed',
                         question='The lecturer explained the material well.',
-                        number=6, 
-                        is_active=True)
+                        number=6,
+                        is_active=True,
+                        max_scale=5)
     question.put()
     question = Question(question_type='closed',
                         question='The lecturer encouraged participation.',
-                        number=7, 
-                        is_active=True)
+                        number=7,
+                        is_active=True,
+                        max_scale=5)
     question.put()
     question = Question(question_type='closed',
                         question='The lecturer was enthusiastic about the material that was taught.',
-                        number=8, 
-                        is_active=True)
+                        number=8,
+                        is_active=True,
+                        max_scale=5)
     question.put()
     question = Question(question_type='closed',
                         question='The lecturer gave useful reposnses to questions asked by students.',
-                        number=9, 
-                        is_active=True)
+                        number=9,
+                        is_active=True,
+                        max_scale=5)
     question.put()
     question = Question(question_type='closed',
                         question='The lecturer inspired me to learn',
-                        number=10, 
-                        is_active=True)
+                        number=10,
+                        is_active=True,
+                        max_scale=5)
     question.put()
 
 
     question = Question(question_type='open',
                         question='What did you like best about this course?.',
-                        number=11, 
-                        is_active=True)
+                        number=11,
+                        is_active=True,
+                        max_scale=5)
     question.put()
 
 def populatestudents():
     student = Student(name='K Leyow',
                       email_address='kleyow@gmail.com')
     student.put()
+
+@app.route('/usersmake')
+def makeuser():
+    User.create('test', 'test')
+    return 'done'
 
 def warmup():
     """App Engine warmup handler
