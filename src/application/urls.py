@@ -47,6 +47,7 @@ app.add_url_rule('/lecturertestview', 'lecturertestview',
                  view_func=views.lecturertestview)
 app.add_url_rule('/populatequestions', 'populatequestions', view_func=views.populatequestions)
 app.add_url_rule('/populatestudents', 'populatestudents', view_func=views.populatestudents)
+app.add_url_rule('/populateusers', 'populateusers', view_func=views.populateusers)
 
 # Error handlers
 # Handle 404 errors
