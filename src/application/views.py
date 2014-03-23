@@ -81,7 +81,7 @@ def notify_students():
     for student in students:
         sender = 'surveymailer450@gmail.com'
         subject = 'Course Review Survey'
-        html = render_template('email/survey_email.haml',student=student)
+        html = render_template('email/survey_email.haml', student=student)
 
         mail_kwargs = {'html': html, 'body': 'TODO.txt',
                        'to': student.email_address,
@@ -107,8 +107,9 @@ def studenttestview():
 def lecturertestview():
     return render_template('lecturertestview.haml')
 
+
 def populatequestions():
-    file=open("application/questions.txt",'r')
+    file = open("application/questions.txt", 'r')
     number = 0
     for line in file:
         number += 1
@@ -126,9 +127,11 @@ def populatestudents():
                       email_address='kleyow@gmail.com')
     student.put()
 
+
 def populateusers():
     user = User()
     user.create('user', 'password')
+
 
 def warmup():
     """App Engine warmup handler

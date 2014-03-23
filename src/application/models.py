@@ -36,9 +36,9 @@ class User(ndb.Model):
     def get_id(self):
         return self.key.urlsafe()
 
-
     def is_authenticated(self):
         return True
+
 
 class Student(ndb.Model):
     user = ndb.KeyProperty()
@@ -83,6 +83,7 @@ class Question(ndb.Model):
     number = ndb.IntegerProperty()
     is_active = ndb.BooleanProperty()
     dimension = ndb.StringProperty()
+    max_scale = ndb.IntegerProperty(default=5)
 
     @classmethod
     def get_active(cls):
