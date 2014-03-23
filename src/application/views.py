@@ -112,10 +112,6 @@ def notify_students():
 
 
 # Handlersfor testing styling.
-def surveytest():
-    return render_template('surveytest.haml')
-
-
 def analysistest():
     return render_template('analysistest.haml')
 
