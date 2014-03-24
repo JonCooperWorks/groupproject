@@ -110,7 +110,13 @@ def survey(lecturer_key, course_key):
         course_key=course_key.urlsafe())
 
 
-def analysis():
+def analysis(survey_key):
+    survey = Survey.query().filter(Survey.key == survey_key).get()
+    answers = Answer.query().filter(Answer.survey == survey.key).get()
+    course_total = survey.course.total_students
+
+    total_questions_in_survey = Question.all().filter(is_active==True).count()
+    total_surveys = Answer.query().filter(Answer.survey == survey.key).count()/total_questions_in_survey
     return render_template('analysis.haml')
 
 

@@ -104,6 +104,7 @@ class Survey(ndb.Model):
     participant = ndb.KeyProperty(kind=Student)
     course = ndb.KeyProperty(kind=Course)
     lecturer = ndb.KeyProperty(kind=Lecturer)
+    date = ndb.DateProperty(auto_now_add=True)
 
 
 class Answer(ndb.Model):
