@@ -85,7 +85,7 @@ def survey(course_key):
         ndb.put_multi(answers)
 
         # TODO: Redirect them somewhere
-        return redirect(url_for('studenthome'))
+        return redirect(url_for('login'))
 
     questions = Question.get_active()
     return render_template(
