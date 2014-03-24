@@ -38,7 +38,7 @@ def lecturerhome():
         course = Course.query().filter(Course.key == key).get()
         courses.append(course)
 
-    return render_template('lecturerhome.haml', lecturer=lecturer, coursess=courses)
+    return render_template('lecturerhome.haml', lecturer=lecturer, courses=courses)
 
 def login():
     form = LoginForm()
