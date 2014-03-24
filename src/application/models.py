@@ -77,6 +77,11 @@ class Course(ndb.Model):
     total_students = ndb.IntegerProperty()
 
 
+class Class(ndb.Model):
+    course = ndb.KeyProperty(kind=Course)
+    lecturer = ndb.KeyProperty(kind=Lecturer)
+
+
 class Question(ndb.Model):
     question_type = ndb.StringProperty(choices=['closed', 'open'])
     question = ndb.StringProperty()
@@ -92,7 +97,7 @@ class Question(ndb.Model):
 
 class Survey(ndb.Model):
     participant = ndb.KeyProperty(kind=Student)
-    course = ndb.KeyProperty(kind=Course)
+    course = ndb.KeyProperty()
     lecturer = ndb.KeyProperty(kind=Lecturer)
 
 
