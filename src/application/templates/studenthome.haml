@@ -1,0 +1,24 @@
+-extends "base.html"
+
+-block content
+
+  %h3 Hello #{student.name}.
+
+  %h4 Here are surveys for your courses
+
+  -for course in courses
+    %ul
+      %li
+        %a(href="#{url_for('survey', course_key=course.key.urlsafe())}")
+          {{ course.course.get().name }}
+
+
+  %form(action="", method="POST")
+    %label.control-label(for="search")
+      Search for course analysis and reviews
+    %input.form-control(type="text", class="form-control", id="search", \
+                        placeholder="Lecturer Name/Course Code")
+
+
+
+  #searchresultshere
