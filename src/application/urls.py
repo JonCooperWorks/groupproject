@@ -17,6 +17,12 @@ app.add_url_rule('/_ah/warmup', 'warmup', view_func=views.warmup)
 # Home page
 app.add_url_rule('/', 'home', view_func=views.home)
 
+# Student home page
+app.add_url_rule('/studenthome', 'studenthome', view_func=views.studenthome)
+
+# Lecturer home page
+app.add_url_rule('/lecturerhome', 'lecturerhome', view_func=views.lecturerhome)
+
 # Login Page
 app.add_url_rule(
     '/login', 'login', view_func=views.login, methods=['GET', 'POST'])
@@ -45,9 +51,7 @@ app.add_url_rule('/studenttestview', 'studenttestview',
                  view_func=views.studenttestview)
 app.add_url_rule('/lecturertestview', 'lecturertestview',
                  view_func=views.lecturertestview)
-app.add_url_rule('/populatequestions', 'populatequestions', view_func=views.populatequestions)
-app.add_url_rule('/populatestudents', 'populatestudents', view_func=views.populatestudents)
-app.add_url_rule('/populateusers', 'populateusers', view_func=views.populateusers)
+app.add_url_rule('/populate', 'populate', view_func=views.populate)
 
 # Error handlers
 # Handle 404 errors
