@@ -28,12 +28,12 @@ app.add_url_rule(
     '/login', 'login', view_func=views.login, methods=['GET', 'POST'])
 
 # Survey Page
-app.add_url_rule('/survey/<lecturer_key>/<course_key>', 'survey',
+app.add_url_rule('/survey/<course_key>', 'survey',
                  methods=['GET', 'POST'],
                  view_func=views.survey)
 
 # Analysis Page
-app.add_url_rule('/analysis', 'analysis', view_func=views.analysis)
+app.add_url_rule('/analysis/', 'analysis', view_func=views.analysis)
 
 # Signup Page
 app.add_url_rule('/signup', 'signup', view_func=views.signup)

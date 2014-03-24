@@ -2,15 +2,15 @@
 
 -block content
 
-  %h3 Hello #{lecturer.title} #{lecturer.name}.
+  %h3 Hello #{lecturer.title}. #{lecturer.name}.
 
-  %h4 Here the analytics for courses taught
+  %h4 Here are surveys for your courses
 
   -for course in courses
     %ul
       %li
-        %a
-          {{ course.name }}
+        %a(href="#{url_for('analysistest')}")
+          {{ course.course.get().name }}
 
 
   %form(action="", method="POST")

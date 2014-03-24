@@ -9,8 +9,8 @@
   -for course in courses
     %ul
       %li
-        %a href="#{url_for('survey', student_key=student.key.urlsafe(), course_key=course.key.urlsafe())}"
-          {{ course.name }}
+        %a(href="#{url_for('survey', course_key=course.key.urlsafe())}")
+          {{ course.course.get().name }}
 
 
   %form(action="", method="POST")

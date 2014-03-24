@@ -106,7 +106,7 @@ class Question(ndb.Model):
 
 
 class Survey(ndb.Model):
-    participant = ndb.KeyProperty(kind=Student)
+    participant = ndb.KeyProperty(kind=User)
     course = ndb.KeyProperty()
     lecturer = ndb.KeyProperty(kind=Lecturer)
 
