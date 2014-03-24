@@ -18,6 +18,12 @@ cache = Cache(app)
 def home():
     return redirect(url_for('login'))
 
+def getlecturer(course_key, student_key):
+    course_key=course_key
+    course = Course.query().filter(Course.key == course_key).get()
+    lecturer = course.lecturer
+    return redirect(url_for('survey', lecturer_key=lecturer.key, course_key=course_key))
+
 def studenthome():
     user = current_user
     student = Student.query().filter(Student.user == user.key).get()
@@ -38,7 +44,7 @@ def lecturerhome():
         course = Course.query().filter(Course.key == key).get()
         courses.append(course)
 
-    return render_template('lecturerhome.haml', lecturer=lecturer, coursess=courses)
+    return render_template('lecturerhome.haml', lecturer=lecturer, courses=courses)
 
 def login():
     form = LoginForm()
@@ -61,20 +67,21 @@ def login():
 
 
 @login_required
-def survey(lecturer_key, course_key):
-    lecturer_key, course_key = (ndb.Key(urlsafe=lecturer_key),
-                                ndb.Key(urlsafe=course_key))
+def survey(lecturer_key, course_key, student_key):
+    lecturer_key, course_key, student_key = (ndb.Key(urlsafe=lecturer_key),
+                                             ndb.Key(urlsafe=course_key),
+                                             ndb.Key(urlsafe=student_key))
     try:
-        lecturer, course = ndb.get_multi([lecturer_key, course_key])
+        lecturer, course, student = ndb.get_multi([lecturer_key, course_key, student_key])
 
     except db.BadKeyError:
-        lecturer, course = None, None
+        lecturer, course, student = None, None
 
-    if None in (lecturer, course):
+    if None in (lecturer, course, student):
         return abort(404)
 
     if request.method == 'POST':
-        survey = Survey(course=course.key, lecturer=lecturer.key)
+        survey = Survey(course=course.key, lecturer=lecturer.key, participant=student.key)
         survey.put()
         answers = []
         for question, answer in request.form.items():
@@ -100,7 +107,7 @@ def survey(lecturer_key, course_key):
         ndb.put_multi(answers)
 
         # TODO: Redirect them somewhere
-        return redirect(url_for('login'))
+        return redirect(url_for('studenthome'))
 
     questions = Question.get_active()
     return render_template(
