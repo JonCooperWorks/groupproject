@@ -1,7 +1,7 @@
 import json
 
 from flask import render_template, url_for, redirect, request, abort
-from flask.ext.flask_login import login_required, login_user
+from flask.ext.flask_login import current_user, login_required, login_user
 from flask_cache import Cache
 from google.appengine.api import mail
 from google.appengine.ext import db, ndb
@@ -18,6 +18,27 @@ cache = Cache(app)
 def home():
     return redirect(url_for('login'))
 
+def studenthome():
+    user = current_user
+    student = Student.query().filter(Student.user == user.key).get()
+
+    for key in student.courses:
+        courses = []
+        course = Course.query().filter(Course.key == key).get()
+        courses.append(course)
+
+    return render_template('studenthome.haml', student=student, courses=courses)
+
+def lecturerhome():
+    user = current_user
+    lecturer = Lecturer.query().filter(Lecturer.user == user.key).get()
+
+    for key in lecturer.courses:
+        courses = []
+        course = Course.query().filter(Course.key == key).get()
+        courses.append(course)
+
+    return render_template('lecturerhome.haml', lecturer=lecturer, courses=courses)
 
 def login():
     form = LoginForm()
@@ -29,7 +50,13 @@ def login():
                                    error='Invalid login')
 
         login_user(user, force=True)
-        return redirect('/surveytest')
+
+        if user.user_type=='student':
+            return redirect(url_for('studenthome'))
+
+        if user.user_type=='lecturer':
+            return redirect(url_for('lecturerhome'))
+
     return render_template('login.haml', form=form)
 
 
@@ -83,7 +110,13 @@ def survey(lecturer_key, course_key):
         course_key=course_key.urlsafe())
 
 
-def analysis():
+def analysis(survey_key):
+    survey = Survey.query().filter(Survey.key == survey_key).get()
+    answers = Answer.query().filter(Answer.survey == survey.key).get()
+    course_total = survey.course.total_students
+
+    total_questions_in_survey = Question.all().filter(is_active==True).count()
+    total_surveys = Answer.query().filter(Answer.survey == survey.key).count()/total_questions_in_survey
     return render_template('analysis.haml')
 
 
@@ -124,7 +157,16 @@ def lecturertestview():
     return render_template('lecturertestview.haml')
 
 
-def populatequestions():
+def populate():
+    user1 = User().createstudent('student', 'password')
+    s = Student(name='K Leyow', email_address='kleyow@gmail.com',
+                user=user1.key)
+
+    user2 = User().createlecturer('lecturer', 'password')
+    l = Lecturer(name='Jimmy', title='Dr', user=user2.key)
+
+    c = Course(name='test')
+
     file = open("application/questions.txt", 'r')
     number = 0
     for line in file:
@@ -137,20 +179,13 @@ def populatequestions():
                             number=number)
         question.put()
 
-
-def populatestudents():
-    student = Student(name='K Leyow',
-                      email_address='kleyow@gmail.com')
-    student.put()
-
-
-def populateusers():
-    user = User()
-    user.create('user', 'password')
-    l = Lecturer(name='Jimmy', title='Dr').put()
-    c = Course(name='test').put()
-    return '%s/%s' % (l.urlsafe(), c.urlsafe())
-
+    s.put()
+    l.put()
+    c.put()
+    s.courses.append(c.key)
+    l.courses.append(c.key)
+    s.put()
+    return "Done."
 
 def warmup():
     """App Engine warmup handler

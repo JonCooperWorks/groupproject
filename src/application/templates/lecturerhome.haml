@@ -1,0 +1,24 @@
+-extends "base.html"
+
+-block content
+
+  %h3 Hello #{lecturer.title} #{lecturer.name}.
+
+  %h4 Here the analytics for courses taught
+
+  -for course in courses
+    %ul
+      %li
+        %a
+          {{ course.name }}
+
+
+  %form(action="", method="POST")
+    %label.control-label(for="search")
+      Search for course analysis and reviews
+    %input.form-control(type="text", class="form-control", id="search", \
+                        placeholder="Lecturer Name/Course Code")
+
+
+
+  #searchresultshere

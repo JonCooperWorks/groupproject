@@ -16,9 +16,18 @@ class User(ndb.Model):
     user_type = ndb.StringProperty(choices=['lecturer', 'student'])
 
     @classmethod
-    def create(cls, username, password):
+    def createstudent(cls, username, password):
         user = cls(username=username,
-                   password_hash=generate_password_hash(password))
+                   password_hash=generate_password_hash(password),
+                   user_type='student')
+        user.put()
+        return user
+
+    @classmethod
+    def createlecturer(cls, username, password):
+        user = cls(username=username,
+                   password_hash=generate_password_hash(password),
+                   user_type='lecturer')
         user.put()
         return user
 
@@ -61,6 +70,7 @@ class Lecturer(ndb.Model):
     name = ndb.StringProperty()
     title = ndb.StringProperty()
     department = ndb.KeyProperty()
+    courses = ndb.KeyProperty(repeated=True)
 
 
 class Faculty(ndb.Model):
@@ -99,6 +109,7 @@ class Survey(ndb.Model):
     participant = ndb.KeyProperty(kind=Student)
     course = ndb.KeyProperty()
     lecturer = ndb.KeyProperty(kind=Lecturer)
+    date = ndb.DateProperty(auto_now_add=True)
 
 
 class Answer(ndb.Model):
