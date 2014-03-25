@@ -164,17 +164,15 @@ def populate():
     l.courses = [cl.key]
     ndb.put_multi([s, l])
 
-    file = open("application/questions.txt", 'r')
-    number = 0
-    questions = []
-    for line in file:
-        number += 1
-        parsed_line = line.split('|')
-        questions.append(Question(question_type=parsed_line[0],
-                                  dimension=parsed_line[1],
-                                  question=parsed_line[2],
-                                  is_active=True,
-                                  number=number))
+    with open('application/questions.txt') as f:
+        questions = []
+        for number, line in enumerate(f.readlines()):
+            question_type, dimension, question = line.split('|')
+            questions.append(Question(question_type=question_type,
+                                    dimension=dimension,
+                                    question=question,
+                                    is_active=True,
+                                    number=number))
     ndb.put_multi(questions)
     return 'Done.'
 
