@@ -15,20 +15,37 @@ from application.models import *
 cache = Cache(app)
 
 
+@login_required
 def home():
-    return redirect(url_for('login'))
+    if current_user.user_type == 'student':
+        return studenthome()
 
+    elif current_user.user_type == 'lecturer':
+        return lecturerhome()
+
+    else:
+        raise RuntimeError('Something is horribly wrong.')
+
+
+@login_required
 def studenthome():
-    user = current_user
-    student = Student.query().filter(Student.user == user.key).get()
+    if current_user.user_type != 'student':
+        return 403
+
+    student = Student.query().filter(Student.user == current_user.key).get()
     courses = ndb.get_multi(student.courses)
     return render_template('studenthome.haml', student=student, courses=courses)
 
+
+@login_required
 def lecturerhome():
-    user = current_user
-    lecturer = Lecturer.query().filter(Lecturer.user == user.key).get()
+    if current_user.user_type != 'lecturer':
+        return 403
+
+    lecturer = Lecturer.query().filter(Lecturer.user == current_user.key).get()
     courses = ndb.get_multi(lecturer.courses)
     return render_template('lecturerhome.haml', lecturer=lecturer, courses=courses)
+
 
 def login():
     form = LoginForm()
@@ -40,33 +57,31 @@ def login():
                                    error='Invalid login')
 
         login_user(user, force=True)
-
-        if user.user_type=='student':
-            return redirect(url_for('studenthome'))
-
-        if user.user_type=='lecturer':
-            return redirect(url_for('lecturerhome'))
+        return redirect(url_for('home'))
 
     return render_template('login.haml', form=form)
 
 
 @login_required
 def survey(course_key):
-    course = (ndb.Key(urlsafe=course_key)).get()
+    try:
+        course = ndb.Key(urlsafe=course_key).get()
+
+    except db.BadKeyError:
+        course = None
 
     if course is None:
         return abort(404)
 
     if request.method == 'POST':
         lecturer = course.lecturer.get()
-        survey = Survey(course=course.key, lecturer=lecturer.key, participant=current_user.key)
+        survey = Survey(
+            parent=course.key, participant=current_user.key)
         survey.put()
         answers = []
-        for question, answer in request.form.items():
-            # TODO: Assign each question to a Survey object.
-            # This can only be done once we tie each survey to a course, and
-            # set up the entity hierarchy properly.
-            question = ndb.Key(urlsafe=question).get()
+        questions = ndb.get_multi(
+            [ndb.Key(urlsafe=question) for question in request.form.keys()])
+        for question, answer in zip(questions, request.form.values()):
             if question is None:
                 continue
 
@@ -83,15 +98,14 @@ def survey(course_key):
                            parent=survey.key))
 
         ndb.put_multi(answers)
-
-        # TODO: Redirect them somewhere
-        return redirect(url_for('login'))
+        return redirect(url_for('studenthome'))
 
     questions = Question.get_active()
     return render_template(
         'survey.haml',
         questions=questions,
         course=course)
+
 
 def analysis():
     return render_template('analysistest.haml')
@@ -135,38 +149,35 @@ def lecturertestview():
 
 
 def populate():
-    user1 = User().createstudent('student', 'password')
+    user1 = User.create('student', 'password', 'student')
     s = Student(name='K Leyow', email_address='kleyow@gmail.com',
                 user=user1.key)
 
-    user2 = User().createlecturer('lecturer', 'password')
+    user2 = User.create('lecturer', 'password', 'lecturer')
     l = Lecturer(name='Jimmy', title='Dr', user=user2.key)
 
     c = Course(name='test')
     ndb.put_multi([l, c])
     cl = Class(course=c.key, lecturer=l.key)
     cl.put()
+    s.courses = [cl.key]
+    l.courses = [cl.key]
+    ndb.put_multi([s, l])
 
     file = open("application/questions.txt", 'r')
     number = 0
+    questions = []
     for line in file:
         number += 1
         parsed_line = line.split('|')
-        question = Question(question_type=parsed_line[0],
-                            dimension=parsed_line[1],
-                            question=parsed_line[2],
-                            is_active=True,
-                            number=number)
-        question.put()
+        questions.append(Question(question_type=parsed_line[0],
+                                  dimension=parsed_line[1],
+                                  question=parsed_line[2],
+                                  is_active=True,
+                                  number=number))
+    ndb.put_multi(questions)
+    return 'Done.'
 
-    s.put()
-    l.put()
-    c.put()
-    s.courses.append(cl.key)
-    l.courses.append(cl.key)
-    s.put()
-    l.put()
-    return "Done."
 
 def warmup():
     """App Engine warmup handler
