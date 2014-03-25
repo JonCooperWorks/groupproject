@@ -180,7 +180,7 @@ def populate():
 
 def sentiment_analysis():
     text = request.POST.get('text')
-    if None in (text, answer_key):
+    if text is None:
         return
 
     try:
