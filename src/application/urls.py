@@ -39,6 +39,10 @@ app.add_url_rule('/landing', 'landing', view_func=views.landing)
 app.add_url_rule('/notify-students', 'notify-students',
                  view_func=views.notify_students)
 
+# Sentiment analysis endpoint
+app.add_url_rule('/sentiment-analysis', 'sentiment-analysis',
+                 methods=['POST'], view_func=views.sentiment_analysis)
+
 # Test route page allows me to style while work is done on the backend
 app.add_url_rule('/analysistest', 'analysistest', view_func=views.analysistest)
 app.add_url_rule('/studenttestview', 'studenttestview',

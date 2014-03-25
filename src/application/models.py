@@ -4,8 +4,6 @@ models.py
 App Engine datastore models
 
 """
-
-
 from google.appengine.ext import ndb
 from webapp2_extras.security import generate_password_hash, check_password_hash
 
@@ -105,4 +103,5 @@ class Answer(ndb.Model):
     question = ndb.KeyProperty(kind=Question)
     string_value = ndb.StringProperty()
     int_value = ndb.IntegerProperty()
+    sentiment = ndb.StringProperty()
     survey = ndb.KeyProperty(kind=Survey)

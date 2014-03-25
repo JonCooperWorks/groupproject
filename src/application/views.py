@@ -1,9 +1,10 @@
 import json
+import urllib
 
 from flask import render_template, url_for, redirect, request, abort
 from flask.ext.flask_login import current_user, login_required, login_user
 from flask_cache import Cache
-from google.appengine.api import mail
+from google.appengine.api import mail, urlfetch
 from google.appengine.ext import db, ndb
 
 from application import app
@@ -175,6 +176,37 @@ def populate():
                                     number=number + 1))
     ndb.put_multi(questions)
     return 'Done.'
+
+
+def sentiment_analysis():
+    text = request.POST.get('text')
+    if None in (text, answer_key):
+        return
+
+    try:
+        answer = ndb.Key(urlsafe=request.POST.get('answer_key', ''))
+
+    except db.BadKeyError:
+        answer = None
+
+    if answer is None:
+        return
+
+    response = urlfetch.fetch(
+        'http://text-processing.com/api/sentiment',
+        payload=urllib.urlencode({'text': text}),
+        method=urlfetch.POST)
+
+    # If we've been throttled, just give up and die
+    if response.status_code == 503:
+        return
+
+    elif response.status_code != 200:
+        raise Exception('Retry task')
+
+    sentiment = json.loads(response.content)
+    answer.sentiment = sentiment['label']
+    answer.put()
 
 
 def warmup():
