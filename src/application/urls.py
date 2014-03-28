@@ -21,6 +21,10 @@ app.add_url_rule('/', 'home', view_func=views.home)
 app.add_url_rule(
     '/login', 'login', view_func=views.login, methods=['GET', 'POST'])
 
+# Logout
+app.add_url_rule(
+    '/logout', 'logout', view_func=views.logout)
+
 # Survey Page
 app.add_url_rule('/survey/<course_key>', 'survey',
                  methods=['GET', 'POST'],

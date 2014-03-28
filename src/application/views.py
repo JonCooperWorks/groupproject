@@ -2,7 +2,7 @@ import json
 import urllib
 
 from flask import render_template, url_for, redirect, request, abort
-from flask.ext.flask_login import current_user, login_required, login_user
+from flask.ext.flask_login import current_user, login_required, login_user, logout_user
 from flask_cache import Cache
 from google.appengine.api import mail, urlfetch
 from google.appengine.ext import db, ndb
@@ -61,6 +61,11 @@ def login():
         return redirect(url_for('home'))
 
     return render_template('login.haml', form=form)
+
+
+def logout():
+    logout_user()
+    return redirect(url_for('login'))
 
 
 @login_required
