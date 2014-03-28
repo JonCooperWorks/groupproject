@@ -26,7 +26,7 @@
                     %input(type="radio", name="{{question.key.urlsafe()}}", value="#{n}")
                     #{n}
 
-          -if question.question_type == 'open'
+          -if question.question_type == 'open' or question.question_type == 'peer'
             -if dimension != dimensionCheck
               -set dimensionCheck = dimension
               .row.dimension: .span12.center
