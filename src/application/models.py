@@ -4,8 +4,6 @@ models.py
 App Engine datastore models
 
 """
-
-
 from google.appengine.ext import ndb
 from webapp2_extras.security import generate_password_hash, check_password_hash
 
@@ -16,18 +14,10 @@ class User(ndb.Model):
     user_type = ndb.StringProperty(choices=['lecturer', 'student'])
 
     @classmethod
-    def createstudent(cls, username, password):
+    def create(cls, username, password, user_type):
         user = cls(username=username,
                    password_hash=generate_password_hash(password),
-                   user_type='student')
-        user.put()
-        return user
-
-    @classmethod
-    def createlecturer(cls, username, password):
-        user = cls(username=username,
-                   password_hash=generate_password_hash(password),
-                   user_type='lecturer')
+                   user_type=user_type)
         user.put()
         return user
 
@@ -107,12 +97,11 @@ class Question(ndb.Model):
 
 class Survey(ndb.Model):
     participant = ndb.KeyProperty(kind=User)
-    course = ndb.KeyProperty()
-    lecturer = ndb.KeyProperty(kind=Lecturer)
 
 
 class Answer(ndb.Model):
     question = ndb.KeyProperty(kind=Question)
     string_value = ndb.StringProperty()
     int_value = ndb.IntegerProperty()
+    sentiment = ndb.StringProperty()
     survey = ndb.KeyProperty(kind=Survey)

@@ -17,12 +17,6 @@ app.add_url_rule('/_ah/warmup', 'warmup', view_func=views.warmup)
 # Home page
 app.add_url_rule('/', 'home', view_func=views.home)
 
-# Student home page
-app.add_url_rule('/studenthome', 'studenthome', view_func=views.studenthome)
-
-# Lecturer home page
-app.add_url_rule('/lecturerhome', 'lecturerhome', view_func=views.lecturerhome)
-
 # Login Page
 app.add_url_rule(
     '/login', 'login', view_func=views.login, methods=['GET', 'POST'])
@@ -45,6 +39,10 @@ app.add_url_rule('/landing', 'landing', view_func=views.landing)
 app.add_url_rule('/notify-students', 'notify-students',
                  view_func=views.notify_students)
 
+# Sentiment analysis endpoint
+app.add_url_rule('/sentiment-analysis', 'sentiment-analysis',
+                 methods=['POST'], view_func=views.sentiment_analysis)
+
 # Test route page allows me to style while work is done on the backend
 app.add_url_rule('/analysistest', 'analysistest', view_func=views.analysistest)
 app.add_url_rule('/studenttestview', 'studenttestview',
@@ -52,6 +50,7 @@ app.add_url_rule('/studenttestview', 'studenttestview',
 app.add_url_rule('/lecturertestview', 'lecturertestview',
                  view_func=views.lecturertestview)
 app.add_url_rule('/populate', 'populate', view_func=views.populate)
+
 
 # Error handlers
 # Handle 404 errors
