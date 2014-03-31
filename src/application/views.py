@@ -2,7 +2,8 @@ import json
 import urllib
 
 from flask import render_template, url_for, redirect, request, abort
-from flask.ext.flask_login import current_user, login_required, login_user, logout_user
+from flask.ext.flask_login import current_user, login_required, login_user,\
+    logout_user
 from flask_cache import Cache
 from google.appengine.api import mail, urlfetch
 from google.appengine.ext import db, ndb
@@ -35,7 +36,8 @@ def studenthome():
 
     student = Student.query().filter(Student.user == current_user.key).get()
     courses = ndb.get_multi(student.courses)
-    return render_template('studenthome.haml', student=student, courses=courses)
+    return render_template(
+        'studenthome.haml', student=student, courses=courses)
 
 
 @login_required
@@ -45,7 +47,8 @@ def lecturerhome():
 
     lecturer = Lecturer.query().filter(Lecturer.user == current_user.key).get()
     courses = ndb.get_multi(lecturer.courses)
-    return render_template('lecturerhome.haml', lecturer=lecturer, courses=courses)
+    return render_template(
+        'lecturerhome.haml', lecturer=lecturer, courses=courses)
 
 
 def login():
@@ -81,7 +84,6 @@ def survey(course_key):
         return abort(404)
 
     if request.method == 'POST':
-        lecturer = course.lecturer.get()
         survey = Survey(
             parent=course.key, participant=current_user.key)
         survey.put()
@@ -176,10 +178,10 @@ def populate():
         for number, line in enumerate(f.readlines()):
             question_type, dimension, question = line.split('|')
             questions.append(Question(question_type=question_type,
-                                    dimension=dimension,
-                                    question=question,
-                                    is_active=True,
-                                    number=number + 1))
+                                      dimension=dimension,
+                                      question=question,
+                                      is_active=True,
+                                      number=number + 1))
     ndb.put_multi(questions)
     return 'Done.'
 
@@ -190,7 +192,7 @@ def sentiment_analysis():
         return
 
     try:
-        answer = ndb.Key(urlsafe=request.POST.get('answer_key', ''))
+        answer = ndb.Key(urlsafe=request.POST.get('answer_key', '')).get()
 
     except db.BadKeyError:
         answer = None
