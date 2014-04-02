@@ -9,5 +9,5 @@
   -for course in courses
     %ul
       %li
-        %a(href="#{url_for('analysistest')}")
+        %a(href="#{url_for('analysis', class_key=course.key.urlsafe())}")
           {{ course.course.get().name }}
