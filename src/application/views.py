@@ -128,8 +128,13 @@ def analysis(class_key):
         return abort(404)
 
     course = class_.course.get()
+    lecturer = class_.lecturer.get()
     surveys = Survey.query(ancestor=class_.key)
-    return render_template('analysis.haml', surveys=surveys, course=course)
+    return render_template(
+        'analysis.haml',
+        surveys=surveys,
+        course=course,
+        lecturer=lecturer)
 
 
 def signup():

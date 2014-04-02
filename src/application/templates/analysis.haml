@@ -2,7 +2,7 @@
 
 -block content
     %h1 Analysis Summary
-    %h2 {{ course.name }}
+    %h2 {{ course.name }} taught by {{ lecturer.name }}
     %h3 {{ surveys.count() }} /{{ course.total_students }} Students Finished Survey
 
     #analysis: %section
