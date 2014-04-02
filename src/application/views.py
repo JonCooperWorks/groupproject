@@ -10,7 +10,8 @@ from google.appengine.ext import db, ndb
 
 from application import app
 from application.forms import LoginForm
-from application.models import *
+from application.models import Student, Lecturer, Course, Class, Answer, \
+    Question, Survey, User
 
 
 # Flask-Cache (configured to use App Engine Memcache API)
@@ -107,7 +108,7 @@ def survey(course_key):
                            parent=survey.key))
 
         ndb.put_multi(answers)
-        return redirect(url_for('studenthome'))
+        return redirect(url_for('home'))
 
     questions = Question.get_active()
     return render_template(
@@ -116,8 +117,24 @@ def survey(course_key):
         course=course)
 
 
-def analysis():
-    return render_template('analysistest.haml')
+def analysis(class_key):
+    try:
+        class_ = ndb.Key(urlsafe=class_key).get()
+
+    except db.BadKeyError:
+        class_ = None
+
+    if class_ is None:
+        return abort(404)
+
+    course = class_.course.get()
+    lecturer = class_.lecturer.get()
+    surveys = Survey.query(ancestor=class_.key)
+    return render_template(
+        'analysis.haml',
+        surveys=surveys,
+        course=course,
+        lecturer=lecturer)
 
 
 def signup():
@@ -165,7 +182,7 @@ def populate():
     user2 = User.create('lecturer', 'password', 'lecturer')
     l = Lecturer(name='Jimmy', title='Dr', user=user2.key)
 
-    c = Course(name='test')
+    c = Course(name='test', total_students=30)
     ndb.put_multi([l, c])
     cl = Class(course=c.key, lecturer=l.key)
     cl.put()

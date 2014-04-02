@@ -74,7 +74,7 @@ class Course(ndb.Model):
     end_date = ndb.DateProperty()
     department = ndb.KeyProperty(kind=Department)
     faculty = ndb.KeyProperty(kind=Faculty)
-    total_students = ndb.IntegerProperty()
+    total_students = ndb.IntegerProperty(default=0)
 
 
 class Class(ndb.Model):
