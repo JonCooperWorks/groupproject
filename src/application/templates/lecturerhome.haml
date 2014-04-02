@@ -11,14 +11,3 @@
       %li
         %a(href="#{url_for('analysistest')}")
           {{ course.course.get().name }}
-
-
-  %form(action="", method="POST")
-    %label.control-label(for="search")
-      Search for course analysis and reviews
-    %input.form-control(type="text", class="form-control", id="search", \
-                        placeholder="Lecturer Name/Course Code")
-
-
-
-  #searchresultshere

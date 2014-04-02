@@ -37,8 +37,10 @@ def studenthome():
 
     student = Student.query().filter(Student.user == current_user.key).get()
     courses = ndb.get_multi(student.courses)
+    all_classes = Class.query()
     return render_template(
-        'studenthome.haml', student=student, courses=courses)
+        'studenthome.haml', student=student, courses=courses,
+        all_classes=all_classes)
 
 
 @login_required
