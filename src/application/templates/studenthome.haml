@@ -19,10 +19,11 @@
       .pagination
         %ul.pagination-list
       %ul.list
-        -for class in all_classes
+        -for class_ in all_classes
           %li
-            %h4.course
-              {{ class.course.get().name }}
+            #course.course
+              %a(href="#{url_for('analysis', class_key=class_.key.urlsafe())}")
+                {{ class_.course.get().name }}
 
 
 
@@ -32,6 +33,6 @@
   %script
     var options = new List('course-list', {
       valueNames: ['course'],
-      page: 3,
+      page: 5,
       plugins: [ ListPagination({}) ]
     });

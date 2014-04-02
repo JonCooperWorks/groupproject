@@ -89,3 +89,10 @@ input.open {
 #student-home #course-list{
   margin-top: 80px;
 }
+
+#student-home #course.course{
+  padding: 8px;
+  line-height: 20px;
+  text-align: left;
+  vertical-align: top;
+}
