@@ -81,3 +81,11 @@
 input.open {
   width:60%;
 }
+
+#student-home ul.list {
+  list-style-type: none;
+}
+
+#student-home #course-list{
+  margin-top: 80px;
+}

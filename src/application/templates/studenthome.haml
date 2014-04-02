@@ -2,23 +2,36 @@
 
 -block content
 
-  %h3 Hello #{student.name}.
+  #student-home
+    %h3 Hello #{student.name}.
 
-  %h4 Here are surveys for your courses
+    %h4 Here are surveys for your courses
 
-  -for course in courses
-    %ul
-      %li
-        %a(href="#{url_for('survey', course_key=course.key.urlsafe())}")
-          {{ course.course.get().name }}
-
-
-  %form(action="", method="POST")
-    %label.control-label(for="search")
-      Search for course analysis and reviews
-    %input.form-control(type="text", class="form-control", id="search", \
-                        placeholder="Lecturer Name/Course Code")
+    -for course in courses
+      %ul
+        %li
+          %a(href="#{url_for('survey', course_key=course.key.urlsafe())}")
+            {{ course.course.get().name }}
 
 
+    #course-list
+      %input.search(type="text", placeholder="Search Course")
+      .pagination
+        %ul.pagination-list
+      %ul.list
+        -for class in all_classes
+          %li
+            %h4.course
+              {{ class.course.get().name }}
 
-  #searchresultshere
+
+
+-block scripts
+  %script(src="/static/js/list.min.js")
+  %script(src="/static/js/list.pagination.min.js")
+  %script
+    var options = new List('course-list', {
+      valueNames: ['course'],
+      page: 3,
+      plugins: [ ListPagination({}) ]
+    });
