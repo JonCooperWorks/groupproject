@@ -7,4 +7,4 @@
 
     #analysis: %section
       .progress.progress-striped
-        .bar(style="width: #{ surveys.count() / course.total_students}%")
+        .bar(style="width: #{(surveys.count() / course.total_students)*100}%")
