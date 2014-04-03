@@ -7,6 +7,20 @@
 
 /* Your customizations here */
 
+body {
+  background-image: url(/static/img/stardust.png)
+}
+
+#body_content {
+   min-height: 500px;
+   height:auto !important;
+   height: 500px;
+
+  background-color: white;
+  border-radius: 5px;
+  padding: 20px;
+}
+
 .center {text-align: center;}
 
 #login input {
@@ -47,39 +61,43 @@
   border: 0 none;
 }
 
-.yourDiv{
-  position:absolute;
-  top: 123px;
-}
-
-#survey .progress{
+#survey .progress {
   position: fixed;
   margin-left: -50px;
   width: 90%;
-  height: 20px;
+  height: 3px;
   right: 5%;
-  top: 65px;
+  top: 41px;
 }
 
-.hiddenRow {
-    padding: 0 !important;
+#survey .row {
+  margin-left: 0px;
 }
 
-.well-alt {
+#survey .well-alt {
   padding: 19px;
 }
 
-.dimension {
+#survey .dimension {
+  color: white;
   padding-bottom: 19px;
   padding-top: 19px;
-  background-color: #90c8f3;
+  background-color: #004981;
   margin-top:19px;
   margin-bottom: 19px;
   border-radius: 2px;
 }
 
-input.open {
+#survey .dimension [class*="span"] {
+  margin-left: 0px;
+}
+
+#survey input.open {
   width:60%;
+}
+
+#survey #submit-button {
+  margin-left: 0px;
 }
 
 #student-home ul.list {
@@ -96,3 +114,4 @@ input.open {
   text-align: left;
   vertical-align: top;
 }
+
