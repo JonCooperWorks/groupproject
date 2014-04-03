@@ -178,19 +178,25 @@ def lecturertestview():
 
 def populate():
     user1 = User.create('student', 'password', 'student')
-    s = Student(name='K Leyow', email_address='kleyow@gmail.com',
-                user=user1.key)
+    student = Student(name='Kevin Leyow', email_address='kleyow@gmail.com',
+                      user=user1.key)
 
     user2 = User.create('lecturer', 'password', 'lecturer')
-    l = Lecturer(name='Jimmy', title='Dr', user=user2.key)
+    lecturer = Lecturer(name='Jimmy', title='Dr', user=user2.key)
 
-    c = Course(name='test', total_students=30)
-    ndb.put_multi([l, c])
-    cl = Class(course=c.key, lecturer=l.key)
-    cl.put()
-    s.courses = [cl.key]
-    l.courses = [cl.key]
-    ndb.put_multi([s, l])
+    course = Course(name='Comp3800', total_students=30)
+    course2 = Course(name='Comp2600', total_students=20)
+    ndb.put_multi([lecturer, course])
+    ndb.put_multi([lecturer, course2])
+
+    class_ = Class(course=course.key, lecturer=lecturer.key)
+    class2_ = Class(course=course2.key, lecturer=lecturer.key)
+    class_.put()
+    class2_.put()
+
+    student.courses = [class_.key, class2_.key]
+    lecturer.courses = [class_.key, class2_.key]
+    ndb.put_multi([student, lecturer])
 
     with open('application/questions.txt') as f:
         questions = []
