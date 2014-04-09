@@ -6,7 +6,8 @@ from flask.ext.flask_login import current_user, login_required, login_user,\
     logout_user
 from flask_cache import Cache
 from google.appengine.api import mail, urlfetch
-from google.appengine.ext import db, ndb
+from google.appengine.ext import db, deferred, ndb
+import keen
 
 from application import app
 from application.forms import LoginForm
@@ -110,6 +111,7 @@ def survey(course_key):
                            parent=survey.key))
 
         ndb.put_multi(answers)
+        deferred.defer(_send_to_keen, course, answers)
         return redirect(url_for('home'))
 
     questions = Question.get_active()
@@ -117,6 +119,24 @@ def survey(course_key):
         'survey.haml',
         questions=questions,
         course=course)
+
+
+def _send_to_keen(course, answers):
+    events = []
+    for answer in answers:
+        question = answer.question.get()
+        if question.question_type != 'closed':
+            continue
+
+        events.append({
+            'question_key': question.key.urlsafe(),
+            'survey_key': answer.key.parent().urlsafe(),
+            'course_key': course.key.urlsafe(),
+            'question_number': question.number,
+            'response': answer.int_value,
+        })
+
+    keen.add_events({'answers': events})
 
 
 def analysis(class_key):
