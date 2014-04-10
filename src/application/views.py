@@ -156,7 +156,9 @@ def analysis(class_key):
         'analysis.haml',
         surveys=surveys,
         course=course,
-        lecturer=lecturer)
+        lecturer=lecturer,
+        class_key=class_key,
+        questions=Question.get_active())
 
 
 def signup():
