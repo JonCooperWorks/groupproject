@@ -47,6 +47,10 @@ app.add_url_rule('/notify-students', 'notify-students',
 app.add_url_rule('/sentiment-analysis', 'sentiment-analysis',
                  methods=['POST'], view_func=views.sentiment_analysis)
 
+# Custom queries
+app.add_url_rule(
+    '/query', 'query', methods=['GET', 'POST'], view_func=views.query)
+
 # Test route page allows me to style while work is done on the backend
 app.add_url_rule('/analysistest', 'analysistest', view_func=views.analysistest)
 app.add_url_rule('/studenttestview', 'studenttestview',
