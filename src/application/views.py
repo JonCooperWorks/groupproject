@@ -128,12 +128,19 @@ def _send_to_keen(course, answers):
         if question.question_type != 'closed':
             continue
 
+        lecturer = course.lecturer.get()
         events.append({
             'question_key': question.key.urlsafe(),
             'survey_key': answer.key.parent().urlsafe(),
             'course_key': course.key.urlsafe(),
             'question_number': question.number,
             'response': answer.int_value,
+            'lecturer': {
+                'key': lecturer.key.urlsafe(),
+                'name': lecturer.name,
+                'department': lecturer.department.get().name,
+                'faculty': lecturer.department.get().faculty.get().name,
+            },
         })
 
     keen.add_events({'answers': events})
@@ -183,6 +190,23 @@ def notify_students():
         mail.send_mail(**mail_kwargs)
 
     return json.dumps({'status': 'OK'})
+
+
+def query():
+    """Custom queries using keen.io as a backend.
+    The frontent form must pass values in using the names
+        `property_name` - The name of the property you wish to query
+        `property_value` - The value of the property being entered
+        `operator` - 'eq', 'gt', 'lt'
+    """
+    if request.method == 'POST':
+        # Run the query
+        response = keen.extraction('answers', filters=[request.form.to_dict()])
+        if len(response) == 0:
+            return 'No results found'
+
+        # Display the response
+    # Display the form
 
 
 # Handlersfor testing styling.
