@@ -11,26 +11,6 @@
       %ul
         %li
           %a(href="#{url_for('survey', course_key=course.key.urlsafe())}")
-            {{ course.course.get().name }}
-
-
-    #course-list
-      %input.search(type="text", placeholder="Search Course")
-      .pagination
-        %ul.pagination-list
-      %ul.list
-        -for class_ in all_classes
-          %li
-            #course.course
-              %a(href="#{url_for('analysis', class_key=class_.key.urlsafe())}")
-                {{ class_.course.get().name }}
-
--block scripts
-  %script(src="/static/js/list.min.js")
-  %script(src="/static/js/list.pagination.min.js")
-  %script
-    var options = new List('course-list', {
-      valueNames: ['course'],
-      page: 5,
-      plugins: [ ListPagination({}) ]
-    });
+            {{ course.course.get().name }} - \
+            Department of {{ course.course.get().department.get().name  }} -\
+            Faculty of {{ course.course.get().faculty.get().name  }}

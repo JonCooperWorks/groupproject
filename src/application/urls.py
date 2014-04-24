@@ -33,6 +33,9 @@ app.add_url_rule('/survey/<course_key>', 'survey',
 # Analysis Page
 app.add_url_rule('/analysis/<class_key>', 'analysis', view_func=views.analysis)
 
+# Peer Review Page
+app.add_url_rule('/peerreview', 'peerreview', view_func=views.peerreview)
+
 # Signup Page
 app.add_url_rule('/signup', 'signup', view_func=views.signup)
 

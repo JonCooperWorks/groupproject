@@ -1,0 +1,6 @@
+-extends "base.html"
+
+-block content
+  %form(action="#{url_for('notify-students')}")
+    %button.btn(type="submit")
+      Notify students of surveys.

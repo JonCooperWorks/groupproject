@@ -9,52 +9,129 @@
     .progress.progress-striped
       .bar(style="width: #{(surveys.count() / course.total_students)*100}%")
 
-  %h3 Rating : 
+  %h3 Rating :
     #chart
 
   %table.table(style="border-collapse:collapse;")
     %thead
-      %tr 
+      %tr
         %th Question
     %tbody
       -for question in questions|sort(attribute='number')
         -if question.question_type == 'closed'
             %tr.accordion-toggle(data-toggle="collapse", data-target="#target{{ loop.index }}")
-              %td {{question.number}}
+              %td {{ question.number }}. {{ question.question }}
             %tr
               %td.hiddenRow
                 .accordion-body.collapse(id="target{{ loop.index }}")
-                  %h2 {{question.number}}
-                  %div(id="chartclosed{{question.number}}")
+                  .row
+                    .offset2.span8
+                      %div(id="chartclosed{{question.number}}")
+                  .row
+                    .offset1.span10
+                      %h3(id="average{{question.number}}")
 
+                  .row
+                    .offset1.span10
+                      .center
+                        %table.table
+                          %thead
+                            %tr
+                              %th Rating
+                              %th Repsonses
+                              %th Total
+                          %tbody
+                            %tr
+                              %td 1
+                              %td(id="1count{{question.number}}") 0
+                              %td(id="1totalpercent{{question.number}}") 0%
+                            %tr
+                              %td 2
+                              %td(id="2count{{question.number}}") 0
+                              %td(id="2totalpercent{{question.number}}") 0%
+                            %tr
+                              %td 3
+                              %td(id="3count{{question.number}}") 0
+                              %td(id="3totalpercent{{question.number}}") 0%
+                            %tr
+                              %td 4
+                              %td(id="4count{{question.number}}") 0
+                              %td(id="4totalpercent{{question.number}}") 0%
+                            %tr
+                              %td 5
+                              %td(id="5count{{question.number}}") 0
+                              %td(id="5totalpercent{{question.number}}") 0%
+                            %tr
+                              %td Total
+                              %td(id="total{{question.number}}") 0
+                              %td
 
+  <script src="/static/js/keen.js"></script>
   <script>
-    var Keen=Keen||{configure:function(e){this._cf=e},addEvent:function(e,t,n,i){this._eq=this._eq||[],this._eq.push([e,t,n,i])},setGlobalProperties:function(e){this._gp=e},onChartsReady:function(e){this._ocrq=this._ocrq||[],this._ocrq.push(e)}};(function(){var e=document.createElement("script");e.type="text/javascript",e.async=!0,e.src=("https:"==document.location.protocol?"https://":"http://")+"dc8na2hxrj29i.cloudfront.net/code/keen-2.1.0-min.js";var t=document.getElementsByTagName("script")[0];t.parentNode.insertBefore(e,t)})();
-
-    Keen.configure({
-        projectId: "5343e251d97b85610e00005c",
-        readKey: "26d63e407798e31ae1f114ce7525495a8bbabfe0253d4f6c4ee8d26a83b210157a4b8971f08ab16aba407acf48ee28492dd96a9a6dce124f6853073293080a7f1c39b6783346bb5e9e1ecdf867159d08c089fd15eb4272398e4307fc8474f5ec32850ba1255a1d53b0cd486f75f01a13",
-        writeKey: "c7ff13a09bd60bfa3ced64ab963467eaf4cf087a9a032a2704b28813fbe14a9e47e5f3e888fbd3ecc0120708b894e74941dcab0a75751e7fd18f22b86cdd54797e553a8583bfb5751275b2b4668d0ce0ccd0b3a1f71c3a8d54369e5000b3ce6f090a64d2c88d10ec214e1bc4bf15b806"
-    });
 
     Keen.onChartsReady(function() {
-      var metric = new Keen.Metric("answers", {
+      // Displays course average chart
+      var course_average = new Keen.Metric("answers", {
         analysisType: "average",
         targetProperty: "response",
         filters: [{"property_name":"course_key","operator":"eq","property_value":"#{class_key}"}]
       });
-      metric.draw(document.getElementById("chart"));
+      course_average.draw(document.getElementById("chart"));
+
+      // Displays question average.
+      var question_average = new Keen.Metric("answers", {
+        analysisType: "average",
+        targetProperty: "response",
+        groupBy: "question_number",
+        filters: [{"property_name":"course_key","operator":"eq","property_value":"#{class_key}"}]
+      });
+
+      question_average.getResponse(function(response){
+          average = response.result;
+          for (var i=0; i<average.length; i++){
+            number = average[i]['question_number'];
+            result = average[i]['result'];
+            id = "average" + number;
+            document.getElementById(id).innerHTML="Average: " + result.toFixed(2);
+          }
+      });
     });
 
     -for question in questions
       -if question.question_type == 'closed'
+
         Keen.onChartsReady(function() {
+          // Displays question average chart.
           var metric = new Keen.Metric("answers", {
             analysisType: "count",
             targetProperty: "response",
             groupBy: "response",
             filters: [{"property_name":"question_number","operator":"eq", "property_value":#{question.number}},{"property_name":"course_key","operator":"eq","property_value":"#{class_key}"}]
           });
+
           metric.draw(document.getElementById("chartclosed{{question.number}}"));
+
+          // Fills in question table.
+          metric.getResponse(function(response){
+              response = response.result;
+              total = 0;
+              for (var i=0; i<response.length; i++){
+                response_number = response[i]['response'];
+                result = response[i]['result'];
+                id = response_number + "count" + {{question.number}};
+                total = total + result;
+                document.getElementById(id).innerHTML= result;
+              }
+              id = "total" + {{question.number}};
+              document.getElementById(id).innerHTML= total;
+
+              for (var i=0; i<response.length; i++){
+                response_number = response[i]['response'];
+                result = response[i]['result'];
+                id = response_number + "totalpercent" + {{question.number}};
+                document.getElementById(id).innerHTML= (result/total*100).toFixed(2) + "%";
+              }
+          });
         });
+
   </script>

@@ -19,7 +19,11 @@
 </head>
 <body>
     <div id="header">
-        {% include 'includes/nav.html' %} {# pull in navbar #}
+        {% if current_user %}
+            {% include 'includes/private_nav.html' %}
+        {% else %}
+            {% include 'includes/nav.html' %}
+        {% endif %}
     </div>
     <div class="container" id="maincontent">
         {% include 'includes/flash_message.html' %} {# page-level feedback notices #}
