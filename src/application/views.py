@@ -27,6 +27,9 @@ def home():
     elif current_user.user_type == 'lecturer':
         return lecturerhome()
 
+    elif current_user.user_type == 'admin':
+        return adminhome()
+
     else:
         raise RuntimeError('Something is horribly wrong.')
 
@@ -65,6 +68,12 @@ def lecturerhome():
     return render_template(
         'lecturerhome.haml', lecturer=lecturer, courses=courses)
 
+@login_required
+def adminhome():
+    if current_user.user_type != 'admin':
+        return 403
+
+    return render_template('adminhome.haml')
 
 def login():
     form = LoginForm()
@@ -186,8 +195,10 @@ def signup():
 def landing():
     return render_template('landing.haml')
 
-
+@login_required
 def notify_students():
+    if current_user.user_type != 'admin':
+        return 403
     students = Student.query()
 
     for student in students:
@@ -234,7 +245,7 @@ def lecturertestview():
 
 
 def populate():
-    user0 = User.create('hod', 'password', 'lecturer')
+    user0 = User.create('admin', 'password', 'lecturer')
     hod = Lecturer(name='HOD', title='Dr', user=user0.key)
     hod.put()
     faculty = Faculty(name='Pure and Applied Science',

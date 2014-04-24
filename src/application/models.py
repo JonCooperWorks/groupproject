@@ -11,7 +11,7 @@ from webapp2_extras.security import generate_password_hash, check_password_hash
 class User(ndb.Model):
     username = ndb.StringProperty()
     password_hash = ndb.StringProperty()
-    user_type = ndb.StringProperty(choices=['lecturer', 'student'])
+    user_type = ndb.StringProperty(choices=['lecturer', 'student', 'admin'])
 
     @classmethod
     def create(cls, username, password, user_type):
