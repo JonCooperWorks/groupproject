@@ -12,7 +12,7 @@ import keen
 from application import app
 from application.forms import LoginForm
 from application.models import Student, Lecturer, Course, Class, Answer, \
-    Question, Survey, User
+    Question, Survey, User, Faculty, Department
 
 
 # Flask-Cache (configured to use App Engine Memcache API)
@@ -26,6 +26,9 @@ def home():
 
     elif current_user.user_type == 'lecturer':
         return lecturerhome()
+
+    elif current_user.user_type == 'admin':
+        return adminhome()
 
     else:
         raise RuntimeError('Something is horribly wrong.')
@@ -43,6 +46,17 @@ def studenthome():
         'studenthome.haml', student=student, courses=courses,
         all_classes=all_classes)
 
+@login_required
+def peerreview():
+    if current_user.user_type != 'student':
+        return 403
+
+    student = Student.query().filter(Student.user == current_user.key).get()
+    courses = ndb.get_multi(student.courses)
+    all_classes = Class.query()
+    return render_template(
+        'peerreview.haml', student=student, courses=courses,
+        all_classes=all_classes)
 
 @login_required
 def lecturerhome():
@@ -54,6 +68,12 @@ def lecturerhome():
     return render_template(
         'lecturerhome.haml', lecturer=lecturer, courses=courses)
 
+@login_required
+def adminhome():
+    if current_user.user_type != 'admin':
+        return 403
+
+    return render_template('adminhome.haml')
 
 def login():
     form = LoginForm()
@@ -175,8 +195,10 @@ def signup():
 def landing():
     return render_template('landing.haml')
 
-
+@login_required
 def notify_students():
+    if current_user.user_type != 'admin':
+        return 403
     students = Student.query()
 
     for student in students:
@@ -223,6 +245,17 @@ def lecturertestview():
 
 
 def populate():
+    admin = User.create('admin', 'password', 'admin')
+    admin.put()
+    user0 = User.create('hod', 'password', 'lecturer')
+    hod = Lecturer(name='HOD', title='Dr', user=user0.key)
+    hod.put()
+    faculty = Faculty(name='Pure and Applied Science',
+                      head_of_department=hod.key)
+    faculty.put()
+    department = Department(name='Computing', faculty=faculty.key)
+    department.put()
+
     user1 = User.create('student', 'password', 'student')
     student = Student(name='Kevin Leyow', email_address='kleyow@gmail.com',
                       user=user1.key)
@@ -230,8 +263,13 @@ def populate():
     user2 = User.create('lecturer', 'password', 'lecturer')
     lecturer = Lecturer(name='Jimmy', title='Dr', user=user2.key)
 
-    course = Course(name='Comp3800', total_students=30)
-    course2 = Course(name='Comp2600', total_students=20)
+    course = Course(name='Comp3800', total_students=30,
+                    department=department.key,
+                    faculty=faculty.key)
+    course2 = Course(name='Comp2600', total_students=20,
+                     department=department.key,
+                     faculty=faculty.key)
+
     ndb.put_multi([lecturer, course])
     ndb.put_multi([lecturer, course2])
 
