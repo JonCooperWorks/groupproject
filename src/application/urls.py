@@ -39,9 +39,6 @@ app.add_url_rule('/peerreview', 'peerreview', view_func=views.peerreview)
 # Signup Page
 app.add_url_rule('/signup', 'signup', view_func=views.signup)
 
-# Landing Page
-app.add_url_rule('/landing', 'landing', view_func=views.landing)
-
 # Mailer endpoint
 app.add_url_rule('/notify-students', 'notify-students',
                  view_func=views.notify_students)
@@ -54,12 +51,7 @@ app.add_url_rule('/sentiment-analysis', 'sentiment-analysis',
 app.add_url_rule(
     '/query', 'query', methods=['GET', 'POST'], view_func=views.query)
 
-# Test route page allows me to style while work is done on the backend
-app.add_url_rule('/analysistest', 'analysistest', view_func=views.analysistest)
-app.add_url_rule('/studenttestview', 'studenttestview',
-                 view_func=views.studenttestview)
-app.add_url_rule('/lecturertestview', 'lecturertestview',
-                 view_func=views.lecturertestview)
+# Test route pages
 app.add_url_rule('/populate', 'populate', view_func=views.populate)
 
 
