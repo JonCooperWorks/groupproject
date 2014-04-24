@@ -245,7 +245,9 @@ def lecturertestview():
 
 
 def populate():
-    user0 = User.create('admin', 'password', 'lecturer')
+    admin = User.create('admin', 'password', 'admin')
+    admin.put()
+    user0 = User.create('hod', 'password', 'lecturer')
     hod = Lecturer(name='HOD', title='Dr', user=user0.key)
     hod.put()
     faculty = Faculty(name='Pure and Applied Science',
