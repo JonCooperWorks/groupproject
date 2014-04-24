@@ -12,7 +12,7 @@ import keen
 from application import app
 from application.forms import LoginForm
 from application.models import Student, Lecturer, Course, Class, Answer, \
-    Question, Survey, User
+    Question, Survey, User, Faculty, Department
 
 
 # Flask-Cache (configured to use App Engine Memcache API)
@@ -234,6 +234,15 @@ def lecturertestview():
 
 
 def populate():
+    user0 = User.create('hod', 'password', 'lecturer')
+    hod = Lecturer(name='HOD', title='Dr', user=user0.key)
+    hod.put()
+    faculty = Faculty(name='Pure and Applied Science',
+                      head_of_department=hod.key)
+    faculty.put()
+    department = Department(name='Computing', faculty=faculty.key)
+    department.put()
+
     user1 = User.create('student', 'password', 'student')
     student = Student(name='Kevin Leyow', email_address='kleyow@gmail.com',
                       user=user1.key)
@@ -241,10 +250,13 @@ def populate():
     user2 = User.create('lecturer', 'password', 'lecturer')
     lecturer = Lecturer(name='Jimmy', title='Dr', user=user2.key)
 
-    course = Course(name='Comp3800', total_students=30, department="Computing",
-                    faculty="Pure and Applied Science")
-    course2 = Course(name='Comp2600', total_students=20, department="Computing",
-                    faculty="Pure and Applied Science")
+    course = Course(name='Comp3800', total_students=30,
+                    department=department.key,
+                    faculty=faculty.key)
+    course2 = Course(name='Comp2600', total_students=20,
+                     department=department.key,
+                     faculty=faculty.key)
+
     ndb.put_multi([lecturer, course])
     ndb.put_multi([lecturer, course2])
 

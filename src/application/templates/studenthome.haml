@@ -12,5 +12,5 @@
         %li
           %a(href="#{url_for('survey', course_key=course.key.urlsafe())}")
             {{ course.course.get().name }} - \
-            Department of {{ course.course.get().department }} -\
-            Faculty of {{ course.course.get().faculty }}
+            Department of {{ course.course.get().department.get().name  }} -\
+            Faculty of {{ course.course.get().faculty.get().name  }}
