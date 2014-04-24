@@ -1,0 +1,26 @@
+-extends "base.html"
+
+-block content
+
+	%h3 View Courses and peer comments on any course.
+
+	#course-list
+    %input.search(type="text", placeholder="Search Course")
+    .pagination
+      %ul.pagination-list
+    %ul.list
+      -for class_ in all_classes
+        %li
+          #course.course
+            %a(href="#{url_for('analysis', class_key=class_.key.urlsafe())}")
+              {{ class_.course.get().name }}
+
+-block scripts
+  %script(src="/static/js/list.min.js")
+  %script(src="/static/js/list.pagination.min.js")
+  %script
+    var options = new List('course-list', {
+      valueNames: ['course'],
+      page: 5,
+      plugins: [ ListPagination({}) ]
+    });

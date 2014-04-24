@@ -10,4 +10,7 @@
     %ul
       %li
         %a(href="#{url_for('analysis', class_key=course.key.urlsafe())}")
-          {{ course.course.get().name }}
+            {{ course.course.get().name }} - \
+            Department of {{ course.course.get().department }} -\
+            Faculty of {{ course.course.get().faculty }}
+

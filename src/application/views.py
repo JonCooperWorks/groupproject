@@ -43,6 +43,17 @@ def studenthome():
         'studenthome.haml', student=student, courses=courses,
         all_classes=all_classes)
 
+@login_required
+def peerreview():
+    if current_user.user_type != 'student':
+        return 403
+
+    student = Student.query().filter(Student.user == current_user.key).get()
+    courses = ndb.get_multi(student.courses)
+    all_classes = Class.query()
+    return render_template(
+        'peerreview.haml', student=student, courses=courses,
+        all_classes=all_classes)
 
 @login_required
 def lecturerhome():
@@ -230,8 +241,10 @@ def populate():
     user2 = User.create('lecturer', 'password', 'lecturer')
     lecturer = Lecturer(name='Jimmy', title='Dr', user=user2.key)
 
-    course = Course(name='Comp3800', total_students=30)
-    course2 = Course(name='Comp2600', total_students=20)
+    course = Course(name='Comp3800', total_students=30, department="Computing",
+                    faculty="Pure and Applied Science")
+    course2 = Course(name='Comp2600', total_students=20, department="Computing",
+                    faculty="Pure and Applied Science")
     ndb.put_multi([lecturer, course])
     ndb.put_multi([lecturer, course2])
 
