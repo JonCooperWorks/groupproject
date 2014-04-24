@@ -10,8 +10,16 @@
             <a class="brand" href="/">Lustro</a>
             <div class="nav-collapse">
                 <ul class="nav">
+<<<<<<< HEAD
+                    {% if current_user.user_type == 'student' %}
                     <li>
-                        <a href="{{ url_for('login') }}">Login</a>
+                        <a href="{{ url_for('peerreview') }}">Peer Review</a>
+                    </li>
+                    {% endif %}
+=======
+>>>>>>> upstream/master
+                    <li>
+                        <a href="{{ url_for('logout') }}">Logout</a>
                     </li>
                 </ul>
             </div><!--/.nav-collapse -->
