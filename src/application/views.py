@@ -145,25 +145,23 @@ def _send_to_keen(course, answers):
     events = []
     for answer in answers:
         question = answer.question.get()
-        if question.question_type != 'closed':
-            continue
+        if question.question_type == 'closed':
+            lecturer = course.lecturer.get()
+            events.append({
+                'question_key': question.key.urlsafe(),
+                'survey_key': answer.key.parent().urlsafe(),
+                'course_key': course.key.urlsafe(),
+                'question_number': question.number,
+                'response': answer.int_value,
+                'lecturer': {
+                    'key': lecturer.key.urlsafe(),
+                    'name': lecturer.name,
+                    'department': lecturer.department.get().name,
+                    'faculty': lecturer.department.get().faculty.get().name,
+                },
+            })
 
-        lecturer = course.lecturer.get()
-        events.append({
-            'question_key': question.key.urlsafe(),
-            'survey_key': answer.key.parent().urlsafe(),
-            'course_key': course.key.urlsafe(),
-            'question_number': question.number,
-            'response': answer.int_value,
-            'lecturer': {
-                'key': lecturer.key.urlsafe(),
-                'name': lecturer.name,
-                'department': lecturer.department.get().name,
-                'faculty': lecturer.department.get().faculty.get().name,
-            },
-        })
-
-        if answer.string_value is not None:
+        elif answer.string_value != '':
             response = urlfetch.fetch(
                 'http://text-processing.com/api/sentiment',
                 payload=urllib.urlencode({'text': answer.string_value}),
@@ -174,7 +172,7 @@ def _send_to_keen(course, answers):
                 continue
 
             elif response.status_code != 200:
-                raise Exception('Retry task')
+                raise Exception(answer.string_value)
 
             sentiment = json.loads(response.content)
             answer.sentiment = sentiment['label']
