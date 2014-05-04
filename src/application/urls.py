@@ -43,10 +43,6 @@ app.add_url_rule('/signup', 'signup', view_func=views.signup)
 app.add_url_rule('/notify-students', 'notify-students',
                  view_func=views.notify_students)
 
-# Sentiment analysis endpoint
-app.add_url_rule('/sentiment-analysis', 'sentiment-analysis',
-                 methods=['POST'], view_func=views.sentiment_analysis)
-
 # Custom queries
 app.add_url_rule(
     '/query', 'query', methods=['GET', 'POST'], view_func=views.query)

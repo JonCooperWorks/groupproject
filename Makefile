@@ -16,4 +16,6 @@ keys:
 
 serve:
 	@$(PYTHON) $(APPENGINE)/old_dev_appserver.py src/ \
-			--enable_sendmail
+			--enable_sendmail \
+			--clear_datastore
+
