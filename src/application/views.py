@@ -46,6 +46,7 @@ def studenthome():
         'studenthome.haml', student=student, courses=courses,
         all_classes=all_classes)
 
+
 @login_required
 def peerreview():
     if current_user.user_type != 'student':
@@ -58,6 +59,7 @@ def peerreview():
         'peerreview.haml', student=student, courses=courses,
         all_classes=all_classes)
 
+
 @login_required
 def lecturerhome():
     if current_user.user_type != 'lecturer':
@@ -68,12 +70,14 @@ def lecturerhome():
     return render_template(
         'lecturerhome.haml', lecturer=lecturer, courses=courses)
 
+
 @login_required
 def adminhome():
     if current_user.user_type != 'admin':
         return 403
 
     return render_template('adminhome.haml')
+
 
 def login():
     form = LoginForm()
@@ -209,6 +213,7 @@ def signup():
 
 def landing():
     return render_template('landing.haml')
+
 
 @login_required
 def notify_students():
