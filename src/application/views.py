@@ -46,6 +46,7 @@ def studenthome():
         'studenthome.haml', student=student, courses=courses,
         all_classes=all_classes)
 
+
 @login_required
 def peerreview():
     if current_user.user_type != 'student':
@@ -58,6 +59,7 @@ def peerreview():
         'peerreview.haml', student=student, courses=courses,
         all_classes=all_classes)
 
+
 @login_required
 def lecturerhome():
     if current_user.user_type != 'lecturer':
@@ -68,12 +70,14 @@ def lecturerhome():
     return render_template(
         'lecturerhome.haml', lecturer=lecturer, courses=courses)
 
+
 @login_required
 def adminhome():
     if current_user.user_type != 'admin':
         return 403
 
     return render_template('adminhome.haml')
+
 
 def login():
     form = LoginForm()
@@ -145,25 +149,23 @@ def _send_to_keen(course, answers):
     events = []
     for answer in answers:
         question = answer.question.get()
-        if question.question_type != 'closed':
-            continue
+        if question.question_type == 'closed':
+            lecturer = course.lecturer.get()
+            events.append({
+                'question_key': question.key.urlsafe(),
+                'survey_key': answer.key.parent().urlsafe(),
+                'course_key': course.key.urlsafe(),
+                'question_number': question.number,
+                'response': answer.int_value,
+                'lecturer': {
+                    'key': lecturer.key.urlsafe(),
+                    'name': lecturer.name,
+                    'department': lecturer.department.get().name,
+                    'faculty': lecturer.department.get().faculty.get().name,
+                },
+            })
 
-        lecturer = course.lecturer.get()
-        events.append({
-            'question_key': question.key.urlsafe(),
-            'survey_key': answer.key.parent().urlsafe(),
-            'course_key': course.key.urlsafe(),
-            'question_number': question.number,
-            'response': answer.int_value,
-            'lecturer': {
-                'key': lecturer.key.urlsafe(),
-                'name': lecturer.name,
-                'department': lecturer.department.get().name,
-                'faculty': lecturer.department.get().faculty.get().name,
-            },
-        })
-
-        if answer.string_value is not None:
+        elif answer.string_value != '':
             response = urlfetch.fetch(
                 'http://text-processing.com/api/sentiment',
                 payload=urllib.urlencode({'text': answer.string_value}),
@@ -174,7 +176,7 @@ def _send_to_keen(course, answers):
                 continue
 
             elif response.status_code != 200:
-                raise Exception('Retry task')
+                raise deferred.PermanentTaskFailure()
 
             sentiment = json.loads(response.content)
             answer.sentiment = sentiment['label']
@@ -211,6 +213,7 @@ def signup():
 
 def landing():
     return render_template('landing.haml')
+
 
 @login_required
 def notify_students():
