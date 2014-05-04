@@ -172,7 +172,7 @@ def _send_to_keen(course, answers):
                 continue
 
             elif response.status_code != 200:
-                raise Exception(answer.string_value)
+                raise deferred.PermanentTaskFailure()
 
             sentiment = json.loads(response.content)
             answer.sentiment = sentiment['label']
