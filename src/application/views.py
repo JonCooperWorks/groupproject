@@ -163,6 +163,23 @@ def _send_to_keen(course, answers):
             },
         })
 
+        if answer.string_value is not None:
+            response = urlfetch.fetch(
+                'http://text-processing.com/api/sentiment',
+                payload=urllib.urlencode({'text': answer.string_value}),
+                method=urlfetch.POST)
+
+            # If we've been throttled, just give up and die
+            if response.status_code == 503:
+                continue
+
+            elif response.status_code != 200:
+                raise Exception('Retry task')
+
+            sentiment = json.loads(response.content)
+            answer.sentiment = sentiment['label']
+            answer.put()
+
     keen.add_events({'answers': events})
 
 
@@ -261,7 +278,8 @@ def populate():
                       user=user1.key)
 
     user2 = User.create('lecturer', 'password', 'lecturer')
-    lecturer = Lecturer(name='Jimmy', title='Dr', user=user2.key)
+    lecturer = Lecturer(name='Jimmy', title='Dr',
+                        user=user2.key, department=department.key)
 
     course = Course(name='Comp3800', total_students=30,
                     department=department.key,
@@ -293,37 +311,6 @@ def populate():
                                       number=number + 1))
     ndb.put_multi(questions)
     return 'Done.'
-
-
-def sentiment_analysis():
-    text = request.POST.get('text')
-    if text is None:
-        return
-
-    try:
-        answer = ndb.Key(urlsafe=request.POST.get('answer_key', '')).get()
-
-    except db.BadKeyError:
-        answer = None
-
-    if answer is None:
-        return
-
-    response = urlfetch.fetch(
-        'http://text-processing.com/api/sentiment',
-        payload=urllib.urlencode({'text': text}),
-        method=urlfetch.POST)
-
-    # If we've been throttled, just give up and die
-    if response.status_code == 503:
-        return
-
-    elif response.status_code != 200:
-        raise Exception('Retry task')
-
-    sentiment = json.loads(response.content)
-    answer.sentiment = sentiment['label']
-    answer.put()
 
 
 def warmup():
