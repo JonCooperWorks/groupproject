@@ -4,3 +4,28 @@
   %form(action="#{url_for('notify-students')}")
     %button.btn(type="submit")
       Notify students of surveys.
+
+  %form(action="#{url_for('query')}")
+
+    %p
+      Look for a:
+      %input#value(syle="display:inline", type="text", \
+      name="property_entity", required="required", \
+      placeholder="e.g. name")
+
+      with value:
+
+      %select
+        %option(value="eq")
+          equal to
+        %option(value="lt")
+          less than
+        %option(value="gt")
+          greater than
+
+      %input#entity(style="display:inline", type="text", \
+      name="property_value", required="required", \
+      placeholder="e.g. Jimmy")
+
+    %button.btn(type="submit")
+      Search
