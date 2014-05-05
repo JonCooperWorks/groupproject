@@ -7,6 +7,11 @@
 
 /* Your customizations here */
 
+#analysis #response-link {
+  margin-top: 10px;
+  margin-bottom: 5px;
+}
+
 body {
   background-image: url(/static/img/congruent_outline.png)
 }
