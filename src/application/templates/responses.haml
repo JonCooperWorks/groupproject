@@ -1,0 +1,11 @@
+-extends "base.html"
+
+-block content
+
+  #responses
+    %h3 #{question.question}
+    %ul
+      -if answers
+          -for answer in answers
+             -if answer != ""
+              %li #{answer}
