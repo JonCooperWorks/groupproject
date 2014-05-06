@@ -212,6 +212,31 @@ def analysis(class_key):
         class_key=class_key,
         questions=Question.get_active())
 
+@login_required
+def responses(class_key, question_key):
+    answers = []
+
+    try:
+        class_ = ndb.Key(urlsafe=class_key).get()
+        question = ndb.Key(urlsafe=question_key).get()
+
+    except db.BadKeyError:
+        class_ = None
+
+    if class_ is None:
+        return abort(404)
+
+    surveys = Survey.query(ancestor=class_.key).fetch()
+
+    for survey in surveys:
+      answerss = Answer.query(Answer.question==question.key,
+                              ancestor=survey.key).fetch()
+      for answer in answerss:
+        answers.append(str(answer.string_value))
+
+    return render_template('responses.haml', answers=answers,
+                           question=question)
+
 
 def signup():
     return render_template('signup.haml')

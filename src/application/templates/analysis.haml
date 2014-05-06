@@ -108,8 +108,8 @@
                                 %td
                     .row
                       #response-link.offset1.span8
-                        %a(href="") Click Here for responses.
-
+                        %a(href="{{ url_for('responses', class_key=class_key, question_key=question.key.urlsafe()) }}")
+                          Click here for responses
           -if question.question_type == 'peer'
               %tr.accordion-toggle(data-toggle="collapse", data-target="#target{{ loop.index }}")
                 %td {{ question.number }}. {{ question.question }}
@@ -118,7 +118,8 @@
                   .accordion-body.collapse(id="target{{ loop.index }}")
                     .row
                       #response-link.offset1.span8
-                        %a(href="") Click Here for peer responses.
+                        %a(href=" {{url_for('responses', class_key=class_key, question_key=question.key.urlsafe()) }} ")
+                          Click Here for peer responses.
 
 
     <script src="/static/js/keen.js"></script>
