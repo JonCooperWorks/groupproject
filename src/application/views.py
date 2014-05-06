@@ -44,7 +44,9 @@ def studenthome():
     completed = []
 
     for course in courses:
-        survey = Survey.query(ancestor=course.key).filter(Survey.participant == current_user.key).get()
+        survey = Survey.query(
+            ancestor=course.key).filter(
+            Survey.participant == current_user.key).get()
         if survey is not None:
             courses.remove(course)
             completed.append(course)
@@ -143,7 +145,8 @@ def survey(course_key):
                            parent=survey.key))
 
         ndb.put_multi(answers)
-        deferred.defer(_send_to_keen, course, answers)
+        deferred.defer(
+            _send_to_keen, course.key, [answer.key for answer in answers])
         return redirect(url_for('home'))
 
     questions = Question.get_active()
@@ -153,8 +156,10 @@ def survey(course_key):
         course=course)
 
 
-def _send_to_keen(course, answers):
+def _send_to_keen(course_key, answer_keys):
     events = []
+    course = course_key.get()
+    answers = ndb.get_multi(answer_keys)
     for answer in answers:
         question = answer.question.get()
         if answer.string_value != '':
@@ -220,6 +225,7 @@ def analysis(class_key):
         class_key=class_key,
         questions=Question.get_active())
 
+
 @login_required
 def responses(class_key, question_key):
     answers = []
@@ -237,10 +243,10 @@ def responses(class_key, question_key):
     surveys = Survey.query(ancestor=class_.key).fetch()
 
     for survey in surveys:
-      answerss = Answer.query(Answer.question==question.key,
-                              ancestor=survey.key).fetch()
-      for answer in answerss:
-        answers.append(str(answer.string_value))
+        answerss = Answer.query(Answer.question == question.key,
+                                ancestor=survey.key).fetch()
+        for answer in answerss:
+            answers.append(str(answer.string_value))
 
     return render_template('responses.haml', answers=answers,
                            question=question)
