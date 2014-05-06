@@ -21,5 +21,5 @@
         %ul
           -for course in completed
             %li
-              %a(href="#{url_for('analysis', class_key=course.key.urlsage())}")
+              %a(href="#{url_for('analysis', class_key=course.key.urlsafe())}")
                 #{course.course.get().name}
