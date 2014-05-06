@@ -14,3 +14,12 @@
             {{ course.course.get().name }} - \
             Department of {{ course.course.get().department.get().name  }} -\
             Faculty of {{ course.course.get().faculty.get().name  }}
+
+
+    -if completed
+      %h4 Completed surveys
+        %ul
+          -for course in completed
+            %li
+              %a(href="#{url_for('analysis', class_key=course.key.urlsage())}")
+                #{course.course.get().name}

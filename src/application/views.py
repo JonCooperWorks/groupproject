@@ -41,10 +41,18 @@ def studenthome():
 
     student = Student.query().filter(Student.user == current_user.key).get()
     courses = ndb.get_multi(student.courses)
+    completed = []
+
+    for course in courses:
+        survey = Survey.query(ancestor=course.key).filter(Survey.participant == current_user.key).get()
+        if survey is not None:
+            courses.remove(course)
+            completed.append(course)
+
     all_classes = Class.query()
     return render_template(
         'studenthome.haml', student=student, courses=courses,
-        all_classes=all_classes)
+        all_classes=all_classes, completed=completed)
 
 
 @login_required
