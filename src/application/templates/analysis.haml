@@ -9,129 +9,232 @@
     .progress.progress-striped
       .bar(style="width: #{(surveys.count() / course.total_students)*100}%")
 
-  %h3 Rating :
-    #chart
+    %h3 Rating :
+      #chart
 
-  %table.table(style="border-collapse:collapse;")
-    %thead
-      %tr
-        %th Question
-    %tbody
-      -for question in questions|sort(attribute='number')
-        -if question.question_type == 'closed'
-            %tr.accordion-toggle(data-toggle="collapse", data-target="#target{{ loop.index }}")
-              %td {{ question.number }}. {{ question.question }}
-            %tr
-              %td.hiddenRow
-                .accordion-body.collapse(id="target{{ loop.index }}")
-                  .row
-                    .offset2.span8
-                      %div(id="chartclosed{{question.number}}")
-                  .row
-                    .offset1.span10
-                      %h3(id="average{{question.number}}")
+    %table.table(style="border-collapse:collapse;")
+      %thead
+        %tr
+          %th Question
+      %tbody
+        -for question in questions|sort(attribute='number')
+          -if question.question_type == 'closed'
+              %tr.accordion-toggle(data-toggle="collapse", data-target="#target{{ loop.index }}")
+                %td {{ question.number }}. {{ question.question }}
+              %tr
+                %td.hiddenRow
+                  .accordion-body.collapse(id="target{{ loop.index }}")
+                    .row
+                      .offset2.span8
+                        %div(id="chartclosed{{question.number}}")
+                    .row
+                      .offset1.span10
+                        %h3(id="average{{question.number}}")
+                    .row
+                      .offset1.span10
+                        %h3(id="median{{question.number}}")
 
-                  .row
-                    .offset1.span10
-                      .center
-                        %table.table
-                          %thead
-                            %tr
-                              %th Rating
-                              %th Repsonses
-                              %th Total
-                          %tbody
-                            %tr
-                              %td 1
-                              %td(id="1count{{question.number}}") 0
-                              %td(id="1totalpercent{{question.number}}") 0%
-                            %tr
-                              %td 2
-                              %td(id="2count{{question.number}}") 0
-                              %td(id="2totalpercent{{question.number}}") 0%
-                            %tr
-                              %td 3
-                              %td(id="3count{{question.number}}") 0
-                              %td(id="3totalpercent{{question.number}}") 0%
-                            %tr
-                              %td 4
-                              %td(id="4count{{question.number}}") 0
-                              %td(id="4totalpercent{{question.number}}") 0%
-                            %tr
-                              %td 5
-                              %td(id="5count{{question.number}}") 0
-                              %td(id="5totalpercent{{question.number}}") 0%
-                            %tr
-                              %td Total
-                              %td(id="total{{question.number}}") 0
-                              %td
+                    .row
+                      .offset1.span10
+                        .center
+                          %table.table
+                            %thead
+                              %tr
+                                %th Rating
+                                %th Repsonses
+                                %th Total
+                            %tbody
+                              %tr
+                                %td 1
+                                %td(id="1count{{question.number}}") 0
+                                %td(id="1totalpercent{{question.number}}") 0%
+                              %tr
+                                %td 2
+                                %td(id="2count{{question.number}}") 0
+                                %td(id="2totalpercent{{question.number}}") 0%
+                              %tr
+                                %td 3
+                                %td(id="3count{{question.number}}") 0
+                                %td(id="3totalpercent{{question.number}}") 0%
+                              %tr
+                                %td 4
+                                %td(id="4count{{question.number}}") 0
+                                %td(id="4totalpercent{{question.number}}") 0%
+                              %tr
+                                %td 5
+                                %td(id="5count{{question.number}}") 0
+                                %td(id="5totalpercent{{question.number}}") 0%
+                              %tr
+                                %td Total
+                                %td(id="total{{question.number}}") 0
+                                %td
 
-  <script src="/static/js/keen.js"></script>
-  <script>
+          -if question.question_type == 'open'
+              %tr.accordion-toggle(data-toggle="collapse", data-target="#target{{ loop.index }}")
+                %td {{ question.number }}. {{ question.question }}
+              %tr
+                %td.hiddenRow
+                  .accordion-body.collapse(id="target{{ loop.index }}")
+                    .row
+                      .offset2.span8
+                        %div(id="chartopen{{question.number}}")
 
-    Keen.onChartsReady(function() {
-      // Displays course average chart
-      var course_average = new Keen.Metric("answers", {
-        analysisType: "average",
-        targetProperty: "response",
-        filters: [{"property_name":"course_key","operator":"eq","property_value":"#{class_key}"}]
-      });
-      course_average.draw(document.getElementById("chart"));
+                    .row
+                      .offset1.span10
+                        .center
+                          %table.table
+                            %thead
+                              %tr
+                                %th Rating
+                                %th Repsonses
+                                %th Total
+                            %tbody
+                              %tr
+                                %td Positive
+                                %td(id="poscount{{question.number}}") 0
+                                %td(id="postotalpercent{{question.number}}") 0%
+                              %tr
+                                %td Neutral
+                                %td(id="neutralcount{{question.number}}") 0
+                                %td(id="neutraltotalpercent{{question.number}}") 0%
+                              %tr
+                                %td Negative
+                                %td(id="negcount{{question.number}}") 0
+                                %td(id="negtotalpercent{{question.number}}") 0%
 
-      // Displays question average.
-      var question_average = new Keen.Metric("answers", {
-        analysisType: "average",
-        targetProperty: "response",
-        groupBy: "question_number",
-        filters: [{"property_name":"course_key","operator":"eq","property_value":"#{class_key}"}]
-      });
+                              %tr
+                                %td Total
+                                %td(id="total{{question.number}}") 0
+                                %td
+                    .row
+                      #response-link.offset1.span8
+                        %a(href="") Click Here for responses.
 
-      question_average.getResponse(function(response){
-          average = response.result;
-          for (var i=0; i<average.length; i++){
-            number = average[i]['question_number'];
-            result = average[i]['result'];
-            id = "average" + number;
-            document.getElementById(id).innerHTML="Average: " + result.toFixed(2);
-          }
-      });
-    });
+          -if question.question_type == 'peer'
+              %tr.accordion-toggle(data-toggle="collapse", data-target="#target{{ loop.index }}")
+                %td {{ question.number }}. {{ question.question }}
+              %tr
+                %td.hiddenRow
+                  .accordion-body.collapse(id="target{{ loop.index }}")
+                    .row
+                      #response-link.offset1.span8
+                        %a(href="") Click Here for peer responses.
 
-    -for question in questions
-      -if question.question_type == 'closed'
 
-        Keen.onChartsReady(function() {
-          // Displays question average chart.
-          var metric = new Keen.Metric("answers", {
-            analysisType: "count",
-            targetProperty: "response",
-            groupBy: "response",
-            filters: [{"property_name":"question_number","operator":"eq", "property_value":#{question.number}},{"property_name":"course_key","operator":"eq","property_value":"#{class_key}"}]
-          });
+    <script src="/static/js/keen.js"></script>
+    <script>
 
-          metric.draw(document.getElementById("chartclosed{{question.number}}"));
+      Keen.onChartsReady(function() {
+        // Displays course average chart
+        var course_average = new Keen.Metric("answers", {
+          analysisType: "average",
+          targetProperty: "response",
+          filters: [{"property_name":"course_key","operator":"eq","property_value":"#{class_key}"}]
+        });
+        course_average.draw(document.getElementById("chart"));
 
-          // Fills in question table.
-          metric.getResponse(function(response){
-              response = response.result;
-              total = 0;
-              for (var i=0; i<response.length; i++){
-                response_number = response[i]['response'];
-                result = response[i]['result'];
-                id = response_number + "count" + {{question.number}};
-                total = total + result;
-                document.getElementById(id).innerHTML= result;
-              }
-              id = "total" + {{question.number}};
-              document.getElementById(id).innerHTML= total;
-
-              for (var i=0; i<response.length; i++){
-                response_number = response[i]['response'];
-                result = response[i]['result'];
-                id = response_number + "totalpercent" + {{question.number}};
-                document.getElementById(id).innerHTML= (result/total*100).toFixed(2) + "%";
-              }
-          });
+        // Displays question average.
+        var question_average = new Keen.Metric("answers", {
+          analysisType: "average",
+          targetProperty: "response",
+          groupBy: "question_number",
+          filters: [{"property_name":"course_key","operator":"eq","property_value":"#{class_key}"}]
         });
 
-  </script>
+        question_average.getResponse(function(response){
+            average = response.result;
+            for (var i=0; i<average.length; i++){
+              number = average[i]['question_number'];
+              result = average[i]['result'];
+              id = "average" + number;
+              document.getElementById(id).innerHTML="Average: " + result.toFixed(2);
+            }
+        });
+
+        var question_median = new Keen.Metric("answers", {
+          analysisType: "median",
+          targetProperty: "response",
+          groupBy: "question_number",
+          filters: [{"property_name":"course_key","operator":"eq","property_value":"#{class_key}"}]
+        });
+
+        question_median.getResponse(function(response){
+            median = response.result;
+            for (var i=0; i<median.length; i++){
+              number = median[i]['question_number'];
+              result = median[i]['result'];
+              id = "median" + number;
+              document.getElementById(id).innerHTML="Median: " + result.toFixed(2);
+            }
+        });
+
+      });
+
+      -for question in questions
+        -if question.question_type == 'closed'
+
+          Keen.onChartsReady(function() {
+            // Displays question average chart.
+            var metric = new Keen.Metric("answers", {
+              analysisType: "count",
+              targetProperty: "response",
+              groupBy: "response",
+              filters: [{"property_name":"question_number","operator":"eq", "property_value":#{question.number}},{"property_name":"course_key","operator":"eq","property_value":"#{class_key}"}]
+            });
+
+            metric.draw(document.getElementById("chartclosed{{question.number}}"));
+
+            // Fills in question table.
+            metric.getResponse(function(response){
+                response = response.result;
+                total = 0;
+                for (var i=0; i<response.length; i++){
+                  response_number = response[i]['response'];
+                  result = response[i]['result'];
+                  id = response_number + "count" + {{question.number}};
+                  total = total + result;
+                  document.getElementById(id).innerHTML= result;
+                }
+                id = "total" + {{question.number}};
+                document.getElementById(id).innerHTML= total;
+
+                for (var i=0; i<response.length; i++){
+                  response_number = response[i]['response'];
+                  result = response[i]['result'];
+                  id = response_number + "totalpercent" + {{question.number}};
+                  document.getElementById(id).innerHTML= (result/total*100).toFixed(2) + "%";
+                }
+            });
+          });
+
+        -if question.question_type == 'open'
+
+          Keen.onChartsReady(function() {
+            var metric = new Keen.Metric("answers", {
+              analysisType: "count",
+              targetProperty: "question_number",
+              groupBy: "sentiment",
+              filters: [{"property_name":"sentiment","operator":"in","property_value":["pos","neutral","neg"]},{"property_name":"question_number","operator":"eq","property_value":#{question.number}},{"property_name":"course_key","operator":"eq","property_value":"#{class_key}"}]
+            });
+            metric.draw(document.getElementById("chartopen{{question.number}}"));
+
+            metric.getResponse(function(response){
+                response = response.result;
+                total = 0;
+                for (var i=0; i<response.length; i++){
+                  response_sentiment = response[i]['sentiment'];
+                  result = response[i]['result'];
+                  id = response_sentiment + "count" + {{question.number}};
+                  total = total + result;
+                  document.getElementById(id).innerHTML= result;
+                }
+
+                for (var i=0; i<response.length; i++){
+                  response_sentiment = response[i]['sentiment'];
+                  result = response[i]['result'];
+                  id = response_sentiment + "totalpercent" + {{question.number}};
+                  document.getElementById(id).innerHTML= (result/total*100).toFixed(2) + "%";
+                }
+            });
+          });
+    </script>
