@@ -12,7 +12,7 @@ import keen
 from application import app
 from application.forms import LoginForm
 from application.models import Student, Lecturer, Course, Class, Answer, \
-    Question, Survey, User, Faculty, Department
+    Question, StudentSurvey, User, Faculty, Department, Survey
 
 
 # Flask-Cache (configured to use App Engine Memcache API)
@@ -44,9 +44,9 @@ def studenthome():
     completed = []
 
     for course in courses:
-        survey = Survey.query(
+        survey = StudentSurvey.query(
             ancestor=course.key).filter(
-            Survey.participant == current_user.key).get()
+            StudentSurvey.participant == current_user.key).get()
         if survey is not None:
             courses.remove(course)
             completed.append(course)
@@ -122,7 +122,7 @@ def survey(course_key):
         return abort(404)
 
     if request.method == 'POST':
-        survey = Survey(
+        survey = StudentSurvey(
             parent=course.key, participant=current_user.key)
         survey.put()
         answers = []
@@ -216,7 +216,7 @@ def analysis(class_key):
 
     course = class_.course.get()
     lecturer = class_.lecturer.get()
-    surveys = Survey.query(ancestor=class_.key)
+    surveys = StudentSurvey.query(ancestor=class_.key)
     return render_template(
         'analysis.haml',
         surveys=surveys,
@@ -240,7 +240,7 @@ def responses(class_key, question_key):
     if class_ is None:
         return abort(404)
 
-    surveys = Survey.query(ancestor=class_.key).fetch()
+    surveys = StudentSurvey.query(ancestor=class_.key).fetch()
 
     for survey in surveys:
         answerss = Answer.query(Answer.question == question.key,
@@ -268,7 +268,7 @@ def notify_students():
 
     for student in students:
         sender = 'surveymailer450@gmail.com'
-        subject = 'Course Review Survey'
+        subject = 'Course Review StudentSurvey'
         html = render_template('email/survey_email.haml', student=student)
 
         mail_kwargs = {'html': html, 'body': 'TODO.txt',
@@ -348,6 +348,10 @@ def populate():
     lecturer.courses = [class_.key, class2_.key]
     ndb.put_multi([student, lecturer])
 
+    survey = Survey(
+        title='General survey', description='A general survey')
+    survey_key = survey.put()
+
     with open('application/questions.txt') as f:
         questions = []
         for number, line in enumerate(f.readlines()):
@@ -356,7 +360,8 @@ def populate():
                                       dimension=dimension,
                                       question=question,
                                       is_active=True,
-                                      number=number + 1))
+                                      number=number + 1,
+                                      parent=survey_key))
     ndb.put_multi(questions)
     return 'Done.'
 

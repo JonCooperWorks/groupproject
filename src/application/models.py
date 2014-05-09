@@ -82,20 +82,25 @@ class Class(ndb.Model):
     lecturer = ndb.KeyProperty(kind=Lecturer)
 
 
+class Survey(ndb.Model):
+    title = ndb.StringProperty()
+    description = ndb.StringProperty()
+    max_scale = ndb.IntegerProperty(default=5)
+
+
 class Question(ndb.Model):
     question_type = ndb.StringProperty(choices=['closed', 'open', 'peer'])
     question = ndb.StringProperty()
     number = ndb.IntegerProperty()
     is_active = ndb.BooleanProperty()
     dimension = ndb.StringProperty()
-    max_scale = ndb.IntegerProperty(default=5)
 
     @classmethod
     def get_active(cls):
         return cls.query().filter(cls.is_active == True)
 
 
-class Survey(ndb.Model):
+class StudentSurvey(ndb.Model):
     participant = ndb.KeyProperty(kind=User)
 
 
