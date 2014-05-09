@@ -19,3 +19,6 @@ serve:
 			--enable_sendmail \
 			--clear_datastore
 
+
+populate:
+	curl localhost:8080/populate
