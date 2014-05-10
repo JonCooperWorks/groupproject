@@ -47,11 +47,21 @@ app.add_url_rule('/notify-students', 'notify-students',
 app.add_url_rule(
     '/query', 'query', methods=['GET', 'POST'], view_func=views.query)
 
+# Add survey
+app.add_url_rule('/add-question', 'add-question', methods=['POST'],
+                 view_func=views.addquestion)
+
+# Add question
+app.add_url_rule('/add-survey', 'add-survey', methods=['POST'],
+                 view_func=views.addsurvey)
+
 # Test route pages
 app.add_url_rule('/populate', 'populate', view_func=views.populate)
 
 # Responses page
-app.add_url_rule('/responses/<class_key>/<question_key>', 'responses', view_func=views.responses)
+app.add_url_rule('/responses/<class_key>/<question_key>', 'responses',
+                 view_func=views.responses)
+
 
 # Error handlers
 # Handle 404 errors
