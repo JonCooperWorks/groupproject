@@ -29,3 +29,14 @@
 
     %button.btn(type="submit")
       Search
+
+  #{response}
+
+  %form(action="#{url_for('add-question')}")
+    <!--
+    Add the field's name to the forms.py file and u should be all good.
+    -->
+  %form(action="#{url_for('add-survey')}")
+    <!--
+    Same as above.
+    -->

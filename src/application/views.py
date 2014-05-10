@@ -10,7 +10,7 @@ from google.appengine.ext import db, deferred, ndb
 import keen
 
 from application import app
-from application.forms import LoginForm
+from application.forms import LoginForm, QuestionForm, SurveyForm
 from application.models import Student, Lecturer, Course, Class, Answer, \
     Question, StudentSurvey, User, Faculty, Department, Survey
 
@@ -87,6 +87,31 @@ def adminhome():
         return 403
 
     return render_template('adminhome.haml')
+
+
+def addquestion():
+  form = QuestionForm()
+  if request.method == 'POST':
+    if form.validate_on_submit():
+      question = Question(parent=ndb.Key(urlsafe=form.survey_key.data),
+                          question_type=form.question_type.data,
+                          question=form.question.data, number=form.number.data,
+                          is_active=form.active.data,
+                          dimension=form.dimension.data)
+    question.put()
+    return redirect(url_for('home'))
+
+
+def addsurvey():
+  form = SurveyForm()
+  if request.method == 'POST':
+    if form.validate_on_submit():
+      survey = Survey(title=form.title.data, description=form.desc.data,
+                      max_scale=form.scale.data)
+      survey.put()
+      return redirect(url_for('home'))
+
+  return abort(405)
 
 
 def login():
