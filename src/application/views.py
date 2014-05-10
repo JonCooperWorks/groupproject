@@ -146,7 +146,7 @@ def survey(course_key):
 
         ndb.put_multi(answers)
         deferred.defer(
-            _send_to_keen, course.key, [answer.key for answer in answers])
+            _send_to_keen, survey.key, course.key, [answer.key for answer in answers])
         return redirect(url_for('home'))
 
     questions = Question.get_active()
@@ -156,8 +156,9 @@ def survey(course_key):
         course=course)
 
 
-def _send_to_keen(course_key, answer_keys):
+def _send_to_keen(survey_key, course_key, answer_keys):
     events = []
+    student = Student.query(Student.user == survey_key.get().participant).get()
     course = course_key.get()
     answers = ndb.get_multi(answer_keys)
     for answer in answers:
@@ -184,12 +185,24 @@ def _send_to_keen(course_key, answer_keys):
             'question_key': question.key.urlsafe(),
             'survey_key': answer.key.parent().urlsafe(),
             'course_key': course.key.urlsafe(),
+            'course': {
+                'name': course.course.get().name,
+                'department': course.course.get().department,
+                'faculty': course.course.get().faculty,
+            },
             'question_number': question.number,
             'lecturer': {
                 'key': lecturer.key.urlsafe(),
                 'name': lecturer.name,
                 'department': lecturer.department.get().name,
                 'faculty': lecturer.department.get().faculty.get().name,
+            },
+            'student': {
+                'key': student.key.urlsafe(),
+                'age': student.calculate_age(),
+                'gender': student.gender,
+                'status': student.status,
+                'year': student.year,
             },
         }
 
@@ -310,6 +323,7 @@ def lecturertestview():
 
 
 def populate():
+    import datetime
     admin = User.create('admin', 'password', 'admin')
     admin.put()
     user0 = User.create('hod', 'password', 'lecturer')
@@ -323,7 +337,8 @@ def populate():
 
     user1 = User.create('student', 'password', 'student')
     student = Student(name='Kevin Leyow', email_address='kleyow@gmail.com',
-                      user=user1.key)
+                      user=user1.key, dob=datetime.date(year=1992, month=4, day=12),
+                      year=3, status='FT', gender='M')
 
     user2 = User.create('lecturer', 'password', 'lecturer')
     lecturer = Lecturer(name='Jimmy', title='Dr',
