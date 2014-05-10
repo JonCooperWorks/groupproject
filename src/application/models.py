@@ -4,6 +4,8 @@ models.py
 App Engine datastore models
 
 """
+from datetime import date
+
 from google.appengine.ext import ndb
 from webapp2_extras.security import generate_password_hash, check_password_hash
 
@@ -48,6 +50,11 @@ class Student(ndb.Model):
     status = ndb.StringProperty(choices=['FT', 'PT'])
     year = ndb.IntegerProperty()
     courses = ndb.KeyProperty(repeated=True)
+
+    def calculate_age(self):
+        today = date.today()
+        return today.year - self.dob.year - (
+            (today.month, today.day) < (self.dob.month, self.dob.day))
 
 
 class Department(ndb.Model):
