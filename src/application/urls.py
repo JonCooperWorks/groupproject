@@ -52,7 +52,17 @@ app.add_url_rule(
 app.add_url_rule('/populate', 'populate', view_func=views.populate)
 
 # Responses page
-app.add_url_rule('/responses/<class_key>/<question_key>', 'responses', view_func=views.responses)
+app.add_url_rule('/responses/<class_key>/<question_key>',
+                 'responses', view_func=views.responses)
+
+# Add lecturer
+app.add_url_rule('/admin/add-lecturer',
+                 view_func=views.add_lecturer, methods=['GET', 'POST'])
+
+
+# Validate password
+app.add_url_rule('/validate',
+                 view_func=views.validate, methods=['GET', 'POST'])
 
 # Error handlers
 # Handle 404 errors

@@ -1,6 +1,7 @@
 import datetime
 import json
 import urllib
+import uuid
 
 from flask import render_template, url_for, redirect, request, abort
 from flask.ext.flask_login import current_user, login_required, login_user,\
@@ -11,10 +12,10 @@ from google.appengine.ext import db, deferred, ndb
 import keen
 
 from application import app
-from application.forms import LoginForm, SignupForm
+from application.forms import LoginForm, SignupForm, AddLecturerForm
 from application.models import Student, Lecturer, Course, Class, \
-                               Answer, Question, StudentSurvey, Survey, User, \
-                               Faculty, Department, School
+    Answer, Question, StudentSurvey, Survey, User, \
+    Faculty, Department, School
 
 
 # Flask-Cache (configured to use App Engine Memcache API)
@@ -118,13 +119,70 @@ def signup():
         user = User.create(form.username.data, form.password.data, 'student')
         student = Student(user=user.key, name=form.name.data,
                           email_address=form.email_address.data,
-                          dob=datetime.datetime.strptime(form.dob.data, '%Y-%m-%d'),
+                          dob=datetime.datetime.strptime(
+                              form.dob.data, '%Y-%m-%d'),
                           status=form.status.data,
                           gender=form.gender.data, year=form.year.data)
         student.put()
         return redirect(url_for('login'))
 
-    return render_template('signup.haml', form=form, email_address=request.args.get('email_address')
+    return render_template('signup.haml', form=form, email_address=request.args.get('email_address'))
+
+
+@login_required
+def add_lecturer():
+    if current_user.user_type != 'admin':
+        return abort(403)
+
+    departments = Department.query()
+    form = AddLecturerForm()
+    if form.validate_on_submit():
+        try:
+            department = ndb.Key(urlsafe=form.department.data).get()
+        except db.BadKeyError:
+            department = None
+
+        if department is None:
+            return abort(400)
+
+        temporary_password = str(uuid.uuid4())
+        user = User.create(
+            form.email_address.data, temporary_password, 'lecturer')
+
+        lecturer = Lecturer(
+            name=form.name.data, title=form.title.data, department=department.key,
+            email_address=form.email_address.data, user=user.key)
+        lecturer.put()
+        mail.send_mail(sender='surveymailer450@gmail.com',
+                       to=form.email_address.data,
+                       subject='Your UWI Lecturer Account',
+                       body="""Click this link to be activated.
+<a href='http://surveymailer.appspot.com/validate?username=%s&value=%s""" % (
+    form.username, temporary_password))
+        return redirect(request.referrer)
+
+    return render_template('add_lecturer.haml', form=form,
+                           departments=departments)
+
+
+def validate():
+    if request.method == 'POST':
+        user = ndb.Key(urlsafe=request.form['user_key']).get()
+        password = request.form['password']
+        user.set_password(password)
+        return redirect(url_for('login'))
+
+    temporary_password = request.args.get('value')
+    username = request.args.get('username')
+    user = User.authenticate(username, temporary_password)
+    if None in (temporary_password, username):
+        return abort(404)
+
+    elif user is not None:
+        return render_template('select_password.haml', user=user)
+
+    else:
+        return abort(404)
 
 
 @login_required
@@ -374,7 +432,8 @@ def populate():
     hod1 = Lecturer(name='Head Of Computing', title='Dr', user=hod_user1.key)
     hod2 = Lecturer(name='Head Of Mathematics', title='Dr', user=hod_user2.key)
     hod3 = Lecturer(name='Head Of Medicine', title='Dr', user=hod_user3.key)
-    hod4 = Lecturer(name='Head Of Microbiology', title='Dr', user=hod_user4.key)
+    hod4 = Lecturer(
+        name='Head Of Microbiology', title='Dr', user=hod_user4.key)
     hod1.put()
     hod2.put()
     hod3.put()
@@ -410,7 +469,8 @@ def populate():
 
     student_user = User.create('student', 'password', 'student')
     student = Student(name='Kevin Leyow', email_address='kleyow@gmail.com',
-                      user=student_user.key, dob=datetime.date(year=1992, month=4, day=12),
+                      user=student_user.key, dob=datetime.date(
+                          year=1992, month=4, day=12),
                       year=3, status='FT', gender='M')
 
     lecturer_user = User.create('lecturer', 'password', 'lecturer')

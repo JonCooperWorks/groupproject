@@ -1,0 +1,57 @@
+-extends "base.html"
+
+-block content
+  #add-lecturer.container
+    .row
+      .offset3.span6.well
+        %h2.center
+          Add Lecturer
+        %form.send-message(action="", method="POST")
+
+          .control-group
+            %label.control-label(for="name") Name:
+            .controls
+              %input#name(type="text", name="name", required="required", \
+                          value="")
+
+          -if email_address
+            %input(type="hidden", name="email_address", value="#{email_address}")
+
+          -else
+          .control-group
+            %label.control-label(for="email_address") Email Address:
+            .controls
+            %input(type="email", name="email_address")
+
+
+          .control-group
+            %label.control-label(for="username") ID Number:
+            .controls
+              %input#username(type="text", name="username", required="required", \
+                           value="")
+
+          #{form.csrf_token}
+
+          .control-group
+            %label.control-label(for="title") Title:
+            .controls
+              %select(name="title")
+                %option(value="Mr") Mr.
+                %option(value="Mrs") Mrs.
+                %option(value="Ms") Ms.
+                %option(value="Dr") Dr.
+                %option(value="Prof") Prof.
+
+
+          .control-group
+            %label.control-label(for="department") Department:
+            .controls
+              %select(name="department")
+                -for department in departments
+                  %option(value="#{department.key.urlsafe()}") #{department.name}
+
+
+          .form-actions.center
+            %button(type="submit")
+              %i.icon-thumbs-up
+                Add Lecturer
