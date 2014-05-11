@@ -14,10 +14,20 @@
               %input#name(type="text", name="name", required="required", \
                           value="")
 
+          -if email_address
+            %input(type="hidden", name="email_address", value="#{email_address}")
+
+          -else
           .control-group
-            %label.control-label(for="email") E-mail address:
+            %label.control-label(for="email_address") Email Address:
             .controls
-              %input#email(type="email", name="email", required="required", \
+            %input(type="email", name="email_address")
+
+
+          .control-group
+            %label.control-label(for="username") ID Number:
+            .controls
+              %input#username(type="text", name="username", required="required", \
                            value="")
 
           .control-group
@@ -25,6 +35,39 @@
             .controls
               %input#password(type="password", name="password", required="required", \
                               autocomplete="off")
+
+          .control-group
+            %label.control-label(for="dob") Date of Birth:
+            .controls
+              %input#username(type="date", name="dob", required="required", \
+                           value="")
+
+          .control-group
+            %label.control-label(for="status") Status:
+            .controls
+              %select(name="status")
+                %option(value="FT") Full Time
+                %option(value="PT") Part Time
+
+
+          .control-group
+            %label.control-label(for="year") Year of Study:
+            .controls
+              %select(name="year")
+                %option(value="0") Prelim
+                %option(value="1") First
+                %option(value="2") Second
+                %option(value="3") Third
+
+          #{form.csrf_token}
+
+          .control-group
+            %label.control-label(for="gender") Gender:
+            .controls
+              %select(name="gender")
+                %option(value="M") Male
+                %option(value="F") Female
+
 
           .form-actions.center
             %button(type="submit")
