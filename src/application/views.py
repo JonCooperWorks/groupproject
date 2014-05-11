@@ -1,3 +1,4 @@
+import datetime
 import json
 import urllib
 
@@ -10,7 +11,7 @@ from google.appengine.ext import db, deferred, ndb
 import keen
 
 from application import app
-from application.forms import LoginForm
+from application.forms import LoginForm, SignupForm
 from application.models import Student, Lecturer, Course, Class, Answer, \
     Question, StudentSurvey, User, Faculty, Department, Survey
 
@@ -108,6 +109,21 @@ def login():
 def logout():
     logout_user()
     return redirect(url_for('login'))
+
+
+def signup():
+    form = SignupForm()
+    if form.validate_on_submit():
+        user = User.create(form.username.data, form.password.data, 'student')
+        student = Student(user=user.key, name=form.name.data,
+                          email_address=form.email_address.data,
+                          dob=datetime.datetime.strptime(form.dob.data, '%Y-%m-%d'),
+                          status=form.status.data,
+                          gender=form.gender.data, year=form.year.data)
+        student.put()
+        return redirect(url_for('login'))
+
+    return render_template('signup.haml', form=form)
 
 
 @login_required
@@ -265,7 +281,6 @@ def responses(class_key, question_key):
                            question=question)
 
 
-def signup():
     return render_template('signup.haml')
 
 

@@ -37,7 +37,8 @@ app.add_url_rule('/analysis/<class_key>', 'analysis', view_func=views.analysis)
 app.add_url_rule('/peerreview', 'peerreview', view_func=views.peerreview)
 
 # Signup Page
-app.add_url_rule('/signup', 'signup', view_func=views.signup)
+app.add_url_rule('/signup', 'signup', view_func=views.signup,
+                 methods=['GET', 'POST'])
 
 # Mailer endpoint
 app.add_url_rule('/notify-students', 'notify-students',
