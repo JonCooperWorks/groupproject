@@ -1,0 +1,51 @@
+-extends "base.html"
+
+-block content
+
+
+  %h3 Department of #{department.name}
+
+  .row
+    %ul
+      -for lecturer_and_courses in lecturers_and_courses
+        -set lecturer = lecturer_and_courses[0]
+        -set courses = lecturer_and_courses[1]
+        -set total_surveys_taken = lecturer_and_courses[2]
+        -set course_capacity_total = lecturer_and_courses[3]
+
+        .span8.seperator
+          %li Lecturer #{lecturer.name}
+            %section
+              %h6 {{ total_surveys_taken }} /{{ course_capacity_total }} Students Finished Survey
+              .progress.progress-striped
+                -if course_capacity_total != 0
+                  .bar(style="width: {{ (total_surveys_taken/course_capacity_total) * 100 }}%")
+                -else
+                  .bar(style="width: 0%")
+
+            %h6(id="average{{lecturer.key.id()}}")
+            %ul
+              -for course in courses
+                -if course
+                  %li
+                    %a(href="#{url_for('analysis', class_key=course.key.urlsafe())}")
+                      #{course.course.get().name}
+
+
+  <script src="/static/js/keen.js"></script>
+  <script>
+    -for lecturer_and_courses in lecturers_and_courses
+      -set lecturer = lecturer_and_courses[0]
+        Keen.onChartsReady(function() {
+          var metric = new Keen.Metric("answers", {
+            analysisType: "average",
+            targetProperty: "response",
+            filters: [{"property_name":"lecturer.key","operator":"eq","property_value":"#{lecturer.key.urlsafe()}"}]
+          });
+
+          metric.getResponse(function(response){
+              average = response.result;
+              document.getElementById("average{{lecturer.key.id()}}").innerHTML="Lecturer Average: " + average.toFixed(2) + "/5";
+          });
+        });
+  </script>

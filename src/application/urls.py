@@ -40,6 +40,18 @@ app.add_url_rule('/peerreview', 'peerreview', view_func=views.peerreview)
 app.add_url_rule('/signup', 'signup', view_func=views.signup,
                  methods=['GET', 'POST'])
 
+# Department overview Page
+app.add_url_rule('/department/<department_key>', 'department_overview',
+                 view_func=views.department_overview)
+
+# Faculty overview Page
+app.add_url_rule('/faculty/<faculty_key>', 'faculty_overview',
+                 view_func=views.faculty_overview)
+
+# Faculty overview Page
+app.add_url_rule('/school/<school_key>', 'school_overview',
+                 view_func=views.school_overview)
+
 # Mailer endpoint
 app.add_url_rule('/notify-students', 'notify-students',
                  view_func=views.notify_students)

@@ -16,6 +16,10 @@ body {
   background-image: url(/static/img/congruent_outline.png)
 }
 
+.seperator {
+  margin-bottom: 50px
+}
+
 #body_content {
    min-height: 500px;
    height:auto !important;

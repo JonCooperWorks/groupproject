@@ -79,8 +79,12 @@ def lecturerhome():
 
     lecturer = Lecturer.query().filter(Lecturer.user == current_user.key).get()
     courses = ndb.get_multi(lecturer.courses)
+    school = lecturer.get_school()
+    faculty = lecturer.get_faculty()
+    department = lecturer.get_department()
     return render_template(
-        'lecturerhome.haml', lecturer=lecturer, courses=courses)
+        'lecturerhome.haml', lecturer=lecturer, courses=courses,
+        school=school, faculty=faculty, department=department)
 
 
 @login_required
@@ -90,6 +94,92 @@ def adminhome():
 
     return render_template('adminhome.haml')
 
+
+@login_required
+def department_overview(department_key):
+    lecturers_and_courses = []
+    total_surveys_taken = 0
+    course_capacity_total = 0
+
+    try:
+        department = ndb.Key(urlsafe=department_key).get()
+
+    except db.BadKeyError:
+        department = None
+
+    if department is None:
+        return abort(404)
+
+    if current_user.user_type != 'lecturer':
+        return 403
+
+    current_lecturer = Lecturer.query().filter(Lecturer.user == current_user.key).get()
+
+    if (current_lecturer.key != department.head_of_department and
+        current_lecturer.key != department.faculty.get().head_of_faculty and
+        current_lecturer.key != department.faculty.get().school.get().principal):
+        return abort(404)
+
+    lecturers = Lecturer.query().filter(Lecturer.department == department.key).fetch()
+    for lecturer in lecturers:
+        courses = ndb.get_multi(lecturer.courses)
+        for course in courses:
+            course_capacity_total = course_capacity_total + course.course.get().total_students
+            surveys = StudentSurvey.query(ancestor=course.key)
+            total_surveys_taken = total_surveys_taken + surveys.count()
+
+        lecturers_and_courses.append([lecturer, courses,
+                                      total_surveys_taken,
+                                      course_capacity_total])
+        total_surveys_taken = 0
+        course_capacity_total = 0
+
+    return render_template('department_overview.haml', department=department,
+                           lecturers_and_courses=lecturers_and_courses)
+
+@login_required
+def faculty_overview(faculty_key):
+    try:
+        faculty = ndb.Key(urlsafe=faculty_key).get()
+
+    except db.BadKeyError:
+        faculty = None
+
+    if faculty is None:
+        return abort(404)
+
+    if current_user.user_type != 'lecturer':
+        return 403
+
+    current_lecturer = Lecturer.query().filter(Lecturer.user == current_user.key).get()
+
+    if (current_lecturer.key != faculty.head_of_faculty and
+        current_lecturer.key != faculty.school.get().principal):
+        return abort(404)
+
+    departments = Department.query().filter(Department.faculty == faculty.key).fetch()
+
+    return render_template('faculty_overview.haml', faculty=faculty, departments=departments)
+
+@login_required
+def school_overview(school_key):
+    try:
+        school = ndb.Key(urlsafe=school_key).get()
+
+    except db.BadKeyError:
+        school = None
+
+    if school is None:
+        return abort(404)
+
+    current_lecturer = Lecturer.query().filter(Lecturer.user == current_user.key).get()
+
+    if (current_lecturer.key != school.principal):
+        return abort(404)
+
+    faculties = Faculty.query().filter(Faculty.school == school.key).fetch()
+
+    return render_template('school_overview.haml', school=school, faculties=faculties)
 
 def login():
     form = LoginForm()
@@ -206,6 +296,7 @@ def _send_to_keen(survey_key, course_key, answer_keys):
                 'name': course.course.get().name,
                 'department': course.course.get().department.urlsafe(),
                 'faculty': course.course.get().faculty.urlsafe(),
+                'school': course.course.get().faculty.get().school.urlsafe(),
             },
             'question_number': question.number,
             'lecturer': {
@@ -233,7 +324,7 @@ def _send_to_keen(survey_key, course_key, answer_keys):
 
     keen.add_events({'answers': events})
 
-
+@login_required
 def analysis(class_key):
     try:
         class_ = ndb.Key(urlsafe=class_key).get()

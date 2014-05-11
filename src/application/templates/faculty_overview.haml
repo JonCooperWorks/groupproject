@@ -1,0 +1,45 @@
+-extends "base.html"
+
+-block content
+
+
+  %h3 Faculty of #{faculty.name}
+  .seperator Faculty average
+    %h6(id="facultyaverage")
+
+  .row
+    %ul
+      -for department in departments
+        .span8.seperator
+          %li
+            %a(href="#{url_for('department_overview', department_key=department.key.urlsafe())}")
+              Department of #{department.name}
+            %h6(id="department_average{{department.key.id()}}")
+
+  <script src="/static/js/keen.js"></script>
+  <script>
+    Keen.onChartsReady(function() {
+      var metric = new Keen.Metric("answers", {
+        analysisType: "average",
+        targetProperty: "response",
+        filters: [{"property_name":"course.faculty","operator":"eq","property_value":"#{faculty.key.urlsafe()}"}]
+      });
+      metric.getResponse(function(response){
+          average = response.result;
+          document.getElementById("facultyaverage").innerHTML="Faculty Average: " + average.toFixed(2) + "/5";
+      });
+    });
+
+    -for department in departments
+      Keen.onChartsReady(function() {
+        var metric = new Keen.Metric("answers", {
+          analysisType: "average",
+          targetProperty: "response",
+          filters: [{"property_name":"course.department","operator":"eq","property_value":"#{department.key.urlsafe()}"}]
+        });
+        metric.getResponse(function(response){
+            average = response.result;
+            document.getElementById("department_average{{department.key.id()}}").innerHTML="Department Average: " + average.toFixed(2) + "/5";
+        });
+      });
+  </script>
