@@ -204,8 +204,8 @@ def _send_to_keen(survey_key, course_key, answer_keys):
             'course_key': course.key.urlsafe(),
             'course': {
                 'name': course.course.get().name,
-                'department': course.course.get().department.get().name,
-                'faculty': course.course.get().faculty.get().name,
+                'department': course.course.get().department.urlsafe(),
+                'faculty': course.course.get().faculty.urlsafe(),
             },
             'question_number': question.number,
             'lecturer': {
