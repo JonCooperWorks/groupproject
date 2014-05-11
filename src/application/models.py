@@ -13,7 +13,7 @@ from webapp2_extras.security import generate_password_hash, check_password_hash
 class User(ndb.Model):
     username = ndb.StringProperty()
     password_hash = ndb.StringProperty()
-    user_type = ndb.StringProperty(choices=['lecturer', 'student', 'admin'])
+    user_type = ndb.StringProperty(choices=['student', 'lecturer', 'admin'])
 
     @classmethod
     def create(cls, username, password, user_type):
@@ -40,6 +40,12 @@ class User(ndb.Model):
     def is_authenticated(self):
         return True
 
+class Lecturer(ndb.Model):
+    user = ndb.KeyProperty()
+    name = ndb.StringProperty()
+    title = ndb.StringProperty()
+    department = ndb.KeyProperty()
+    courses = ndb.KeyProperty(repeated=True)
 
 class Student(ndb.Model):
     user = ndb.KeyProperty()
@@ -56,24 +62,19 @@ class Student(ndb.Model):
         return today.year - self.dob.year - (
             (today.month, today.day) < (self.dob.month, self.dob.day))
 
-
-class Department(ndb.Model):
+class School(ndb.Model):
     name = ndb.StringProperty()
-    faculty = ndb.KeyProperty()
-
-
-class Lecturer(ndb.Model):
-    user = ndb.KeyProperty()
-    name = ndb.StringProperty()
-    title = ndb.StringProperty()
-    department = ndb.KeyProperty()
-    courses = ndb.KeyProperty(repeated=True)
-
+    principal = ndb.KeyProperty(kind=Lecturer)
 
 class Faculty(ndb.Model):
     name = ndb.StringProperty()
-    head_of_department = ndb.KeyProperty(kind=Lecturer)
+    school = ndb.KeyProperty(kind=School)
+    head_of_faculty = ndb.KeyProperty(kind=Lecturer)
 
+class Department(ndb.Model):
+    name = ndb.StringProperty()
+    faculty = ndb.KeyProperty(kind=Faculty)
+    head_of_department = ndb.KeyProperty(kind=Lecturer)
 
 class Course(ndb.Model):
     name = ndb.StringProperty()

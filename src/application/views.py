@@ -12,8 +12,9 @@ import keen
 
 from application import app
 from application.forms import LoginForm, SignupForm
-from application.models import Student, Lecturer, Course, Class, Answer, \
-    Question, StudentSurvey, User, Faculty, Department, Survey
+from application.models import Student, Lecturer, Course, Class, \
+                               Answer, Question, StudentSurvey, Survey, User, \
+                               Faculty, Department, School
 
 
 # Flask-Cache (configured to use App Engine Memcache API)
@@ -203,8 +204,8 @@ def _send_to_keen(survey_key, course_key, answer_keys):
             'course_key': course.key.urlsafe(),
             'course': {
                 'name': course.course.get().name,
-                'department': course.course.get().department,
-                'faculty': course.course.get().faculty,
+                'department': course.course.get().department.urlsafe(),
+                'faculty': course.course.get().faculty.urlsafe(),
             },
             'question_number': question.number,
             'lecturer': {
@@ -341,30 +342,89 @@ def populate():
     import datetime
     admin = User.create('admin', 'password', 'admin')
     admin.put()
-    user0 = User.create('hod', 'password', 'lecturer')
-    hod = Lecturer(name='HOD', title='Dr', user=user0.key)
-    hod.put()
-    faculty = Faculty(name='Pure and Applied Science',
-                      head_of_department=hod.key)
-    faculty.put()
-    department = Department(name='Computing', faculty=faculty.key)
-    department.put()
 
-    user1 = User.create('student', 'password', 'student')
+    principal_user = User.create('principal', 'password', 'lecturer')
+    principal = Lecturer(name='Principal', title='Dr', user=principal_user.key)
+    principal.put()
+
+    school = School(name='University of The West Indies - Mona',
+                    principal=principal.key)
+    school.put()
+
+    hof_user1 = User.create('hof1', 'password', 'lecturer')
+    hof_user2 = User.create('hof2', 'password', 'lecturer')
+    hof1 = Lecturer(name='Head Of Pure and Applied', title='Dr',
+                    user=hof_user1.key)
+    hof2 = Lecturer(name='Head Of Medical Sciences', title='Dr',
+                    user=hof_user2.key)
+    hof1.put()
+    hof2.put()
+
+    faculty1 = Faculty(name='Pure and Applied Science', school=school.key,
+                       head_of_faculty=hof1.key)
+    faculty2 = Faculty(name='Medical Sciences', school=school.key,
+                       head_of_faculty=hof2.key)
+    faculty1.put()
+    faculty2.put()
+
+    hod_user1 = User.create('hod1', 'password', 'lecturer')
+    hod_user2 = User.create('hod2', 'password', 'lecturer')
+    hod_user3 = User.create('hod3', 'password', 'lecturer')
+    hod_user4 = User.create('hod4', 'password', 'lecturer')
+    hod1 = Lecturer(name='Head Of Computing', title='Dr', user=hod_user1.key)
+    hod2 = Lecturer(name='Head Of Mathematics', title='Dr', user=hod_user2.key)
+    hod3 = Lecturer(name='Head Of Medicine', title='Dr', user=hod_user3.key)
+    hod4 = Lecturer(name='Head Of Microbiology', title='Dr', user=hod_user4.key)
+    hod1.put()
+    hod2.put()
+    hod3.put()
+    hod4.put()
+
+    department1 = Department(name='Computing', faculty=faculty1.key,
+                             head_of_department=hod1.key)
+    department2 = Department(name='Mathematics', faculty=faculty1.key,
+                             head_of_department=hod2.key)
+    department3 = Department(name='Medicine', faculty=faculty2.key,
+                             head_of_department=hod3.key)
+    department4 = Department(name='Microbiology', faculty=faculty2.key,
+                             head_of_department=hod4.key)
+    department1.put()
+    department2.put()
+    department3.put()
+    department4.put()
+
+    principal.department = department4.key
+    hof1.department = department2.key
+    hof2.department = department3.key
+    hod1.department = department1.key
+    hod2.department = department2.key
+    hod3.department = department3.key
+    hod4.department = department4.key
+    principal.put()
+    hof1.put()
+    hof2.put()
+    hod1.put()
+    hod2.put()
+    hod3.put()
+    hod4.put()
+
+    student_user = User.create('student', 'password', 'student')
     student = Student(name='Kevin Leyow', email_address='kleyow@gmail.com',
-                      user=user1.key, dob=datetime.date(year=1992, month=4, day=12),
+                      user=student_user.key, dob=datetime.date(year=1992, month=4, day=12),
                       year=3, status='FT', gender='M')
 
-    user2 = User.create('lecturer', 'password', 'lecturer')
+    lecturer_user = User.create('lecturer', 'password', 'lecturer')
     lecturer = Lecturer(name='Jimmy', title='Dr',
-                        user=user2.key, department=department.key)
+                        user=lecturer_user.key, department=department1.key)
 
-    course = Course(name='Comp3800', total_students=30,
-                    department=department.key,
-                    faculty=faculty.key)
-    course2 = Course(name='Comp2600', total_students=20,
-                     department=department.key,
-                     faculty=faculty.key)
+    course = Course(name='Comp3161 - Database Management Systems',
+                    total_students=90,
+                    department=department1.key,
+                    faculty=faculty1.key)
+    course2 = Course(name='Comp3702 - Theory Of Computation',
+                     total_students=20,
+                     department=department1.key,
+                     faculty=faculty1.key)
 
     ndb.put_multi([lecturer, course])
     ndb.put_multi([lecturer, course2])
