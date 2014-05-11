@@ -124,7 +124,7 @@ def signup():
         student.put()
         return redirect(url_for('login'))
 
-    return render_template('signup.haml', form=form)
+    return render_template('signup.haml', form=form, email_address=request.args.get('email_address')
 
 
 @login_required
