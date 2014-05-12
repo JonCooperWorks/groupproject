@@ -1,6 +1,10 @@
 -extends "base.html"
 
 -block content
+
+  #add-lecturer-url
+    %a.btn(href="#{url_for('add_lecturer')}") Add Lecturer
+
   %form(action="#{url_for('notify-students')}")
     %button.btn(type="submit")
       Notify students of surveys.
