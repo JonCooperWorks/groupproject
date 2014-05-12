@@ -34,6 +34,10 @@ class User(ndb.Model):
 
         return None
 
+    def set_password(self, password):
+        self.password_hash = generate_password_hash(password)
+        return self.put()
+
     def get_id(self):
         return self.key.urlsafe()
 
@@ -42,6 +46,7 @@ class User(ndb.Model):
 
 class Lecturer(ndb.Model):
     user = ndb.KeyProperty()
+    email_address = ndb.StringProperty()
     name = ndb.StringProperty()
     title = ndb.StringProperty()
     department = ndb.KeyProperty()

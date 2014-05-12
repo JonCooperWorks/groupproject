@@ -31,3 +31,16 @@ class SignupForm(wtf.Form):
                              validators=[validators.AnyOf('FT', 'PT')])
     year = wtf.IntegerField(u'Year',
                             validators=[validators.Required()])
+
+
+class AddLecturerForm(wtf.Form):
+    email_address = wtf.StringField(
+        u'Email Address', validators=[validators.Required()])
+    username = wtf.StringField(
+        u'ID Number', validators=[validators.Required()])
+    name = wtf.StringField(
+        u'Name', validators=[validators.Required()])
+    title = wtf.StringField(
+        u'Title', validators=[validators.AnyOf(('Dr', 'Mr', 'Prof', 'Mrs', 'Ms'))])
+    department = wtf.StringField(
+        u'Department', validators=[validators.Required()])
