@@ -52,6 +52,18 @@ class Lecturer(ndb.Model):
     department = ndb.KeyProperty()
     courses = ndb.KeyProperty(repeated=True)
 
+    def get_department(self):
+        department = Department.query(Department.head_of_department == self.key).get()
+        return department
+
+    def get_faculty(self):
+        faculty = Faculty.query(Faculty.head_of_faculty == self.key).get()
+        return faculty
+
+    def get_school(self):
+        school = School.query(School.principal == self.key).get()
+        return school
+
 class Student(ndb.Model):
     user = ndb.KeyProperty()
     name = ndb.StringProperty()
