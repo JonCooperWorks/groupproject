@@ -314,7 +314,16 @@ def survey(course_key):
             _send_to_keen, survey.key, course.key, [answer.key for answer in answers])
         return redirect(url_for('home'))
 
-    questions = Question.get_active()
+    questions = Question.get_active().fetch()
+
+    numbering = 0
+    dimension_check = ''
+    for question in questions:
+        if dimension_check != question.dimension:
+            numbering += 1
+            dimension_check = question.dimension
+        question.dimension = str(numbering) + question.dimension
+
     return render_template(
         'survey.haml',
         questions=questions,

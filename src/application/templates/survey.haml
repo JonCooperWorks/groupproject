@@ -5,43 +5,47 @@
     .progress.progress-striped.active
       .bar(style="width: 0%")
 
-    %div
-      %form(action="{{url_for('survey', course_key=course.key.urlsafe())}}", method="POST")
-        -set dimensionCheck = ''
-        -for question in questions| sort(attribute='number')
-          -set dimension = question.dimension
-          -if question.question_type == 'closed'
+    %form(action="{{url_for('survey', course_key=course.key.urlsafe())}}", method="POST")
 
-            -if dimension != dimensionCheck
-              -set dimensionCheck = dimension
-              .row.dimension: .span12.center
-                %h3 {{ question.dimension }}
+      #slider-wrapper: #slider
+        -for dimension, grouped_questions in questions| groupby('dimension')
+          .slide
+            .row.dimension: .span12.center
+              %h3 {{ dimension[2:] }}
 
-            .row(class="{{ loop.cycle('well', 'well-alt') }}")
-              .formgroup.span12
-                %label.control-label(for="{{question.key.urlsafe()}}")
-                  {{question.question}}
-                -for n in range(1, question.key.parent().get().max_scale + 1)
-                  %label.radio.inline
-                    %input(type="radio", name="{{question.key.urlsafe()}}", value="#{n}")
-                    #{n}
+            -for question in grouped_questions | sort(attribute='number')
+              -if question.question_type == 'closed'
+                .row(class="{{ loop.cycle('well', 'well-alt') }}")
+                  .formgroup.span12
+                    %label.control-label(for="{{question.key.urlsafe()}}")
+                      #{question.number}.#{question.question}
 
-          -if question.question_type == 'open' or question.question_type == 'peer'
-            -if dimension != dimensionCheck
-              -set dimensionCheck = dimension
-              .row.dimension: .span12.center
-                %h3 {{ question.dimension }}
+                    -for n in range(1, question.key.parent().get().max_scale + 1)
+                      %label.radio.inline
+                        %input(type="radio", name="{{question.key.urlsafe()}}", value="#{n}")
+                        #{n}
 
-            .row.well-alt
-              .formgroup.span12
-                %label.control-label(for="{{question.key.urlsafe()}}")
-                  {{question.question}}
-                %input.open.form-control(type="text", class="form-control", name="{{question.key.urlsafe()}}")
 
-        .row
-          .center
-            #submit-button.form-group.span12
-              %button(type="submit", class="btn btn-default") Submit
+              -if question.question_type == 'open' or question.question_type == 'peer'
+                .row.well-alt
+                  .formgroup.span12
+                    %label.control-label(for="{{question.key.urlsafe()}}")
+                      {{question.question}}
+                    %input.open.form-control(type="text", class="form-control", name="{{question.key.urlsafe()}}")
+            -if loop.last
+              .row
+                .center
+                  #submit-button.form-group.span12
+                    %button(type="submit", class="btn btn-default") Submit
+
+            #nav
+            -if not loop.first and not loop.last
+              .button-previous.btn Prev
+              .button-next.btn Next
+            -if loop.first
+              .button-next.btn Next
+            -if loop.last
+              .button-previous.btn Prev
 
   <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
   <script>
@@ -62,5 +66,29 @@
 
     }).change();
 
+    $(document).ready(function(){
+      $('.slide').first().addClass('active');
+      $('.slide').hide();
+      $('.active').show().css("z-index","100");
 
+      $('.button-next').click(function(){
+        $('.active').removeClass('active').addClass('oldActive');
+        $('.oldActive').next().addClass('active');
+        $('.oldActive').removeClass('oldActive');
+        $('.slide').hide();
+        $('.slide').css("z-index","-100");
+        $('.active').show();
+        $('.active').css("z-index","100");
+      });
+
+      $('.button-previous').click(function(){
+        $('.active').removeClass('active').addClass('oldActive');
+        $('.oldActive').prev().addClass('active');
+        $('.oldActive').removeClass('oldActive');
+        $('.slide').hide();
+        $('.slide').css("z-index","-100");
+        $('.active').show();
+        $('.active').css("z-index","100");
+      });
+    });
   </script>
