@@ -14,15 +14,19 @@
                   %a(href="{{ url_for('peerreview') }}")
                     Peer Review
               -if current_user.user_type == 'lecturer'
-                -if school
+                -set lecturer = get_lecturer(current_user.key)
+                -if lecturer.get_school()
+                  -set school = lecturer.get_school()
                   %li
                     %a(href="#{url_for('school_overview', school_key=school.key.urlsafe())}")
                       #{school.name}
-                -elif faculty
+                -elif lecturer.get_faculty()
+                  -set faculty = lecturer.get_faculty()
                   %li
                     %a(href="#{url_for('faculty_overview', faculty_key=faculty.key.urlsafe())}")
                       #{faculty.name}
-                -elif department
+                -elif lecturer.get_department()
+                  -set department = lecturer.get_department()
                   %li
                     %a(href="#{url_for('department_overview', department_key=department.key.urlsafe())}")
                       #{department.name}

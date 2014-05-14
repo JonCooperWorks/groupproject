@@ -80,12 +80,8 @@ def lecturerhome():
 
     lecturer = Lecturer.query().filter(Lecturer.user == current_user.key).get()
     courses = ndb.get_multi(lecturer.courses)
-    school = lecturer.get_school()
-    faculty = lecturer.get_faculty()
-    department = lecturer.get_department()
     return render_template(
-        'lecturerhome.haml', lecturer=lecturer, courses=courses,
-        school=school, faculty=faculty, department=department)
+        'lecturerhome.haml', lecturer=lecturer, courses=courses)
 
 
 @login_required
@@ -473,6 +469,9 @@ def query():
         # Display the response
     # Display the form
 
+def get_lecturer(current_user_key):
+    lecturer = Lecturer.query().filter(Lecturer.user == current_user.key).get()
+    return lecturer
 
 # Handlersfor testing styling.
 def analysistest():
@@ -611,3 +610,5 @@ def warmup():
     """App Engine warmup handler
     """
     return ''
+
+app.jinja_env.globals.update(get_lecturer=get_lecturer)
