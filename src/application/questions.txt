@@ -29,3 +29,7 @@ open| Open-Ended| What did you like least about this course?
 open| Open-Ended| What did you like least about this lecturer?
 open| Open-Ended| What improvements to the course would you suggest?
 peer| Peer-Review| Is there anything you would like to comment on about this course for your peers?
+peer| Peer-Review| How much reading hours a week did you devote to this course?
+peer| Peer-Review| If applicable, how much of the course was math based?
+peer| Peer-Review| How much research hours a week did you devote to this course?
+peer| Peer-Review| Is information related to the course easily found online?
