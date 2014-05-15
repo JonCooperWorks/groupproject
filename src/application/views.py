@@ -469,10 +469,9 @@ def query():
         response = keen.extraction('answers', filters=[request.form.to_dict()])
         if len(response) == 0:
             return 'No results found'
+        return str(response)
 
-        # Display the response
-    # Display the form
-
+    return 'Why'
 
 # Handlersfor testing styling.
 def analysistest():
