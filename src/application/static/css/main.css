@@ -91,7 +91,7 @@ body {
   color: white;
   padding-bottom: 19px;
   padding-top: 19px;
-  background-color: #004981;
+  background-color: #1886BE;
   margin-top:19px;
   margin-bottom: 19px;
   border-radius: 2px;
@@ -107,6 +107,19 @@ body {
 
 #survey #submit-button {
   margin-left: 0px;
+}
+
+#survey .slide {
+  height:100%;
+  position: relative;
+  z-index: -100;
+
+}
+#survey .button-previous {
+  float:left;
+}
+#survey .button-next {
+  float:right;
 }
 
 #student-home ul.list {
