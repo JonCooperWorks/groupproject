@@ -80,12 +80,8 @@ def lecturerhome():
 
     lecturer = Lecturer.query().filter(Lecturer.user == current_user.key).get()
     courses = ndb.get_multi(lecturer.courses)
-    school = lecturer.get_school()
-    faculty = lecturer.get_faculty()
-    department = lecturer.get_department()
     return render_template(
-        'lecturerhome.haml', lecturer=lecturer, courses=courses,
-        school=school, faculty=faculty, department=department)
+        'lecturerhome.haml', lecturer=lecturer, courses=courses)
 
 
 @login_required
@@ -457,6 +453,7 @@ def notify_students():
     return json.dumps({'status': 'OK'})
 
 
+@login_required
 def query():
     """Custom queries using keen.io as a backend.
     The frontent form must pass values in using the names
@@ -464,6 +461,9 @@ def query():
         `property_value` - The value of the property being entered
         `operator` - 'eq', 'gt', 'lt'
     """
+    if current_user.user_type != 'admin':
+        return 403
+
     if request.method == 'POST':
         # Run the query
         response = keen.extraction('answers', filters=[request.form.to_dict()])
@@ -474,6 +474,10 @@ def query():
         return render_template('adminhome.haml', response=response)
 
     return 'Why'
+
+def get_lecturer(current_user_key):
+    lecturer = Lecturer.query().filter(Lecturer.user == current_user.key).get()
+    return lecturer
 
 # Handlersfor testing styling.
 def analysistest():
@@ -612,3 +616,5 @@ def warmup():
     """App Engine warmup handler
     """
     return ''
+
+app.jinja_env.globals.update(get_lecturer=get_lecturer)
