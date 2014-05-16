@@ -9,17 +9,17 @@
     %button.btn(type="submit")
       Notify students of surveys.
 
-  %form(action="#{url_for('query')}")
+  %form(action="#{url_for('query')}", method="POST")
 
     %p
       Look for a:
       %input#value(syle="display:inline", type="text", \
-      name="property_entity", required="required", \
+      name="property_name", required="required", \
       placeholder="e.g. name")
 
       with value:
 
-      %select
+      %select(name="operator")
         %option(value="eq")
           equal to
         %option(value="lt")

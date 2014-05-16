@@ -465,9 +465,9 @@ def query():
         response = keen.extraction('answers', filters=[request.form.to_dict()])
         if len(response) == 0:
             return 'No results found'
+        return str(response)
 
-        # Display the response
-    # Display the form
+    return 'Why'
 
 def get_lecturer(current_user_key):
     lecturer = Lecturer.query().filter(Lecturer.user == current_user.key).get()
