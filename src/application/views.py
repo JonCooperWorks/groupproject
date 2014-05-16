@@ -468,8 +468,10 @@ def query():
         # Run the query
         response = keen.extraction('answers', filters=[request.form.to_dict()])
         if len(response) == 0:
-            return 'No results found'
-        return str(response)
+            response = 'No results found'
+
+        #response = json.dumps(response, indent=2, sort_keys=True)
+        return render_template('adminhome.haml', response=response)
 
     return 'Why'
 
