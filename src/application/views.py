@@ -453,6 +453,7 @@ def notify_students():
     return json.dumps({'status': 'OK'})
 
 
+@login_required
 def query():
     """Custom queries using keen.io as a backend.
     The frontent form must pass values in using the names
@@ -460,6 +461,9 @@ def query():
         `property_value` - The value of the property being entered
         `operator` - 'eq', 'gt', 'lt'
     """
+    if current_user.user_type != 'admin':
+        return 403
+
     if request.method == 'POST':
         # Run the query
         response = keen.extraction('answers', filters=[request.form.to_dict()])
