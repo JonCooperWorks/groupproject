@@ -46,6 +46,7 @@ class User(ndb.Model):
 
 class Lecturer(ndb.Model):
     user = ndb.KeyProperty()
+    lect_id = ndb.IntegerProperty()
     email_address = ndb.StringProperty()
     name = ndb.StringProperty()
     title = ndb.StringProperty()
@@ -67,6 +68,7 @@ class Lecturer(ndb.Model):
 class Student(ndb.Model):
     user = ndb.KeyProperty()
     name = ndb.StringProperty()
+    stud_id = ndb.IntegerProperty()
     email_address = ndb.StringProperty()
     dob = ndb.DateProperty()
     gender = ndb.StringProperty(choices=['M', 'F'])
