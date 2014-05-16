@@ -122,7 +122,7 @@ class Question(ndb.Model):
 
     @classmethod
     def get_active(cls):
-        return cls.query().filter(cls.is_active == True)
+        return cls.query().filter(cls.is_active == True).order(cls.number)
 
 
 class StudentSurvey(ndb.Model):
