@@ -1,13 +1,13 @@
-.navbar.navbar-inverse.navbar-fixed-top
+.navbar.navbar-inverse
   .navbar-inner
     .container
-      %a.btn.btn-navbar(data-toggle="collapse", data-target="nav-collapse")
+      %a.btn.btn-navbar(data-toggle="collapse", data-target="#navigationbar")
         %span.icon-bar
         %span.icon-bar
         %span.icon-bar
 
       %a.brand(href="/") Lustro
-      %div.nav-collapse
+      #navigationbar.nav-collapse
           %ul.nav
               -if current_user.user_type == 'student'
                 %li
