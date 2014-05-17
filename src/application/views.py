@@ -464,6 +464,7 @@ def notify_students():
 
 @login_required
 def query():
+    final_filter = []
     """Custom queries using keen.io as a backend.
     The frontent form must pass values in using the names
         `property_name` - The name of the property you wish to query
@@ -475,7 +476,16 @@ def query():
 
     if request.method == 'POST':
         # Run the query
-        response = keen.extraction('answers', filters=[request.form.to_dict()])
+
+        number_of_filters = len(request.form)/3
+        for filter_number in range(0, number_of_filters):
+            temp = {}
+            temp['operator'] = request.form["operator" + str(filter_number)]
+            temp['property_value'] = request.form["property_value" + str(filter_number)]
+            temp['property_name'] = request.form["property_name" + str(filter_number)]
+            final_filter.append(temp)
+
+        response = keen.extraction('answers', filters=final_filter)
         if len(response) == 0:
             response = 'No results found'
 

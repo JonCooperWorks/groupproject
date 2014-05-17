@@ -9,27 +9,31 @@
     %button.btn(type="submit")
       Notify students of surveys.
 
-  %form(action="#{url_for('query')}", method="POST")
+  %button.btn#plus
+    + filter
+  %button.btn#minus
+    \- filter
+  %form#queryform(action="#{url_for('query')}", method="POST")
+    %fieldset
+      %p.filter
+        Look for a:
+        %input.property_name(syle="display:inline", type="text", \
+        name="property_name0", required="required", \
+        placeholder="e.g response")
 
-    %p
-      Look for a:
-      %input#value(syle="display:inline", type="text", \
-      name="property_name", required="required", \
-      placeholder="e.g. name")
+        with value:
 
-      with value:
+        %select.operator(name="operator0")
+          %option(value="eq")
+            equal to
+          %option(value="lt")
+            less than
+          %option(value="gt")
+            greater than
 
-      %select(name="operator")
-        %option(value="eq")
-          equal to
-        %option(value="lt")
-          less than
-        %option(value="gt")
-          greater than
-
-      %input#entity(style="display:inline", type="text", \
-      name="property_value", required="required", \
-      placeholder="e.g. Jimmy")
+        %input.property_value(style="display:inline", type="text", \
+        name="property_value0", required="required", \
+        placeholder="e.g. Jimmy")
 
     %button.btn(type="submit")
       Search
@@ -56,7 +60,7 @@
 
   <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
   <script>
-
+    var filter_count = 0;
     function downloadInnerHtml(filename, elId, mimeType) {
         var elHtml = document.getElementById(elId).innerHTML;
         var link = document.createElement('a');
@@ -71,4 +75,20 @@
     $('#download').click(function(){
         downloadInnerHtml(fileName, 'content','text/html');
     });
+
+    $('#plus').click(function(){
+      filter_count = filter_count + 1;
+      $('fieldset:last').clone().insertAfter('fieldset:last');
+      $('fieldset:last .property_name').attr("name","property_name" + filter_count);
+      $('fieldset:last .operator').attr("name","operator"  + filter_count);
+      $('fieldset:last .property_value').attr("name","property_value" + filter_count);
+    });
+
+    $('#minus').click(function(){
+      if ($('fieldset').length != 1) {
+        filter_count = filter_count - 1;
+        $('fieldset:last').remove();
+      }
+    });
+
   </script>
