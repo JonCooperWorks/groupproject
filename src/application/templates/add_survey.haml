@@ -1,0 +1,39 @@
+-extends "base.html"
+
+-block content
+  #add-survey.container
+    .row
+      .offset3.span6.well
+        %h2.center
+          Add Survey
+        %form.send-message(action="", method="POST")
+          #{form.csrf_token}
+          .control-group
+            %label.control-label(for="survey-title") Title:
+            .controls
+              %input#name(type="text", name="title", required="required", \
+                          value="")
+
+          .control-group
+            %label.control-label(for="survey") Description:
+            .controls
+              %input#name(type="text", name="desc", required="required", \
+                          value="")
+
+          .control-group
+            %label.control-label(for="max_scale") Scale:
+            .controls
+              %label.radio.inline
+                %input(type="radio", name="max_scale", value="3")
+                3
+              %label.radio.inline
+                %input(type="radio", name="max_scale", value="5")
+                5
+              %label.radio.inline
+                %input(type="radio", name="max_scale", value="7")
+                7
+
+          .form-actions.center
+            %button(type="submit")
+              %i.icon-thumbs-up
+                Add Survey

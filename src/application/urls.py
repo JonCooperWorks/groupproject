@@ -68,9 +68,16 @@ app.add_url_rule('/responses/<class_key>/<question_key>',
                  'responses', view_func=views.responses)
 
 # Add lecturer
-app.add_url_rule('/admin/add-lecturer',
+app.add_url_rule('/admin/add-lecturer', 'add_lecturer',
                  view_func=views.add_lecturer, methods=['GET', 'POST'])
 
+# Add question
+app.add_url_rule('/admin/add-question', 'add_question',
+                 view_func=views.add_question, methods=['GET', 'POST'])
+
+# Add survey
+app.add_url_rule('/admin/add-survey', 'add_survey',
+                 view_func=views.add_survey, methods=['GET', 'POST'])
 
 # Validate password
 app.add_url_rule('/validate',

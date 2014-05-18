@@ -12,7 +12,8 @@ from google.appengine.ext import db, deferred, ndb
 import keen
 
 from application import app
-from application.forms import LoginForm, SignupForm, AddLecturerForm
+from application.forms import LoginForm, SignupForm, AddLecturerForm, \
+    AddQuestionForm, AddSurveyForm
 from application.models import Student, Lecturer, Course, Class, \
     Answer, Question, StudentSurvey, Survey, User, \
     Faculty, Department, School
@@ -250,6 +251,45 @@ def add_lecturer():
     return render_template('add_lecturer.haml', form=form,
                            departments=departments)
 
+@login_required
+def add_question():
+    if current_user.user_type != 'admin':
+        return abort(403)
+
+    form = AddQuestionForm()
+    if form.validate_on_submit():
+        try:
+            survey = ndb.Key(urlsafe=form.survey.data).get()
+        except db.BadKeyError:
+            survey = None
+
+        if survey is None:
+            return abort(400)
+
+        question = Question(
+            question=form.question.data, question_type=form.question_type.data, parent=survey.key,
+            dimension=form.dimension.data, is_active=form.is_active.data,
+            number = (Question.query().order(-Question.number).get().number)+1)
+        question.put()
+        return redirect(url_for('home'))
+
+    surveys = Survey.query()
+    return render_template('add_question.haml', form=form,
+                           surveys=surveys)
+
+@login_required
+def add_survey():
+    if current_user.user_type != 'admin':
+        return abort(403)
+
+    form = AddSurveyForm()
+    if form.validate_on_submit():
+      survey = Survey(title=form.title.data, description=form.desc.data,
+                      max_scale=form.max_scale.data)
+      survey.put()
+      return redirect(url_for('home'))
+
+    return render_template('add_survey.haml', form=form)
 
 def validate():
     if request.method == 'POST':
