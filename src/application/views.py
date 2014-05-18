@@ -477,6 +477,9 @@ def query():
     if request.method == 'POST':
         # Run the query
 
+        # Used to display the query filters on the view.
+        filter_view = [request.form.to_dict()]
+
         number_of_filters = len(request.form)/3
         for filter_number in range(0, number_of_filters):
             temp = {}
@@ -489,8 +492,13 @@ def query():
         if len(response) == 0:
             response = 'No results found'
 
-        #response = json.dumps(response, indent=2, sort_keys=True)
-        return render_template('adminhome.haml', response=response)
+        final_filter = json.dumps(final_filter)
+        # response = json.dumps(response, indent=2, sort_keys=True)
+        return render_template('custom_analysis.haml', filters=final_filter,
+                                questions=Question.get_active(),
+                                filter_view=filter_view,
+                                number_of_filters=number_of_filters,
+                                response=response)
 
     return 'Why'
 
