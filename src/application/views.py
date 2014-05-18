@@ -548,7 +548,12 @@ def get_lecturer(current_user_key):
     return lecturer
 
 
-def _get_exceptional_values(course_key, midpoint):
+def _get_exceptional_values(course_key, survey_question_key):
+    import os
+    question = ndb.Key(urlsafe=survey_question_key).get()
+    survey = question.key.parent().get()
+
+    midpoint = int(survey.max_scale / 2 + 1)
     """Returns questions that had exceptionally high and low responses.
 
     The midpoint is given by
@@ -573,7 +578,7 @@ def _get_exceptional_values(course_key, midpoint):
                  'property_name%22%3A%22course_key%22%2C%22operator%22%3A%22eq'
                  '%22%2C%22property_value%22%3A%22{course_key}%22%7D%5D&'
                  'timezone=-18000&target_property=response&group_by='
-                 'question_text&percentile=80').format(
+                 'question_number&percentile=80').format(
                       read_key=os.environ.get('KEEN_READ_KEY'),
                       project_id=os.environ.get('KEEN_PROJECT_ID'),
                       midpoint=midpoint,
@@ -588,7 +593,7 @@ def _get_exceptional_values(course_key, midpoint):
                  'property_name%22%3A%22course_key%22%2C%22operator%22%3A%22eq'
                  '%22%2C%22property_value%22%3A%22{course_key}%22%7D%5D&'
                  'timezone=-18000&target_property=response&group_by='
-                 'question_text&percentile=80').format(
+                 'question_number&percentile=80').format(
                       read_key=os.environ.get('KEEN_READ_KEY'),
                       project_id=os.environ.get('KEEN_PROJECT_ID'),
                       midpoint=midpoint,
@@ -596,8 +601,11 @@ def _get_exceptional_values(course_key, midpoint):
     )
     upper_values = json.loads(urlfetch.fetch(upper_url).content)
     lower_values = json.loads(urlfetch.fetch(lower_url).content)
-    return upper_values, lower_values
-
+    exception_question_numbers = zip(upper_values['result'], lower_values['result'])
+    if exception_question_numbers != []:
+        return exception_question_numbers
+    else:
+        return None
 
 # Handlersfor testing styling.
 def analysistest():
@@ -737,4 +745,5 @@ def warmup():
     """
     return ''
 
-app.jinja_env.globals.update(get_lecturer=get_lecturer)
+app.jinja_env.globals.update(get_lecturer=get_lecturer,
+                             _get_exceptional_values=_get_exceptional_values)
