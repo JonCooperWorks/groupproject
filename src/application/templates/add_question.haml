@@ -1,0 +1,55 @@
+-extends "base.html"
+
+-block content
+  #add-question.container
+    .row
+      .offset3.span6.well
+        %h2.center
+          Add Question
+        %form.send-message(action="", method="POST")
+          #{form.csrf_token}
+          .control-group
+            %label.control-label(for="question_type") Question Type:
+            .controls
+              %select#quest-type(name="question_type", required="required")
+                %option(value="open")
+                  Open ended
+                %option(value="closed")
+                  Closed ended
+                %option(value="peer")
+                  Peer Review
+
+          .control-group
+            %label.control-label(for="survey") Add to Survey:
+            .controls
+              %select#survey(name="survey", required="required")
+                -for survey in surveys
+                  %option(value="#{survey.key.urlsafe()}")
+                    #{survey.title}
+
+          .control-group
+            %label.control-label(for="is_active") Active:
+            .controls
+              %label.radio.inline
+                %input(type="radio", name="is_active", value="true")
+                Yes
+              %label.radio.inline
+                %input(type="radio", name="is_active", value="false")
+                No
+
+          .control-group
+            %label.control-label(for="question") Question:
+            .controls
+              %input#question(type="text", name="question", required="required", \
+                          value="")
+
+          .control-group
+            %label.control-label(for="dimension") Dimension:
+            .controls
+              %input#dimension(type="text", name="dimension", required="required", \
+                          value="")
+
+          .form-actions.center
+            %button(type="submit")
+              %i.icon-thumbs-up
+                Add Question

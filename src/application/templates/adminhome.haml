@@ -5,6 +5,12 @@
   #add-lecturer-url
     %a.btn(href="#{url_for('add_lecturer')}") Add Lecturer
 
+  #add-quesion-url
+    %a.btn(href="#{url_for('add_question')}") Add Question
+
+  #add-survey-url
+    %a.btn(href="#{url_for('add_survey')}") Add Survey
+
   %form(action="#{url_for('notify-students')}")
     %button.btn(type="submit")
       Notify students of surveys.

@@ -44,3 +44,25 @@ class AddLecturerForm(wtf.Form):
         u'Title', validators=[validators.AnyOf(('Dr', 'Mr', 'Prof', 'Mrs', 'Ms'))])
     department = wtf.StringField(
         u'Department', validators=[validators.Required()])
+
+
+class AddQuestionForm(wtf.Form):
+    survey = wtf.StringField(
+        u'Add to Survey', validators=[validators.Required()])
+    question_type = wtf.StringField(
+        u'Question Type', validators=[validators.AnyOf(('open', 'closed', 'peer'))])
+    is_active = wtf.BooleanField(
+        u'Active', validators=[validators.Required()])
+    question = wtf.StringField(
+        u'Question', validators=[validators.Required()])
+    dimension = wtf.StringField(
+        u'Dimension', validators=[validators.Required()])
+
+
+class AddSurveyForm(wtf.Form):
+    title = wtf.StringField(
+        u'Title', validators=[validators.Required()])
+    desc = wtf.StringField(
+        u'Description', validators=[validators.Required()])
+    max_scale = wtf.IntegerField(
+        u'Scale', validators=[validators.Required()])
