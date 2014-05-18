@@ -573,7 +573,7 @@ def _get_exceptional_values(course_key, midpoint):
                  'property_name%22%3A%22course_key%22%2C%22operator%22%3A%22eq'
                  '%22%2C%22property_value%22%3A%22{course_key}%22%7D%5D&'
                  'timezone=-18000&target_property=response&group_by='
-                 'question_body&percentile=80').format(
+                 'question_text&percentile=80').format(
                       read_key=os.environ.get('KEEN_READ_KEY'),
                       project_id=os.environ.get('KEEN_PROJECT_ID'),
                       midpoint=midpoint,
@@ -588,7 +588,7 @@ def _get_exceptional_values(course_key, midpoint):
                  'property_name%22%3A%22course_key%22%2C%22operator%22%3A%22eq'
                  '%22%2C%22property_value%22%3A%22{course_key}%22%7D%5D&'
                  'timezone=-18000&target_property=response&group_by='
-                 'question_body&percentile=80').format(
+                 'question_text&percentile=80').format(
                       read_key=os.environ.get('KEEN_READ_KEY'),
                       project_id=os.environ.get('KEEN_PROJECT_ID'),
                       midpoint=midpoint,
