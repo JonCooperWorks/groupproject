@@ -269,7 +269,7 @@ def add_question():
         question = Question(
             question=form.question.data, question_type=form.question_type.data, parent=survey.key,
             dimension=form.dimension.data, is_active=form.is_active.data,
-            number = (Question.query().order(-Question.number).get().number)+1)
+            number = (Question.query(parent=survey.key).order(-Question.number).get().number)+1)
         question.put()
         return redirect(url_for('home'))
 
