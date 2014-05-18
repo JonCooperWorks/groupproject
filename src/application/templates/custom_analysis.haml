@@ -256,7 +256,6 @@
 
   <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
   <script>
-    var filter_count = 0;
     function downloadInnerHtml(filename, elId, mimeType) {
         var elHtml = document.getElementById(elId).innerHTML;
         var link = document.createElement('a');
@@ -270,21 +269,6 @@
     var fileName =  'results.txt';
     $('#download').click(function(){
         downloadInnerHtml(fileName, 'content','text/html');
-    });
-
-    $('#plus').click(function(){
-      filter_count = filter_count + 1;
-      $('fieldset:last').clone().insertAfter('fieldset:last');
-      $('fieldset:last .property_name').attr("name","property_name" + filter_count);
-      $('fieldset:last .operator').attr("name","operator"  + filter_count);
-      $('fieldset:last .property_value').attr("name","property_value" + filter_count);
-    });
-
-    $('#minus').click(function(){
-      if ($('fieldset').length != 1) {
-        filter_count = filter_count - 1;
-        $('fieldset:last').remove();
-      }
     });
 
   </script>

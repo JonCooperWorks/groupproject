@@ -1,45 +1,114 @@
 -extends "base.html"
 
 -block content
+  #admin-home
+    %ul#admin-tab.nav.nav-tabs
+      %li: %a(href="#database") Database management
+      %li: %a(href="#tools") Admin Tools
+      %li: %a(href="#queries") Custom Queries
 
-  #add-lecturer-url
-    %a.btn(href="#{url_for('add_lecturer')}") Add Lecturer
+    .tab-content
+      .tab-pane#database
+        .btn-group.btn-group-vertical
+          %a#add-lecturer-url.btn(href="#{url_for('add_lecturer')}") Add Lecturer
+          %a#add-quesion-url.btn(href="#{url_for('add_question')}") Add Question
+          %a#add-survey-url.btn(href="#{url_for('add_survey')}") Add Survey
 
-  #add-quesion-url
-    %a.btn(href="#{url_for('add_question')}") Add Question
+      .tab-pane#tools
+        %form(action="#{url_for('notify-students')}")
+          %button.btn(type="submit")
+            Notify students of surveys.
 
-  #add-survey-url
-    %a.btn(href="#{url_for('add_survey')}") Add Survey
+      .tab-pane#queries
+        .btn-group
+          %button.btn.btn-success#plus
+            + Filter
+          %button.btn.btn-danger#minus
+            \- Filter
+          %button.btn#help(data-target="#help-modal", data-toggle="modal")
+            Help
 
-  %form(action="#{url_for('notify-students')}")
-    %button.btn(type="submit")
-      Notify students of surveys.
+        #help-modal.modal.hide.fade(tabindex="-1",  aria-labelledby="Help Modal", aria-hidden="true")
+          .modal-header
+            %button.close(data-dismiss="modal", aria-hidden="true")
+              ×
+            %h3 Custom query help
+          .modal-body
+            %pre
+              lecturer.department (string)
+              lecturer.name (string)
+              lecturer.key (key)
+              lecturer.faculty (string)
+              course.department (key)
+              course.school (key)
+              course.faculty (key)
+              course.name (string)
+              question_number (int)
+              student.status FT | PT
+              student.gender M | F
+              age (int)
+              student.key (key)
+              student.year (int)
+              repsonse (int)
+          .modal-footer
 
-  %button.btn#plus
-    + filter
-  %button.btn#minus
-    \- filter
-  %form#queryform(action="#{url_for('query')}", method="POST")
-    %fieldset
-      %p.filter
-        Look for a:
-        %input.property_name(syle="display:inline", type="text", \
-        name="property_name0", required="required", \
-        placeholder="e.g response")
 
-        with value:
+        %form#queryform(action="#{url_for('query')}", method="POST")
+          %fieldset
+            %p.filter
+              Look for a:
+              %input.property_name(syle="display:inline", type="text", \
+              name="property_name0", required="required", \
+              placeholder="e.g response")
 
-        %select.operator(name="operator0")
-          %option(value="eq")
-            equal to
-          %option(value="lt")
-            less than
-          %option(value="gt")
-            greater than
+              with value:
 
-        %input.property_value(style="display:inline", type="text", \
-        name="property_value0", required="required", \
-        placeholder="e.g. Jimmy")
+              %select.operator(name="operator0")
+                %option(value="eq")
+                  equal to
+                %option(value="lt")
+                  less than
+                %option(value="gt")
+                  greater than
 
-    %button.btn(type="submit")
-      Search
+              %input.property_value(style="display:inline", type="text", \
+              name="property_value0", required="required", \
+              placeholder="e.g. 3")
+
+          %button.btn(type="submit")
+            Search
+
+  <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+  <script>
+    $(function () {
+      var lastTab = localStorage.getItem('lastTab');
+      if (lastTab) {
+        $('a[href='+lastTab+']').tab('show');
+      } else {
+        $('#admin-tab a:first').tab('show');
+      }
+    })
+
+    $('#admin-tab a').click(function (e) {
+      e.preventDefault();
+      $(this).tab('show');
+      var tab = $(this).attr('href');
+      localStorage.setItem('lastTab', tab);
+    })
+
+    var filter_count = 0;
+    $('#plus').click(function(){
+      filter_count = filter_count + 1;
+      $('fieldset:last').clone().insertAfter('fieldset:last');
+      $('fieldset:last .property_name').attr("name","property_name" + filter_count);
+      $('fieldset:last .operator').attr("name","operator"  + filter_count);
+      $('fieldset:last .property_value').attr("name","property_value" + filter_count);
+    });
+
+    $('#minus').click(function(){
+      if ($('fieldset').length != 1) {
+        filter_count = filter_count - 1;
+        $('fieldset:last').remove();
+      }
+    });
+  </script>
