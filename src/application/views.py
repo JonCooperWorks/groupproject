@@ -488,6 +488,58 @@ def get_lecturer(current_user_key):
     lecturer = Lecturer.query().filter(Lecturer.user == current_user.key).get()
     return lecturer
 
+
+def _get_exceptional_values(course_key, midpoint):
+    """Returns questions that had exceptionally high and low responses.
+
+    The midpoint is given by
+
+        int(survey.max_scale / 2 + 1)
+
+    Returns a list of dicts with keys:
+        `question_key`
+        `result`
+
+    To retrieve the questions:
+
+        ndb.get_multi([ndb.Key(urlsafe=value['question_key'])
+                       for value in values])
+    """
+    upper_url = ('https://api.keen.io/3.0/projects/{project_id}/queries/'
+                 'percentile?api_key={read_key}&event_collection=answers&'
+                 'filters=%5B%7B%22property_name%22%3A%22response%22%2C%22'
+                 'operator%22%3A%22gt%22%2C%22property_value%22%3A{midpoint}'
+                 '%7D%2C%7B%22property_name%22%3A%22response%22%2C%22operator'
+                 '%22%3A%22exists%22%2C%22property_value%22%3Atrue%7D%2C%7B%22'
+                 'property_name%22%3A%22course_key%22%2C%22operator%22%3A%22eq'
+                 '%22%2C%22property_value%22%3A%22{course_key}%22%7D%5D&'
+                 'timezone=-18000&target_property=response&group_by='
+                 'question_key&percentile=80').format(
+                      read_key=os.environ.get('KEEN_READ_KEY'),
+                      project_id=os.environ.get('KEEN_PROJECT_ID'),
+                      midpoint=midpoint,
+                      course_key=course_key
+    )
+    lower_url = ('https://api.keen.io/3.0/projects/{project_id}/queries/'
+                 'percentile?api_key={read_key}&event_collection=answers&'
+                 'filters=%5B%7B%22property_name%22%3A%22response%22%2C%22'
+                 'operator%22%3A%22lt%22%2C%22property_value%22%3A{midpoint}'
+                 '%7D%2C%7B%22property_name%22%3A%22response%22%2C%22operator'
+                 '%22%3A%22exists%22%2C%22property_value%22%3Atrue%7D%2C%7B%22'
+                 'property_name%22%3A%22course_key%22%2C%22operator%22%3A%22eq'
+                 '%22%2C%22property_value%22%3A%22{course_key}%22%7D%5D&'
+                 'timezone=-18000&target_property=response&group_by='
+                 'question_key&percentile=80').format(
+                      read_key=os.environ.get('KEEN_READ_KEY'),
+                      project_id=os.environ.get('KEEN_PROJECT_ID'),
+                      midpoint=midpoint,
+                      course_key=course_key
+    )
+    upper_values = json.loads(urlfetch.fetch(upper_url).content)
+    lower_values = json.loads(urlfetch.fetch(lower_url).content)
+    return upper_values, lower_values
+
+
 # Handlersfor testing styling.
 def analysistest():
     return render_template('analysistest.haml')
