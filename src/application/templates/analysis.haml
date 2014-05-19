@@ -12,6 +12,13 @@
     %h3 Rating :
       #chart
 
+    -set survey_question =  questions.get().key.urlsafe()
+    -set exceptions = _get_exceptional_values(course.key.urlsafe(), survey_question)
+    -if exceptions
+      We have noticed irregular trends in these questions
+      -for exception in exceptions
+        #{exception}
+
     %table.table(style="border-collapse:collapse;")
       %thead
         %tr
