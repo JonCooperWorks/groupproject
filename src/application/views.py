@@ -6,6 +6,7 @@ import uuid
 from flask import render_template, url_for, redirect, request, abort
 from flask.ext.flask_login import current_user, login_required, login_user,\
     logout_user
+from flask_cache import Cache
 from google.appengine.api import mail, urlfetch
 from google.appengine.ext import db, deferred, ndb
 import keen
@@ -17,6 +18,13 @@ from application.models import Student, Lecturer, Course, Class, \
     Answer, Question, StudentSurvey, Survey, User, \
     Faculty, Department, School
 
+
+# Flask-Cache (configured to use App Engine Memcache API)
+cache = Cache(app)
+
+
+def about():
+    return render_template('about.html')
 
 @login_required
 def home():
