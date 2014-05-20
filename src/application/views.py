@@ -14,6 +14,7 @@ import keen
 from application import app
 from application.forms import LoginForm, SignupForm, AddLecturerForm, \
     AddQuestionForm, AddSurveyForm
+from application import models
 from application.models import Student, Lecturer, Course, Class, \
     Answer, Question, StudentSurvey, Survey, User, \
     Faculty, Department, School
@@ -622,6 +623,43 @@ def assign_lecturer():
     return render_template('assign_lecturer.haml',
                            lecturers=Lecturer.query(),
                            courses=Course.query())
+
+@login_required
+def populate_upload():
+    """Allows for populating the database from a JSON file in the format:
+
+        {
+            "records": [
+                {
+                    "kind": "Student",
+                    "name": "Jimmy",
+                }
+            ]
+        }
+
+    Each record must have it's Entity kind attached, eg: Student.
+
+    """
+
+    if current_user.user_type != 'admin':
+        return abort(403)
+
+    if request.method == 'POST':
+        imports = json.loads(request.files['file'].read())
+        entities = []
+        for record in imports['records']:
+            cls = getattr(models, record['kind'])
+            if cls is None:
+                abort(400)
+
+            del record['kind']
+            entities.append(cls(**record))
+
+        ndb.put_multi(entities)
+        return redirect(url_for('home'))
+
+    return render_template('populate.haml')
+
 
 # Handlersfor testing styling.
 def analysistest():
