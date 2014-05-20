@@ -6,7 +6,6 @@ import uuid
 from flask import render_template, url_for, redirect, request, abort
 from flask.ext.flask_login import current_user, login_required, login_user,\
     logout_user
-from flask_cache import Cache
 from google.appengine.api import mail, urlfetch
 from google.appengine.ext import db, deferred, ndb
 import keen
@@ -17,10 +16,6 @@ from application.forms import LoginForm, SignupForm, AddLecturerForm, \
 from application.models import Student, Lecturer, Course, Class, \
     Answer, Question, StudentSurvey, Survey, User, \
     Faculty, Department, School
-
-
-# Flask-Cache (configured to use App Engine Memcache API)
-cache = Cache(app)
 
 
 @login_required
@@ -606,6 +601,19 @@ def _get_exceptional_values(course_key, survey_question_key):
         return exception_question_numbers
     else:
         return None
+
+
+def assign_lecturer():
+    if request.method == 'POST':
+        lecturer_key = ndb.Key(urlsafe=request.form['lecturer_key'])
+        course_key = ndb.Key(urlsafe=request.form['course_key'])
+        class_ = Class(course=course_key, lecturer=lecturer_key)
+        class_.put()
+        return redirect(url_for('assign_lecturer'))
+
+    return render_template('assign_lecturer.haml',
+                           lecturers=Lecturer.query(),
+                           courses=Course.query())
 
 # Handlersfor testing styling.
 def analysistest():

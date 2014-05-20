@@ -1,0 +1,19 @@
+-extends "base.html"
+
+-block content
+   %h3 Assign lecturer to course
+
+   %form(action="#{url_for('assign_lecturer')}", method="POST")
+     %label(for="lecturer_key") Lecturer
+     %select(name="lecturer_key")
+       -for lecturer in lecturers
+         %option(value="#{lecturer.key.urlsafe()}") #{lecturer.name}
+
+     %label(for="course_key") Course
+     %select(name="course_key")
+       -for course in courses
+         %option(value="#{course.key.urlsafe()}") #{course.name}
+
+
+     #submit
+      %button(type="submit") Assign
