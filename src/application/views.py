@@ -610,6 +610,19 @@ def _get_exceptional_values(course_key, survey_question_key):
     else:
         return None
 
+
+def assign_lecturer():
+    if request.method == 'POST':
+        lecturer_key = ndb.Key(urlsafe=request.form['lecturer_key'])
+        course_key = ndb.Key(urlsafe=request.form['course_key'])
+        class_ = Class(course=course_key, lecturer=lecturer_key)
+        class_.put()
+        return redirect(url_for('assign_lecturer'))
+
+    return render_template('assign_lecturer.haml',
+                           lecturers=Lecturer.query(),
+                           courses=Course.query())
+
 # Handlersfor testing styling.
 def analysistest():
     return render_template('analysistest.haml')

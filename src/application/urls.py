@@ -86,6 +86,11 @@ app.add_url_rule('/admin/add-survey', 'add_survey',
 app.add_url_rule('/validate',
                  view_func=views.validate, methods=['GET', 'POST'])
 
+# Assign lecturer
+app.add_url_rule('/admin/assign-lecturer', methods=['GET', 'POST'],
+                 view_func=views.assign_lecturer)
+
+
 # Error handlers
 # Handle 404 errors
 @app.errorhandler(404)
