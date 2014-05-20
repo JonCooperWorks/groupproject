@@ -23,6 +23,9 @@ from application.models import Student, Lecturer, Course, Class, \
 cache = Cache(app)
 
 
+def about():
+    return render_template('about.html')
+
 @login_required
 def home():
     if current_user.user_type == 'student':

@@ -14,6 +14,9 @@ from application import views
 # App Engine warm up handler
 app.add_url_rule('/_ah/warmup', 'warmup', view_func=views.warmup)
 
+# About Page
+app.add_url_rule('/about', 'about', view_func=views.about)
+
 # Home page
 app.add_url_rule('/', 'home', view_func=views.home)
 
