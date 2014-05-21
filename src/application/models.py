@@ -44,6 +44,7 @@ class User(ndb.Model):
     def is_authenticated(self):
         return True
 
+
 class Lecturer(ndb.Model):
     user = ndb.KeyProperty()
     email_address = ndb.StringProperty()
@@ -53,7 +54,8 @@ class Lecturer(ndb.Model):
     courses = ndb.KeyProperty(repeated=True)
 
     def get_department(self):
-        department = Department.query(Department.head_of_department == self.key).get()
+        department = Department.query
+                     (Department.head_of_department == self.key).get()
         return department
 
     def get_faculty(self):
@@ -93,8 +95,10 @@ class Department(ndb.Model):
     faculty = ndb.KeyProperty(kind=Faculty)
     head_of_department = ndb.KeyProperty(kind=Lecturer)
 
+
 class Course(ndb.Model):
     name = ndb.StringProperty()
+    code = ndb.StringProperty()
     start_date = ndb.DateProperty()
     end_date = ndb.DateProperty()
     department = ndb.KeyProperty(kind=Department)
