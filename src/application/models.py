@@ -54,8 +54,7 @@ class Lecturer(ndb.Model):
     courses = ndb.KeyProperty(repeated=True)
 
     def get_department(self):
-        department = Department.query
-                     (Department.head_of_department == self.key).get()
+        department = Department.query().filter(Department.head_of_department == self.key).get()
         return department
 
     def get_faculty(self):
@@ -139,3 +138,8 @@ class Answer(ndb.Model):
     int_value = ndb.IntegerProperty()
     sentiment = ndb.StringProperty()
     survey = ndb.KeyProperty(kind=Survey)
+
+
+class StudentCourse(ndb.Model):
+    email_address = ndb.StringProperty()
+    courses = ndb.StringProperty(repeated=True)
