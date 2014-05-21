@@ -717,11 +717,13 @@ def populate():
     lecturer = Lecturer(name='Jimmy', title='Dr',
                         user=lecturer_user.key, department=department1.key)
 
-    course = Course(name='Comp3161 - Database Management Systems',
+    course = Course(name='Database Management Systems',
+                    code='COMP3161',
                     total_students=90,
                     department=department1.key,
                     faculty=faculty1.key)
-    course2 = Course(name='Comp3702 - Theory Of Computation',
+    course2 = Course(name='Theory Of Computation',
+                     code='COMP3702',
                      total_students=20,
                      department=department1.key,
                      faculty=faculty1.key)
