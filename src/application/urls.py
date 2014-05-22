@@ -91,7 +91,8 @@ app.add_url_rule('/admin/assign-lecturer', methods=['GET', 'POST'],
                  view_func=views.assign_lecturer)
 
 # Populate
-app.add_url_rule('/admin/populate', methods=['GET', 'POST'],
+app.add_url_rule('/admin/populate', 'admin_populate',
+                 methods=['GET', 'POST'],
                  view_func=views.populate_upload)
 
 
