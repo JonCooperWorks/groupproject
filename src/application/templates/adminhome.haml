@@ -14,6 +14,7 @@
           %a#add-quesion-url.btn(href="#{url_for('add_question')}") Add Question
           %a#add-survey-url.btn(href="#{url_for('add_survey')}") Add Survey
           %a#assign-lecturer-url.btn(href="#{url_for('assign_lecturer')}") Assign Lecturer
+          %a#bulk-upload.btn(href="#{url_for('admin_populate')}") Bulk Upload
 
       .tab-pane#tools
         %form(action="#{url_for('notify-students')}")
