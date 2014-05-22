@@ -822,6 +822,22 @@ def populate():
     return 'Done.'
 
 
+@app.route('/dontgo')
+def deletethis():
+    dr_coore = Lecturer.query().filter(Lecturer.name == 'Daniel Coore').get()
+    kevin = Lecturer.query().filter(Lecturer.name == 'Kevin Miller').get()
+    if None in (dr_coore, kevin):
+        return 'Nope'
+
+    for course in dr_coore.courses:
+        crs = course.get()
+        if crs.course.get().name == 'Database Management Systems':
+            dr_coore.courses.remove(course)
+            kevin.courses.append(course)
+
+    ndb.put_multi([dr_coore, kevin])
+    return 'Done'
+
 def warmup():
     """App Engine warmup handler
     """
