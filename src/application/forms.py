@@ -29,7 +29,7 @@ class SignupForm(wtf.Form):
                              validators=[validators.AnyOf('M', 'F')])
     status = wtf.StringField(u'Status',
                              validators=[validators.AnyOf('FT', 'PT')])
-    year = wtf.IntegerField(u'Year',
+    year = wtf.StringField(u'Year',
                             validators=[validators.Required()])
 
 

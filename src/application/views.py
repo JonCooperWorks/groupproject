@@ -14,6 +14,7 @@ import keen
 from application import app
 from application.forms import LoginForm, SignupForm, AddLecturerForm, \
     AddQuestionForm, AddSurveyForm
+from application import models
 from application.models import Student, Lecturer, Course, Class, \
     Answer, Question, StudentSurvey, Survey, User, \
     Faculty, Department, School
@@ -212,7 +213,14 @@ def signup():
                           dob=datetime.datetime.strptime(
                               form.dob.data, '%Y-%m-%d'),
                           status=form.status.data,
-                          gender=form.gender.data, year=form.year.data)
+                          gender=form.gender.data, year=int(form.year.data))
+
+        student_courses = models.StudentCourse.query().filter(
+            models.StudentCourse.email_address == form.email_address.data).get()
+        if student_courses is not None:
+            for course in student_courses.courses:
+                thing = Course.query().filter(Course.code == course).get().key
+                student.courses.append(Class.query().filter(Class.course == thing).get().key)
         student.put()
         return redirect(url_for('login'))
 
@@ -491,7 +499,26 @@ def landing():
 def notify_students():
     if current_user.user_type != 'admin':
         return 403
-    students = Student.query()
+
+    students = []
+    with open('application/COMP3702.txt') as theory_file:
+        for email_address in theory_file.read().split(','):
+            students.append(email_address)
+            models.StudentCourse(email_address=email_address, courses=['COMP3702']).put()
+
+    with open('application/COMP3161.txt') as db_file:
+        for email_address in db_file.read().split(','):
+            students.append(email_address)
+            student_course = models.StudentCourse.query().filter(
+                models.StudentCourse.email_address == email_address).get()
+            if student_course is None:
+                models.StudentCourse(email_address=email_address, courses=['COMP3161']).put()
+
+            else:
+                student_course.courses.append('COMP3161')
+                student_course.put()
+
+    students = set(students)
 
     for student in students:
         sender = 'surveymailer450@gmail.com'
@@ -499,7 +526,7 @@ def notify_students():
         html = render_template('email/survey_email.haml', student=student)
 
         mail_kwargs = {'html': html, 'body': 'TODO.txt',
-                       'to': student.email_address,
+                       'to': student,
                        'sender': sender, 'subject': subject}
         mail.send_mail(**mail_kwargs)
 
@@ -622,6 +649,43 @@ def assign_lecturer():
     return render_template('assign_lecturer.haml',
                            lecturers=Lecturer.query(),
                            courses=Course.query())
+
+@login_required
+def populate_upload():
+    """Allows for populating the database from a JSON file in the format:
+
+        {
+            "records": [
+                {
+                    "kind": "Student",
+                    "name": "Jimmy",
+                }
+            ]
+        }
+
+    Each record must have it's Entity kind attached, eg: Student.
+
+    """
+
+    if current_user.user_type != 'admin':
+        return abort(403)
+
+    if request.method == 'POST':
+        imports = json.loads(request.files['file'].read())
+        entities = []
+        for record in imports['records']:
+            cls = getattr(models, record['kind'])
+            if cls is None:
+                abort(400)
+
+            del record['kind']
+            entities.append(cls(**record))
+
+        ndb.put_multi(entities)
+        return redirect(url_for('home'))
+
+    return render_template('populate.haml')
+
 
 # Handlersfor testing styling.
 def analysistest():
